@@ -1,0 +1,34 @@
+{
+    "log": {
+        "level": "info",
+        "header": {
+            "loglist": ["token"]
+        }
+    },
+    "error":{
+        "debug": true,
+        "errStatus": 500
+    },
+    "auth": {
+        "secret": "member",
+        "pass": ["/user/insert","/xserver/auth/login"],
+        "role":{
+            "admin":[".*"],
+            "financialAdmin":["/financial/*"],
+            "financialManager":["/financial/test1","/financial/test2"],
+            "financialStaff":["GET:/financial/test1","POST:/financial/test2"]
+        },
+        "cors": true,
+        "errMsg": "未认证",
+        "errStatus": 401
+    },
+    "server": {
+        "port": 3636,
+        "staticRoot": "/xserver/static/",
+        "controllerRoot": "/xserver",
+        "controllerDir": "/src/controller/",
+        "middlewareDir": "/src/middleware/",
+        "xnosqlRoot": "/xnosql",
+        "mongodbUrl": "mongodb://localhost:27017/member"
+    }
+}
