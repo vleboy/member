@@ -12,6 +12,16 @@ const collection = 'order'
 
 /**
  * 新增订单中间件
+ * 输入参数
+ * @param products 产品数组[{id,price,num}]
+ * @param price 订单价格
+ * @param userId 用户ID
+ * @param deliveryName 收货人
+ * @param deliveryMobile 收货人电话
+ * @param deliveryAddress 收货地址
+ * 
+ * 生成参数
+ * @param id 订单ID/编号
  */
 router.post('/order/insert', async (ctx, next) => {
 })

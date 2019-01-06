@@ -12,6 +12,27 @@ const collection = 'user'
 
 /**
  * 注册用户中间件
+ * 输入参数
+ * @param username 姓名
+ * @param idnumber 证件号码
+ * @param mobile 手机号
+ * @param wechatnumber 微信号
+ * @param bankname 银行
+ * @param banknumber 银行卡号
+ * @param password 密码
+ * @param level 级别
+ * @param address 地址
+ * @param placenumber 安置编号
+ * @param recommendnumber 推荐编号
+ * 
+ * @param deliveryName 收货人
+ * @param deliveryMobile 收货人电话
+ * @param deliveryAddress 收货地址
+ * 
+ * 生成参数
+ * @param id 用户ID/编号，用于程序业务处理
+ * @param parentId 父级ID/编号，用于程序业务处理
+ * @param status 状态：init待审核，freeze冻结，normal正常
  */
 router.post('/user/insert', async (ctx, next) => {
     const mongodb = global.mongodb
@@ -23,13 +44,13 @@ router.post('/user/insert', async (ctx, next) => {
     //  业务处理
     else {
         // 6位随机ID
-        inparam.openid = inparam.openid || _.random(100000, 999999).toString()
+        inparam.id = inparam.id || _.random(100000, 999999).toString()
         // 判断是否重复
-        const r = await mongodb.find(collection, { "$or": [{ username: inparam.username }, { openid: inparam.openid }] })
+        const r = await mongodb.find(collection, { "$or": [{ username: inparam.username }, { id: inparam.id }] })
         if (r.length > 0) {
             ctx.body = { err: true, res: '用户已存在' }
         } else if (inparam.isPreCheck) {
-            ctx.body = { err: false, res: inparam.openid }  // 返回检查结果和生成的openid
+            ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
         } else {
             return next()
         }

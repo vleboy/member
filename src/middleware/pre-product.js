@@ -11,7 +11,16 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 const collection = 'product'
 
 /**
- * 新增订单中间件
+ * 新增产品中间件
+ * 输入参数
+ * @param name 产品名称
+ * @param desc 产品描述
+ * @param img 产品图片
+ * @param price 产品价格
+ * @param activity 产品活动
+ * 
+ * 生成参数
+ * @param id 产品ID/编号
  */
 router.post('/product/insert', async (ctx, next) => {
 })

@@ -15,7 +15,7 @@ const collection = 'user'
  */
 router.post('/user/insert', async (ctx, next) => {
     const inparam = ctx.request.body
-    ctx.body.res = jwt.sign({ openid: inparam.openid, username: inparam.username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)
+    ctx.body.res = jwt.sign({ id: inparam.id, username: inparam.username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)
 })
 
 /**
