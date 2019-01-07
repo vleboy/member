@@ -8,11 +8,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    openRegister: false
+    openRegister: false,
+    openMyAccount: false
   },
   mutations: {
     openRegister(state, params) {
       state.openRegister = params
+    },
+    openMyAccount(state, params) {
+      state.openMyAccount = params
     }
   },
   actions: {

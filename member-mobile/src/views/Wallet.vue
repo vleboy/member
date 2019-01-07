@@ -4,7 +4,7 @@
       <v-list subheader three-line>
         <v-subheader>钱包账单</v-subheader>
         <template v-for="(item, index) in items">
-          <v-list-tile :key="item.title" avatar ripple @click="diplomacy">
+          <v-list-tile :key="item.title" avatar ripple @click="openDialog">
             <v-list-tile-avatar>
               <v-icon :class="[item.iconClass]">{{item.icon}}</v-icon>
             </v-list-tile-avatar>
@@ -17,11 +17,16 @@
         </template>
       </v-list>
     </v-flex>
+    <MyAccount/>
   </v-layout>
 </template>
 
 <script>
+import MyAccount from "../components/MyAccount.vue";
 export default {
+  components: {
+    MyAccount
+  },
   data: () => ({
     items: [
       {
@@ -46,8 +51,9 @@ export default {
     ]
   }),
   methods: {
-    diplomacy() {
-      console.log("外交");
+    openDialog(e) {
+      console.log(e);
+      this.$store.commit("openMyAccount", !this.$store.state.openMyAccount);
     }
   }
 };
