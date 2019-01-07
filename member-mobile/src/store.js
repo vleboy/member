@@ -8,11 +8,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    drawer: false
+    openRegister: false
   },
   mutations: {
-    changeDrawer(state, params) {
-      state.drawer = params
+    openRegister(state, params) {
+      state.openRegister = params
     }
   },
   actions: {

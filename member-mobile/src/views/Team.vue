@@ -4,7 +4,7 @@
       <v-list subheader three-line>
         <v-subheader>团队建设</v-subheader>
         <template v-for="(item, index) in items">
-          <v-list-tile :key="item.title" avatar ripple @click="diplomacy">
+          <v-list-tile :key="item.title" avatar ripple @click="openRegister">
             <v-list-tile-avatar>
               <v-icon :class="[item.iconClass]">{{item.icon}}</v-icon>
             </v-list-tile-avatar>
@@ -17,11 +17,16 @@
         </template>
       </v-list>
     </v-flex>
+    <Register/>
   </v-layout>
 </template>
 
 <script>
+import Register from "../components/Register.vue";
 export default {
+  components: {
+    Register
+  },
   data: () => ({
     items: [
       {
@@ -40,8 +45,8 @@ export default {
     ]
   }),
   methods: {
-    diplomacy() {
-      console.log("外交");
+    openRegister() {
+      this.$store.commit("openRegister", !this.$store.state.openRegister);
     }
   }
 };
