@@ -9,7 +9,8 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 // 持久化相关
 // const ObjectId = require('mongodb').ObjectID
 const collection = 'product'
-
+// 处理函数逻辑
+const check = require('../util/check/product')
 /**
  * 新增产品中间件
  * 输入参数
@@ -23,6 +24,20 @@ const collection = 'product'
  * @param id 产品ID/编号
  */
 router.post('/product/insert', async (ctx, next) => {
+    check(ctx.request.body)
+
+    inparam =  ctx.request.body
+    inparam.id = inparam.id ||　_.random(100000,999999).toString()
+
+    const r = await mongodb.find(collection, { "$or": [{ id: inparam.id }, { name: inparam.name }] })
+    if (r.length > 0) {
+        throw { err: true, res: '产品已存在' }
+    }
+    else {
+        ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
+        return next()
+    }
+
 })
 
 module.exports = router
