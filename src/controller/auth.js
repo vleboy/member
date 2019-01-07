@@ -19,7 +19,7 @@ router.use('/login', async (ctx, next) => {
     inparam.username = inparam.username || inparam.username.toString()
     const r = await mongodb.find(collection, { username: inparam.username })
     if (r.length > 0) {
-        ctx.tokenSign = jwt.sign({ openid: r[0].openid, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
+        ctx.tokenSign = jwt.sign({ role:'admin',openid: r[0].openid, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
         return next()
     } else {
         // ctx.status = 401
