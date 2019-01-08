@@ -11,7 +11,8 @@ export default new Vuex.Store({
     openRegister: false,
     openMyAccount: false,
     openMyBill: false,
-    openMyAchievement: false
+    openMyAchievement: false,
+    openMyDelivery: false
   },
   mutations: {
     openRegister(state, params) {
@@ -25,6 +26,9 @@ export default new Vuex.Store({
     },
     openMyAchievement(state, params) {
       state.openMyAchievement = params
+    },
+    openMyDelivery(state, params) {
+      state.openMyDelivery = params
     }
   },
   actions: {

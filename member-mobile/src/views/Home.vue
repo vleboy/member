@@ -11,7 +11,7 @@
           </v-card-text>
           <v-layout justify-end>
             <v-card-actions>
-              <v-btn color="info">修改</v-btn>
+              <v-btn color="info" @click="openDialog">修改</v-btn>
             </v-card-actions>
           </v-layout>
         </v-card>
@@ -57,11 +57,16 @@
         </v-list-tile>
       </v-list>
     </v-flex>
+    <MyDelivery/>
   </v-layout>
 </template>
 
 <script>
+import MyDelivery from "../components/MyDelivery.vue";
 export default {
+  components: {
+    MyDelivery
+  },
   data: () => ({
     items: [
       {
@@ -95,6 +100,9 @@ export default {
   methods: {
     diplomacy() {
       console.log("外交");
+    },
+    openDialog() {
+      this.$store.commit("openMyDelivery", !this.$store.state.openMyDelivery);
     }
   }
 };
