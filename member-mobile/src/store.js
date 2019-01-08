@@ -9,7 +9,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     openRegister: false,
-    openMyAccount: false
+    openMyAccount: false,
+    openMyBill: false,
+    openMyAchievement: false
   },
   mutations: {
     openRegister(state, params) {
@@ -17,6 +19,12 @@ export default new Vuex.Store({
     },
     openMyAccount(state, params) {
       state.openMyAccount = params
+    },
+    openMyBill(state, params) {
+      state.openMyBill = params
+    },
+    openMyAchievement(state, params) {
+      state.openMyAchievement = params
     }
   },
   actions: {

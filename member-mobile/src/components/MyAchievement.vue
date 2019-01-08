@@ -1,12 +1,12 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="openMyBill" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog v-model="openMyAchievement" fullscreen hide-overlay transition="dialog-bottom-transition">
       <v-card>
         <v-toolbar dark color="primary">
-          <v-btn icon dark @click="openMyBill = false">
+          <v-btn icon dark @click="openMyAchievement = false">
             <v-icon>close</v-icon>
           </v-btn>
-          <v-toolbar-title>我的账单</v-toolbar-title>
+          <v-toolbar-title>我的业绩</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-data-table :headers="headers" :items="desserts" hide-actions>
@@ -49,12 +49,12 @@ export default {
     };
   },
   computed: {
-    openMyBill: {
+    openMyAchievement: {
       get() {
-        return this.$store.state.openMyBill;
+        return this.$store.state.openMyAchievement;
       },
       set(val) {
-        this.$store.commit("openMyBill", val);
+        this.$store.commit("openMyAchievement", val);
       }
     }
   }
