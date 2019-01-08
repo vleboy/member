@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Login from './views/Login.vue'
-import Topology from './views/Topology.vue'
-import Service from './views/Service.vue'
-import Operation from './views/Operation.vue'
+import Login from './views/Login.vue'
+import User from './views/User.vue'
+import Order from './views/Order.vue'
+import Bill from './views/Bill.vue'
 
 Vue.use(Router)
 
@@ -12,7 +12,7 @@ export default new Router({
     {
       path: '/',
       name: 'login',
-      component: Topology
+      component: Login
     },
     // {
     //   path: '/home',
@@ -20,19 +20,19 @@ export default new Router({
     //   component: Home
     // },
     {
-      path: '/topology',
-      name: 'topology',
-      component: Topology
+      path: '/user',
+      name: 'user',
+      component: User
     },
     {
-      path: '/service',
-      name: 'service',
-      component: Service
+      path: '/order',
+      name: 'order',
+      component: Order
     },
     {
-      path: '/operation',
-      name: 'operation',
-      component: Operation
+      path: '/bill',
+      name: 'bill',
+      component: Bill
     }
   ]
 })
