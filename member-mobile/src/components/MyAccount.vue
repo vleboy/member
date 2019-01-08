@@ -1,7 +1,7 @@
 <template>
   <v-layout row justify-center>
     <v-dialog v-model="openMyAccount" fullscreen hide-overlay transition="dialog-bottom-transition">
-      <v-card>
+      <v-card ref="form">
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="openMyAccount = false">
             <v-icon>close</v-icon>
@@ -9,19 +9,22 @@
           <v-toolbar-title>我的账户</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark flat @click="openMyAccount = false">提现申请</v-btn>
+            <v-btn dark flat @click="confirm">提现申请</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-container>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field box prefix="￥" label="账户余额" readonly required value="1000.00"></v-text-field>
+              <v-text-field box prefix="￥" label="账户余额" readonly :value="balance"></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
+                ref="amount"
+                v-model="form.amount"
                 label="提现金额"
                 hint="本月免费提现次数：2，提现手续费10元/次"
                 :rules="[rules.price]"
+                required
                 clearable
               ></v-text-field>
             </v-flex>
@@ -29,6 +32,11 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <!--提示信息-->
+    <v-snackbar v-model="snackMsg.isShow" top auto-height :color="snackMsg.color">
+      {{snackMsg.msg}}
+      <v-btn color="gray" flat @click="snackMsg.isShow = false">关闭</v-btn>
+    </v-snackbar>
   </v-layout>
 </template>
 <script>
@@ -38,10 +46,38 @@ export default {
       rules: {
         price: value => {
           const pattern = /^[0-9]+([.]{1}[0-9]{1,2})?$/;
-          return pattern.test(value) || "请输入正确金额格式";
+          return pattern.test(value) || "请输入正确金额";
         }
-      }
+      },
+      snackMsg: {
+        isShow: false,
+        color: "success",
+        msg: ""
+      },
+      balance: 1000.0,
+      form: {
+        amount: null
+      },
+      formHasErrors: false
     };
+  },
+  methods: {
+    confirm() {
+      this.formHasErrors = false;
+      Object.keys(this.form).forEach(f => {
+        if (!this.form[f]) this.formHasErrors = true;
+        if (!this.$refs[f].validate(true)) this.formHasErrors = true;
+      });
+      if (!this.formHasErrors) {
+        this.snackMsg.msg = "提现申请成功";
+        this.snackMsg.color = "success";
+        this.openMyAccount = false;
+      } else {
+        this.snackMsg.msg = "请检查输入";
+        this.snackMsg.color = "warning";
+      }
+      this.snackMsg.isShow = true;
+    }
   },
   computed: {
     openMyAccount: {
