@@ -8,11 +8,27 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    drawer: false
+    openRegister: false,
+    openMyAccount: false,
+    openMyBill: false,
+    openMyAchievement: false,
+    openMyDelivery: false
   },
   mutations: {
-    changeDrawer(state, params) {
-      state.drawer = params
+    openRegister(state, params) {
+      state.openRegister = params
+    },
+    openMyAccount(state, params) {
+      state.openMyAccount = params
+    },
+    openMyBill(state, params) {
+      state.openMyBill = params
+    },
+    openMyAchievement(state, params) {
+      state.openMyAchievement = params
+    },
+    openMyDelivery(state, params) {
+      state.openMyDelivery = params
     }
   },
   actions: {

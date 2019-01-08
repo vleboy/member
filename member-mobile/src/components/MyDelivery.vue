@@ -1,0 +1,125 @@
+<template>
+  <v-layout row justify-center>
+    <v-dialog
+      v-model="openMyDelivery"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card ref="form">
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="openMyDelivery = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>收货地址</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn dark flat @click="confirm">保存</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-container>
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-text-field
+                ref="deliveryAddress"
+                v-model="form.deliveryAddress"
+                label="收货地址"
+                counter
+                maxlength="25"
+                hint="最多25个字"
+                :rules="[rules.required]"
+                required
+                clearable
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field
+                ref="deliveryName"
+                v-model="form.deliveryName"
+                label="收货人"
+                counter="10"
+                maxlength="10"
+                hint="最多10个字"
+                :rules="[rules.required]"
+                required
+                clearable
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12>
+              <v-text-field
+                ref="deliveryMobile"
+                v-model="form.deliveryMobile"
+                label="收货电话"
+                counter
+                maxlength="11"
+                hint="请输入手机号"
+                :rules="[rules.mobile]"
+                required
+                clearable
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-dialog>
+    <!--提示信息-->
+    <v-snackbar v-model="snackMsg.isShow" top auto-height :color="snackMsg.color">
+      {{snackMsg.msg}}
+      <v-btn color="gray" flat @click="snackMsg.isShow = false">关闭</v-btn>
+    </v-snackbar>
+  </v-layout>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      rules: {
+        required: value => !!value || "请输入",
+        mobile: value => {
+          const pattern = /^[0-9]{1,11}$/;
+          return pattern.test(value) || "请输入正确手机号";
+        }
+      },
+      snackMsg: {
+        isShow: false,
+        color: "success",
+        msg: ""
+      },
+      form: {
+        deliveryName: "",
+        deliveryMobile: "",
+        deliveryAddress: ""
+      },
+      formHasErrors: false
+    };
+  },
+  methods: {
+    confirm() {
+      this.formHasErrors = false;
+      Object.keys(this.form).forEach(f => {
+        if (!this.form[f]) this.formHasErrors = true;
+        if (!this.$refs[f].validate(true)) this.formHasErrors = true;
+      });
+      if (!this.formHasErrors) {
+        this.snackMsg.msg = "保存成功";
+        this.snackMsg.color = "success";
+        this.openMyDelivery = false;
+      } else {
+        this.snackMsg.msg = "请检查输入";
+        this.snackMsg.color = "warning";
+      }
+      this.snackMsg.isShow = true;
+    }
+  },
+  computed: {
+    openMyDelivery: {
+      get() {
+        return this.$store.state.openMyDelivery;
+      },
+      set(val) {
+        this.$store.commit("openMyDelivery", val);
+      }
+    }
+  }
+};
+</script>
