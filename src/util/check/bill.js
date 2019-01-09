@@ -4,7 +4,7 @@ function check(inparam) {
         res: null
     }
     //收货地址，收货人，收货电话
-    const {
+    let {
         userId,
         type,
         amount,
@@ -13,9 +13,7 @@ function check(inparam) {
     if (!(type || amount || userId)) {
         error.res = '请输入正确的参数'
     }
-    if(typeof amount != 'number'){
-        error.res = 'amout必须为number类型'
-    }
+    amount = parseFloat(amount)
     if (error.res) {
         throw error
     }

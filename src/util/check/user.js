@@ -27,7 +27,7 @@ function check(inparam) {
     } else if (!mobile || (mobile.length != '13060080001'.length)) {
         error.res = '手机号为空或输入不合法'
     } else if (bankname) {
-        if (!banknumber || banknumber.length > 10) error.res = '请输入正确的银行卡号'
+        if (!banknumber || banknumber.length < 16) error.res = '请输入正确的银行卡号'
     } else if (!password || (password.length < 6 || password.length > 18)) {
         error.res = '密码设置不合法'
     } else if (!level) {

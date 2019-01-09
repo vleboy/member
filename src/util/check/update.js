@@ -17,7 +17,7 @@ function check(inparam) {
         if (!deliveryMobile || deliveryMobile.length > 11 || deliveryMobile.length < 6) {
             error.res = '请输入正确的收货人电话'
         }
-        if (!deliveryAddress || deliveryAddress > 3) {
+        if (!deliveryAddress || deliveryAddress.length < 3) {
             error.res = '请输入正确的收货人地址'
         }
     }else {

@@ -19,7 +19,7 @@ router.use('/login', async (ctx, next) => {
     const inparam = ctx.request.body
     check(inparam)
     const r = await mongodb.find(collection,"$or"[ { username: inparam.username },{mobile:inparam.mobile}])
-    inparam._id = r[0].id ; inparam.id = r[0].id
+    inparam._id = r[0]._id ; inparam.id = r[0].id
     if (r.length > 0) {
         if (inparam.password && inparam.password === r[0].password){
             ctx.tokenSign = jwt.sign({ role:'admin',_id:r[0]._id,id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌

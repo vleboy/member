@@ -7,14 +7,21 @@ const router = new Router()
 const _ = require('lodash')
 const log = require('tracer').colorConsole({ level: config.log.level })
 // 持久化相关
-// const ObjectId = require('mongodb').ObjectID
+const ObjectId = require('mongodb').ObjectID
 const collection = 'bill'
 
 /**
- * 新增订单中间件
+ * 新增账单中间件
  */
 router.post('/bill/insert', async (ctx, next) => {
-    
+
+    let inparam = ctx.request.body
+    let amount = Math.abs(inparam.amount)
+    if (inparam.type === 'OUT') {
+        amount *= -1
+    }
+    await mongodb.update('user', { _id: ObjectId(ctx._id) }, { $inc: { balance: amount } })
+    return next()
 })
 
 module.exports = router

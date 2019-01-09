@@ -26,9 +26,9 @@ const check = require('../util/check/product')
 router.post('/product/insert', async (ctx, next) => {
     check(ctx.request.body)
 
-    inparam =  ctx.request.body
-    inparam.id = inparam.id ||　_.random(100000,999999).toString()
-
+    inparam = ctx.request.body
+    inparam.id = inparam.id || _.random(100000, 999999).toString()
+    inparam.createdAt = Date.now()
     const r = await mongodb.find(collection, { "$or": [{ id: inparam.id }, { name: inparam.name }] })
     if (r.length > 0) {
         throw { err: true, res: '产品已存在' }

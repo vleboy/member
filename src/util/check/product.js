@@ -20,7 +20,7 @@ function check(inparam) {
     }
     else if (!price || price <= 0 || price > 100000000000) {
         error.res = '产品价格必须在0 - 100000000000 之间'
-    }   
+    }
     else if (!activity) {
         error.res = '活动描述不能为空'
     }

@@ -91,9 +91,10 @@ router.post('/user/insert', async (ctx, next) => {
 
             throw { err: true, res: '该安置编码不合理' }//该安置编码不合理
         }
-        
+
         inparam.levelIndex = r[0].levelIndex
         inparam.levelIndex.push(inparam.id)
+        inparam.createdAt = Date.now()
     } else {
         if (inparam.parentId === 'root') {
             inparam.levelIndex = [inparam.id]//系统第一人
@@ -109,6 +110,7 @@ router.post('/user/insert', async (ctx, next) => {
 
         throw { err: true, res: '网络错误，请重试' }
     } else {
+        inparam.balance = 0; inparam.iswechatpay = false
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
         return next()
 
@@ -126,15 +128,15 @@ router.post('/user/update', async (ctx, next) => {
     //console.log('fromUser:',fromUser)
     let toUser = ctx.request.body
     checkLogin(toUser)
-    let r = await mongodb.find(collection , {id:fromUser.id})
-    if (r.length > 0){
-        if (fromUser.role === 'admin' || r[0].id === toUser.id){
+    let r = await mongodb.find(collection, { id: fromUser.id })
+    if (r.length > 0) {
+        if (fromUser.role === 'admin' || r[0].id === toUser.id) {
             return next()
-        }else{
-            throw {err:true , res: '该用户没有修改权限'}
+        } else {
+            throw { err: true, res: '该用户没有修改权限' }
         }
-    }else{
-        throw {err:true , res: 'token 错误'}
+    } else {
+        throw { err: true, res: 'token 错误' }
     }
 })
 
