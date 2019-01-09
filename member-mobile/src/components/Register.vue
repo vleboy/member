@@ -163,8 +163,8 @@ export default {
         password: "",
         level: "普通会员",
         address: "",
-        placenumber: "MY10000002",
-        recommendnumber: "MY10000002"
+        placenumber: localStorage.getItem("id"),
+        recommendnumber: localStorage.getItem("id")
       },
       formHasErrors: false
     };
@@ -178,14 +178,14 @@ export default {
         }
       });
     },
-    confirm() {
+    async confirm() {
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        // let res = await this.$store.dispatch("reg", this.form);
-        let res = { err: false, res: "用户已存在" };
+        let res = await this.$store.dispatch("reg", this.form);
+        // let res = { err: false, res: "用户已存在" };
         if (res.err) {
           this.snackMsg.msg = res.res;
           this.snackMsg.color = "warning";
