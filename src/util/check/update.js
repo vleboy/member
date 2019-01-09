@@ -14,8 +14,8 @@ function check(inparam) {
         error.res = '没有找到_id'
     }
     if (deliveryName) {
-        if (!deliveryMobile || deliveryMobile.length > 11) {
-            error.res = '请输入正确的收货人电话 11位'
+        if (!deliveryMobile || deliveryMobile.length > 11 || deliveryMobile.length < 6) {
+            error.res = '请输入正确的收货人电话'
         }
         if (!deliveryAddress || deliveryAddress > 3) {
             error.res = '请输入正确的收货人地址'

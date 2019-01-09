@@ -19,6 +19,7 @@ router.use('/login', async (ctx, next) => {
     const inparam = ctx.request.body
     check(inparam)
     const r = await mongodb.find(collection,"$or"[ { username: inparam.username },{mobile:inparam.mobile}])
+    inparam._id = r[0].id ; inparam.id = r[0].id
     if (r.length > 0) {
         if (inparam.password && inparam.password === r[0].password){
             ctx.tokenSign = jwt.sign({ role:'admin',_id:r[0]._id,id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
@@ -35,7 +36,12 @@ router.use('/login', async (ctx, next) => {
 
 // 2、向前端传递TOKEN加密令牌
 router.post('/login', async (ctx, next) => {
-    ctx.body = { err: false, res: ctx.tokenSign }
+    let res = {
+        token:ctx.tokenSign,
+        _id:ctx.request.body._id,
+        id:ctx.request.body.id
+    }
+    ctx.body = { err: false, res: res }
 })
 
 // 3、下次其余路由需要在请求时在header中加上token参数，如果没有token或者token错误，xauth中间件会提示错误

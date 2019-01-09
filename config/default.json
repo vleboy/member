@@ -7,7 +7,7 @@
     },
     "error":{
         "debug": true,
-        "errStatus": 500
+        "errStatus": 200
     },
     "auth": {
         "secret": "member",

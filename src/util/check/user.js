@@ -26,8 +26,7 @@ function check(inparam) {
         error.res = '证件号码为空或输入不合法'
     } else if (!mobile || (mobile.length != '13060080001'.length)) {
         error.res = '手机号为空或输入不合法'
-    }
-    else if (bankname) {
+    } else if (bankname) {
         if (!banknumber || banknumber.length > 10) error.res = '请输入正确的银行卡号'
     } else if (!password || (password.length < 6 || password.length > 18)) {
         error.res = '密码设置不合法'
@@ -37,14 +36,11 @@ function check(inparam) {
         error.res = '请设置用户地址'
     } else if (!address) {
         error.res = '请设置用户地址'
-    }
-    else if (!parentId) {
+    } else if (!parentId) {
         error.res = '请设置用户安置编号'
-    }
-    else if (!recommendnumber) {
+    } else if (!recommendnumber) {
         error.res = '请设置推荐编号'
-    }
-    else if (deliveryName) {
+    } else if (deliveryName) {
         if (!deliveryMobile || deliveryMobile.length > 11) {
             error.res = '请输入正确的收货人电话'
         }
