@@ -106,8 +106,8 @@
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                ref="placenumber"
-                v-model="form.placenumber"
+                ref="parentId"
+                v-model="form.parentId"
                 label="安置编号"
                 required
                 :rules="[rules.required]"
@@ -163,7 +163,7 @@ export default {
         password: "",
         level: "普通会员",
         address: "",
-        placenumber: localStorage.getItem("id"),
+        parentId: localStorage.getItem("id"),
         recommendnumber: localStorage.getItem("id")
       },
       formHasErrors: false
@@ -173,7 +173,7 @@ export default {
     resetForm() {
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
-        if (f != "level" && f != "placenumber" && f != "recommendnumber") {
+        if (f != "level" && f != "parentId" && f != "recommendnumber") {
           this.$refs[f].reset();
         }
       });
@@ -185,7 +185,6 @@ export default {
       });
       if (!this.formHasErrors) {
         let res = await this.$store.dispatch("reg", this.form);
-        // let res = { err: false, res: "用户已存在" };
         if (res.err) {
           this.snackMsg.msg = res.res;
           this.snackMsg.color = "warning";

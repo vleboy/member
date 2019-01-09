@@ -1,7 +1,7 @@
 <template>
   <v-flex d-flex xs12>
     <v-layout column>
-      <v-subheader>文明事件</v-subheader>
+      <v-subheader>事件</v-subheader>
 
       <v-expansion-panel popout>
         <v-expansion-panel-content v-for="(message, i) in messages" :key="i" hide-actions>
