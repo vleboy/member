@@ -103,6 +103,7 @@ export default {
   computed: {
     openMyAccount: {
       get() {
+        this.userGet();
         return this.$store.state.openMyAccount;
       },
       set(val) {

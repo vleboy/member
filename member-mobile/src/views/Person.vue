@@ -31,7 +31,7 @@
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
       <v-list-tile>
-        <v-list-tile-content>银行：{{user.bank}}</v-list-tile-content>
+        <v-list-tile-content>银行：{{user.bankname}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
       <v-list-tile>
@@ -47,11 +47,11 @@
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>-->
       <v-list-tile>
-        <v-list-tile-content>安置编号：{{user.plcaenumber}}</v-list-tile-content>
+        <v-list-tile-content>安置编号：{{user.parentId}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
       <v-list-tile>
-        <v-list-tile-content>推荐编号：{{user.recommandnumber}}</v-list-tile-content>
+        <v-list-tile-content>推荐编号：{{user.recommendnumber}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
     </v-list>
@@ -80,11 +80,11 @@ export default {
       mobile: "",
       wechatnumber: "",
       iswechatpay: "",
-      bank: "",
+      bankname: "",
       banknumber: "",
       level: "",
-      plcaenumber: "",
-      recommandnumber: ""
+      parentId: "",
+      recommendnumber: ""
     }
   }),
   methods: {

@@ -9,7 +9,7 @@
           <v-toolbar-title>我的账单</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-data-table :headers="headers" :items="bills" hide-actions>
+        <v-data-table :headers="headers" :items="bills" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
             <td>{{ props.item.time }}</td>
             <td>{{ props.item.project }}</td>
