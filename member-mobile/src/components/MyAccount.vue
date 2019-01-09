@@ -15,7 +15,7 @@
         <v-container>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field box prefix="￥" label="账户余额" readonly :value="balance"></v-text-field>
+              <v-text-field box prefix="￥" label="账户余额" readonly :value="user.balance"></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
@@ -41,6 +41,9 @@
 </template>
 <script>
 export default {
+  created: function() {
+    this.userGet();
+  },
   data() {
     return {
       rules: {
@@ -54,7 +57,7 @@ export default {
         color: "success",
         msg: ""
       },
-      balance: 1000.0,
+      user: { balance: 0 },
       form: {
         amount: null
       },
@@ -62,16 +65,36 @@ export default {
     };
   },
   methods: {
-    confirm() {
+    async userGet() {
+      let token = localStorage.getItem("token");
+      // let res = await this.$store.dispatch("userGet", { _id: token._id });
+      let res = {
+        err: false,
+        res: {
+          balance: "1000.00"
+        }
+      };
+      if (!res.err) {
+        this.user = res.res;
+      }
+    },
+    async confirm() {
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
         if (!this.form[f]) this.formHasErrors = true;
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        this.snackMsg.msg = "提现申请成功";
-        this.snackMsg.color = "success";
-        this.openMyAccount = false;
+        // let res = await this.$store.dispatch("billInsert", { userId: token.id,type:"OUT",amount:1000.00 });
+        let res = { err: false, res: "余额不足" };
+        if (res.err) {
+          this.snackMsg.msg = res.res;
+          this.snackMsg.color = "warning";
+        } else {
+          this.snackMsg.msg = "提现申请成功";
+          this.snackMsg.color = "success";
+          this.openMyAccount = false;
+        }
       } else {
         this.snackMsg.msg = "请检查输入";
         this.snackMsg.color = "warning";
