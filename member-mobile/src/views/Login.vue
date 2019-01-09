@@ -86,14 +86,15 @@ export default {
           inparam.mobile = this.username;
           delete inparam.id;
         }
-        // let res = await this.$store.dispatch("login", inparam);
-        let res = { err: false, res: "tokentest" };
+        let res = await this.$store.dispatch("login", inparam);
         if (res.err) {
           this.snackMsg.isShow = true;
           this.snackMsg.color = "warning";
           this.snackMsg.msg = res.res;
         } else {
-          localStorage.setItem("token", res.res);
+          localStorage.setItem("_id", res.res._id);
+          localStorage.setItem("id", res.res.id);
+          localStorage.setItem("token", res.res.token);
           this.$router.push({ path: "/home" });
         }
       } else {

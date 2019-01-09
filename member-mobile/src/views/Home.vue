@@ -5,9 +5,9 @@
         <v-subheader>收货地址</v-subheader>
         <v-card flat>
           <v-card-text>
-            <div>收货地址：四川省成都市青羊区天府广场1号</div>
-            <div>收货人：张三</div>
-            <div>收货电话：13812345678</div>
+            <div>收货地址：{{user.deliveryAddress}}</div>
+            <div>收货人：{{user.deliveryName}}</div>
+            <div>收货电话：{{user.deliveryMobile}}</div>
           </v-card-text>
           <v-layout justify-end>
             <v-card-actions>
@@ -57,17 +57,25 @@
         </v-list-tile>
       </v-list>
     </v-flex>
-    <MyDelivery/>
+    <MyDelivery v-on:child-event="userGet"/>
   </v-layout>
 </template>
 
 <script>
 import MyDelivery from "../components/MyDelivery.vue";
 export default {
+  created: function() {
+    this.userGet();
+  },
   components: {
     MyDelivery
   },
   data: () => ({
+    user: {
+      deliveryName: "",
+      deliveryMobile: "",
+      deliveryAddress: ""
+    },
     items: [
       {
         active: true,
@@ -98,6 +106,13 @@ export default {
     ]
   }),
   methods: {
+    async userGet() {
+      let _id = localStorage.getItem("_id");
+      let res = await this.$store.dispatch("userGet", { _id });
+      if (!res.err) {
+        this.user = res.res;
+      }
+    },
     diplomacy() {
       console.log("外交");
     },

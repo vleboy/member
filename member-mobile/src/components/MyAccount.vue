@@ -15,7 +15,14 @@
         <v-container>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field box prefix="￥" label="账户余额" readonly :value="user.balance"></v-text-field>
+              <v-text-field
+                ref="balance"
+                box
+                prefix="￥"
+                label="账户余额"
+                readonly
+                :value="user.balance"
+              ></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
@@ -66,17 +73,12 @@ export default {
   },
   methods: {
     async userGet() {
-      let token = localStorage.getItem("token");
-      // let res = await this.$store.dispatch("userGet", { _id: token._id });
-      let res = {
-        err: false,
-        res: {
-          balance: "1000.00"
-        }
-      };
+      let _id = localStorage.getItem("_id");
+      let res = await this.$store.dispatch("userGet", { _id });
       if (!res.err) {
-        this.user = res.res;
+        this.user.balance = res.res.balance;
       }
+      this.$refs['amount'] && this.$refs['amount'].reset()
     },
     async confirm() {
       this.formHasErrors = false;
@@ -85,8 +87,12 @@ export default {
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        // let res = await this.$store.dispatch("billInsert", { userId: token.id,type:"OUT",amount:1000.00 });
-        let res = { err: false, res: "余额不足" };
+        let id = localStorage.getItem("id");
+        let res = await this.$store.dispatch("billInsert", {
+          userId: id,
+          type: "OUT",
+          amount: this.form.amount
+        });
         if (res.err) {
           this.snackMsg.msg = res.res;
           this.snackMsg.color = "warning";
@@ -105,6 +111,7 @@ export default {
   computed: {
     openMyAccount: {
       get() {
+        this.userGet();
         return this.$store.state.openMyAccount;
       },
       set(val) {

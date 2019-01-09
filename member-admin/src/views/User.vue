@@ -14,7 +14,7 @@
           <td>{{ props.item.bank }}</td>
           <td>{{ props.item.banknumber }}</td>
           <td>{{ props.item.level }}</td>
-          <td>{{ props.item.placenumber }}</td>
+          <td>{{ props.item.parentId }}</td>
           <td>{{ props.item.recommendnumber }}</td>
           <td>{{ props.item.balance }}</td>
           <td>
@@ -44,7 +44,7 @@ export default {
         { text: "银行", value: "bank", sortable: false },
         { text: "卡号", value: "banknumber", sortable: false },
         { text: "级别", value: "level", sortable: false },
-        { text: "安置编号", value: "placenumber", sortable: false },
+        { text: "安置编号", value: "parentId", sortable: false },
         { text: "推荐编号", value: "recommendnumber", sortable: false },
         { text: "余额", value: "balance", sortable: false },
         { text: "操作", value: "action", sortable: false }
@@ -62,7 +62,7 @@ export default {
           bank: "工商银行",
           banknumber: "213123123123123123",
           level: "普通会员",
-          placenumber: "MY001",
+          parentId: "MY001",
           recommendnumber: "MY001",
           balance: "1000.00"
         }

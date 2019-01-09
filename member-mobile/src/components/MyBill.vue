@@ -9,9 +9,9 @@
           <v-toolbar-title>我的账单</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-data-table :headers="headers" :items="bills" hide-actions>
+        <v-data-table :headers="headers" :items="bills" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.time }}</td>
+            <td>{{ props.item.createdAt | formatDate }}</td>
             <td>{{ props.item.project }}</td>
             <td>{{ props.item.type }}</td>
             <td>{{ props.item.amount }}</td>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 export default {
   created: function() {
     this.billQuery();
@@ -32,7 +33,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: "时间", value: "time", sortable: false },
+        { text: "时间", value: "createdAt", sortable: false },
         { text: "项目", value: "project", sortable: false },
         { text: "类型", value: "type", sortable: false },
         { text: "金额", value: "amount", sortable: false },
@@ -45,6 +46,7 @@ export default {
   computed: {
     openMyBill: {
       get() {
+        this.billQuery();
         return this.$store.state.openMyBill;
       },
       set(val) {
@@ -54,24 +56,29 @@ export default {
   },
   methods: {
     async billQuery() {
-      let token = localStorage.getItem("token");
-      // let res = await this.$store.dispatch("billQuery", { userId: token.id });
-      let res = {
-        err: false,
-        res: [
-          {
-            time: "2018.1.1 00:30",
-            project: "2018.12下奖金",
-            type: "收入",
-            amount: 2610,
-            balance: 2610,
-            remark: "备注信息"
-          }
-        ]
-      };
+      let id = localStorage.getItem("id");
+      let res = await this.$store.dispatch("billQuery", { userId: id });
+      // let res = {
+      //   err: false,
+      //   res: [
+      //     {
+      //       time: "2018.1.1 00:30",
+      //       project: "2018.12下奖金",
+      //       type: "收入",
+      //       amount: 2610,
+      //       balance: 2610,
+      //       remark: "备注信息"
+      //     }
+      //   ]
+      // };
       if (!res.err) {
         this.bills = res.res;
       }
+    }
+  },
+  filters: {
+    formatDate(timestamp) {
+      return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
     }
   }
 };
