@@ -94,16 +94,26 @@ export default {
     };
   },
   methods: {
-    confirm() {
+    async confirm() {
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
         if (!this.form[f]) this.formHasErrors = true;
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        this.snackMsg.msg = "保存成功";
-        this.snackMsg.color = "success";
-        this.openMyDelivery = false;
+        let _id = localStorage.getItem("_id");
+        let res = await this.$store.dispatch("userUpdate", {
+          _id,
+          ...this.form
+        });
+        if (res.err) {
+          this.snackMsg.msg = res.res;
+          this.snackMsg.color = "error";
+        } else {
+          this.snackMsg.msg = "保存成功";
+          this.snackMsg.color = "success";
+          this.openMyDelivery = false;
+        }
       } else {
         this.snackMsg.msg = "请检查输入";
         this.snackMsg.color = "warning";

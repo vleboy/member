@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-const domain = 'http://localhost:3636'
-// const domain = 'http://192.168.3.242:3636'
+// const domain = 'http://localhost:3636'
+const domain = 'http://192.168.3.242:3636'
 
 Vue.use(Vuex)
 
@@ -42,7 +42,8 @@ export default new Vuex.Store({
       return res.data
     },
     async userGet(state, data) {
-      const res = await axios.get(`${domain}/xnosql/user/get/${data._id}`, data)
+      console.log(data._id)
+      const res = await axios.get(`${domain}/xnosql/user/get/${data._id}`)
       return res.data
     },
     async userUpdate(state, data) {
@@ -62,4 +63,9 @@ export default new Vuex.Store({
       return res.data
     }
   }
+})
+
+axios.interceptors.request.use((config) => {
+  config.headers.token = localStorage.getItem('token')
+  return config
 })
