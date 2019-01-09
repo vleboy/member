@@ -129,7 +129,7 @@
     <!--提示信息-->
     <v-snackbar v-model="snackMsg.isShow" top auto-height :color="snackMsg.color">
       {{snackMsg.msg}}
-      <v-btn color="gray" flat @click="snackMsg.isShow = false">关闭</v-btn>
+      <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
     </v-snackbar>
   </v-layout>
 </template>
@@ -184,10 +184,17 @@ export default {
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        this.snackMsg.msg = "注册申请成功";
-        this.snackMsg.color = "success";
-        this.openRegister = false;
-        this.resetForm();
+        // let res = await this.$store.dispatch("reg", this.form);
+        let res = { err: false, res: "用户已存在" };
+        if (res.err) {
+          this.snackMsg.msg = res.res;
+          this.snackMsg.color = "warning";
+        } else {
+          this.snackMsg.msg = "注册申请成功";
+          this.snackMsg.color = "success";
+          this.openRegister = false;
+          this.resetForm();
+        }
       } else {
         this.snackMsg.msg = "请检查输入";
         this.snackMsg.color = "warning";
