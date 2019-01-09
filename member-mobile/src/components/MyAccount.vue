@@ -85,7 +85,7 @@ export default {
           type: "OUT",
           amount: this.form.amount
         });
-        let res = { err: false, res: "余额不足" };
+        // let res = { err: false, res: "余额不足" };
         if (res.err) {
           this.snackMsg.msg = res.res;
           this.snackMsg.color = "warning";

@@ -54,21 +54,21 @@ export default {
   },
   methods: {
     async billQuery() {
-      let token = localStorage.getItem("token");
-      // let res = await this.$store.dispatch("billQuery", { userId: token.id });
-      let res = {
-        err: false,
-        res: [
-          {
-            time: "2018.1.1 00:30",
-            project: "2018.12下奖金",
-            type: "收入",
-            amount: 2610,
-            balance: 2610,
-            remark: "备注信息"
-          }
-        ]
-      };
+      let id = localStorage.getItem("id");
+      let res = await this.$store.dispatch("billQuery", { userId: id });
+      // let res = {
+      //   err: false,
+      //   res: [
+      //     {
+      //       time: "2018.1.1 00:30",
+      //       project: "2018.12下奖金",
+      //       type: "收入",
+      //       amount: 2610,
+      //       balance: 2610,
+      //       remark: "备注信息"
+      //     }
+      //   ]
+      // };
       if (!res.err) {
         this.bills = res.res;
       }
