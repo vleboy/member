@@ -15,7 +15,14 @@
         <v-container>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field box prefix="￥" label="账户余额" readonly :value="user.balance"></v-text-field>
+              <v-text-field
+                ref="balance"
+                box
+                prefix="￥"
+                label="账户余额"
+                readonly
+                :value="user.balance"
+              ></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
@@ -71,6 +78,7 @@ export default {
       if (!res.err) {
         this.user.balance = res.res.balance;
       }
+      this.$refs['amount'] && this.$refs['amount'].reset()
     },
     async confirm() {
       this.formHasErrors = false;
