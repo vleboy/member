@@ -56,6 +56,16 @@ POST http://localhost:3636/xnosql/bill/query
     err:账单数组列表，没有返回null
     res:失败原因
 }
+订单新增接口：POST，响应订单新增接口
+POST http://localhost:3636/xnosql/order/insert
+{
+    userId:MY10001
+    products:[{id,price,num}]
+}
+{
+    err:true/false
+    res:失败原因
+}
 业绩查询接口：有待设计
 
 PC端接口
