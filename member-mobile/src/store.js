@@ -42,7 +42,6 @@ export default new Vuex.Store({
       return res.data
     },
     async userGet(state, data) {
-      console.log(data._id)
       const res = await axios.get(`${domain}/xnosql/user/get/${data._id}`)
       return res.data
     },

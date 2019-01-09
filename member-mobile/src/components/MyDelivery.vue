@@ -71,6 +71,9 @@
 </template>
 <script>
 export default {
+  created: function() {
+    this.userGet();
+  },
   data() {
     return {
       rules: {
@@ -94,6 +97,18 @@ export default {
     };
   },
   methods: {
+    async userGet() {
+      let _id = localStorage.getItem("_id");
+      let res = await this.$store.dispatch("userGet", { _id });
+      if (res.err) {
+        this.snackMsg.msg = res.res;
+        this.snackMsg.color = "error";
+      } else {
+        this.form.deliveryName = res.res.deliveryName;
+        this.form.deliveryMobile = res.res.deliveryMobile;
+        this.form.deliveryAddress = res.res.deliveryAddress;
+      }
+    },
     async confirm() {
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
@@ -113,6 +128,7 @@ export default {
           this.snackMsg.msg = "保存成功";
           this.snackMsg.color = "success";
           this.openMyDelivery = false;
+          this.$emit("child-event", {});
         }
       } else {
         this.snackMsg.msg = "请检查输入";

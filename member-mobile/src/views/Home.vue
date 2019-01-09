@@ -57,7 +57,7 @@
         </v-list-tile>
       </v-list>
     </v-flex>
-    <MyDelivery/>
+    <MyDelivery v-on:child-event="userGet"/>
   </v-layout>
 </template>
 
