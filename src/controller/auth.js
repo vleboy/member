@@ -12,15 +12,21 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 // 持久化相关
 const ObjectId = require('mongodb').ObjectID
 const collection = 'user'
-
+// 检测相关
+const check = require('../util/check/login')
 // 1、登录，生成加密TOKEN令牌
 router.use('/login', async (ctx, next) => {
     const inparam = ctx.request.body
-    inparam.username = inparam.username || inparam.username.toString()
-    const r = await mongodb.find(collection, { username: inparam.username })
+    check(inparam)
+    const r = await mongodb.find(collection,"$or"[ { username: inparam.username },{mobile:inparam.mobile}])
     if (r.length > 0) {
-        ctx.tokenSign = jwt.sign({ role:'admin',openid: r[0].openid, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
-        return next()
+        if (inparam.password && inparam.password === r[0].password){
+            ctx.tokenSign = jwt.sign({ role:'admin',_id:r[0]._id,id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
+            return next()
+        }else{
+            ctx.body = { err: true, res: '用户密码校验错误' }
+        }
+       
     } else {
         // ctx.status = 401
         ctx.body = { err: true, res: '用户不存在' }

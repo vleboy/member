@@ -11,6 +11,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 const collection = 'user'
 // 处理函数逻辑
 const check = require('../util/check/user')
+const checkLogin = require('../util/check/update')
 /**
  * 注册用户中间件
  * 输入参数
@@ -83,8 +84,8 @@ router.post('/user/insert', async (ctx, next) => {
         let a = await mongodb.find(collection, { id: inparam.recommendnumber })
         //将推荐人的安置编码与填写的安置编码人的安置关系对比
 
-        console.log(a[0]) //推荐人对象
-        console.log(r[0]) //放置位置的父级对象
+        //console.log(a[0]) //推荐人对象
+        //console.log(r[0]) //放置位置的父级对象
         //查看推荐人的安置编码是否在提交的安置编码人下的安置关系中
         if (r[0].levelIndex.indexOf(a[0].id) === -1) {
 
@@ -113,20 +114,28 @@ router.post('/user/insert', async (ctx, next) => {
 
     }
 
-
-
-    // 查找安置id
-
-
-    // 分配levelIndex
-    //1.
-
 })
 
 /**
  * 更新用户中间件
  */
 router.post('/user/update', async (ctx, next) => {
+
+    //当前登录用户是否具备修改目标用户权限
+    let fromUser = ctx.tokenVerify
+    //console.log('fromUser:',fromUser)
+    let toUser = ctx.request.body
+    checkLogin(toUser)
+    let r = await mongodb.find(collection , {id:fromUser.id})
+    if (r.length > 0){
+        if (fromUser.role === 'admin' || r[0].id === toUser.id){
+            return next()
+        }else{
+            throw {err:true , res: '该用户没有修改权限'}
+        }
+    }else{
+        throw {err:true , res: 'token 错误'}
+    }
 })
 
 module.exports = router
