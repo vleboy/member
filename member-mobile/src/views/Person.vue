@@ -89,25 +89,8 @@ export default {
   }),
   methods: {
     async userGet() {
-      let token = localStorage.getItem("token");
-      // let res = await this.$store.dispatch("userGet", { _id: token._id });
-      let res = {
-        err: false,
-        res: {
-          username: "张三",
-          id: "MY100002",
-          idnumber: "1267282827297829",
-          address: "四川绵阳",
-          mobile: "18780004427",
-          wechatnumber: "qw890",
-          iswechatpay: "是",
-          bank: "工商银行",
-          banknumber: "123123123123123",
-          level: "普通会员",
-          plcaenumber: "MY100001",
-          recommandnumber: "MY100001"
-        }
-      };
+      let _id = localStorage.getItem("_id");
+      let res = await this.$store.dispatch("userGet", { _id });
       if (!res.err) {
         this.user = res.res;
       }
