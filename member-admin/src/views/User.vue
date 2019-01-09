@@ -1,35 +1,54 @@
 <template>
   <v-container fluid fill-height justify-center>
-    <v-flex xs12>
-      <v-data-table :headers="headers" :items="desserts" hide-actions>
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.id }}</td>
-          <td>{{ props.item.username }}</td>
-          <td>{{ props.item.createAt }}</td>
-          <td>{{ props.item.address }}</td>
-          <td>{{ props.item.mobile }}</td>
-          <td>{{ props.item.idnumber }}</td>
-          <td>{{ props.item.wechatnumber }}</td>
-          <td>{{ props.item.iswechatpay }}</td>
-          <td>{{ props.item.bank }}</td>
-          <td>{{ props.item.banknumber }}</td>
-          <td>{{ props.item.level }}</td>
-          <td>{{ props.item.parentId }}</td>
-          <td>{{ props.item.recommendnumber }}</td>
-          <td>{{ props.item.balance }}</td>
-          <td>
-            <a>改</a> |
-            <a>冻</a> |
-            <a>删</a>
-          </td>
-        </template>
-      </v-data-table>
-    </v-flex>
+    <v-layout row wrap>
+      <v-flex xs8>
+        <v-switch label="待审用户"></v-switch>
+      </v-flex>
+      <v-flex xs2>
+        <v-text-field solo label="编号/姓名/手机号" clearable></v-text-field>
+      </v-flex>
+      <v-flex xs1>
+        <v-btn color="primary">查询</v-btn>
+      </v-flex>
+      <v-flex xs1>
+        <v-btn @click="openRegister" color="primary">添加用户</v-btn>
+      </v-flex>
+      <v-flex xs12>
+        <v-data-table :headers="headers" :items="desserts" hide-actions>
+          <template slot="items" slot-scope="props">
+            <td>{{ props.item.id }}</td>
+            <td>{{ props.item.username }}</td>
+            <td>{{ props.item.createAt }}</td>
+            <td>{{ props.item.address }}</td>
+            <td>{{ props.item.mobile }}</td>
+            <td>{{ props.item.idnumber }}</td>
+            <td>{{ props.item.wechatnumber }}</td>
+            <td>{{ props.item.iswechatpay }}</td>
+            <td>{{ props.item.bank }}</td>
+            <td>{{ props.item.banknumber }}</td>
+            <td>{{ props.item.level }}</td>
+            <td>{{ props.item.parentId }}</td>
+            <td>{{ props.item.recommendnumber }}</td>
+            <td>{{ props.item.balance }}</td>
+            <td>
+              <a>改</a> |
+              <a>冻</a> |
+              <a>删</a>
+            </td>
+          </template>
+        </v-data-table>
+      </v-flex>
+      <Register/>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
+import Register from "../components/Register.vue";
 export default {
+  components: {
+    Register
+  },
   data() {
     return {
       headers: [
@@ -68,6 +87,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    openRegister() {
+      this.$store.commit("openRegister", !this.$store.state.openRegister);
+    }
   }
 };
 </script>
