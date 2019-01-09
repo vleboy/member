@@ -36,7 +36,7 @@ router.post('/bill/insert', async (ctx, next) => {
             return next()
         }
     } else {
-        throw { err: true, res: '该用户没有体现权限' }
+        throw { err: true, res: '该用户没有提现权限' }
     }
 })
 

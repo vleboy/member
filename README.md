@@ -57,7 +57,7 @@ POST http://localhost:3636/xnosql/bill/query (√)
     res:失败原因
 }
 订单新增接口：POST，响应订单新增接口
-POST http://localhost:3636/xnosql/order/insert 
+POST http://localhost:3636/xnosql/order/insert (√)
 {
     userId:MY10001
     products:[{id,price,num}]

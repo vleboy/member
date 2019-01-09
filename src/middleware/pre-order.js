@@ -26,20 +26,26 @@ const check = require('../util/check/order')
  */
 router.post('/order/insert', async (ctx, next) => {
     let inparam = ctx.request.body
-    let priceRes= 0
-    let r = null
+    let priceRes = 0
+
     check(inparam)
     //1.校验当前订单产品是否存在
-    for (let index = 0; index < inparam.products.length; index++) {
-         r = await mongodb.find(product,{id:inparam.products[index].id})
-         if(r.length > 0){
-            priceRes += r[0].price * inparam.products[index].num
-         }else{
-             throw { err: true, res: `产品【${inparam.products[index].id}】不存在或已下架` }
-         }
+    let recIdArry = []
+    let inparamIdArry = []
+    inparam.products.map((item) => {
+        inparamIdArry.push(item.id)
+    })
+    //console.log(inparamIdArry)
+    const r = await mongodb.find(product, { id: { "$in": inparamIdArry } })
+    r.map((item) => {
+        recIdArry.push(item.id)
+        priceRes += +item.price
+    })
+    let x = _.difference(inparamIdArry, recIdArry)
+    if (x.length != 0) {
+        throw { err: true, res: `产品【${x}】不存在或已下架` }
     }
-
-    if(priceRes != inparam.price || priceRes < 0){
+    if (priceRes != inparam.price || priceRes < 0) {
         throw { err: true, res: `订单价格信息不正确` }
     }
     inparam.createdAt = Date.now()
