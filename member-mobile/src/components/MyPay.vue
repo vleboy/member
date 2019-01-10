@@ -76,8 +76,23 @@ export default {
   props: ["selectedProducts", "user", "totalPrice"],
   methods: {
     async confirm() {
-      this.openMyPay = false;
-      this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);
+      let products = [];
+      let data = { userId: localStorage.getItem("id"), products };
+      for (let product of this.selectedProducts) {
+        products.push({
+          id: product.id,
+          price: product.price,
+          num: product.num
+        });
+      }
+      let res = await this.$store.dispatch("billInsert", data);
+      if (res.err) {
+        this.snackMsg.msg = res.res;
+        this.snackMsg.color = "warning";
+      } else {
+        this.openMyPay = false;
+        this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);
+      }
     }
   },
   computed: {

@@ -27,7 +27,7 @@
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
       <v-list-tile>
-        <v-list-tile-content>微信收款：{{user.iswechatpay}}</v-list-tile-content>
+        <v-list-tile-content>微信收款：{{user.iswechatpay ? '是':'否'}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
       <v-list-tile>
