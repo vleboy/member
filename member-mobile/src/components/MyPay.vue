@@ -54,7 +54,7 @@
       {{snackMsg.msg}}
       <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
     </v-snackbar>
-    <MyPayOK/>
+    <MyPayOK :order="order"/>
   </v-layout>
 </template>
 <script>
@@ -70,12 +70,16 @@ export default {
         isShow: false,
         color: "success",
         msg: ""
+      },
+      order: {
+        id: null
       }
     };
   },
   props: ["selectedProducts", "user", "totalPrice"],
   methods: {
     async confirm() {
+      this.$store.commit("openLoading", true);
       let products = [];
       let data = { userId: localStorage.getItem("id"), products };
       for (let product of this.selectedProducts) {
@@ -85,14 +89,18 @@ export default {
           num: product.num
         });
       }
-      let res = await this.$store.dispatch("billInsert", data);
+      let res = await this.$store.dispatch("orderInsert", data);
       if (res.err) {
+        this.snackMsg.isShow = true;
         this.snackMsg.msg = res.res;
         this.snackMsg.color = "warning";
       } else {
+        this.order.id = res.res;
         this.openMyPay = false;
         this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);
       }
+      this.$emit("child-event", {});
+      this.$store.commit("openLoading", false);
     }
   },
   computed: {

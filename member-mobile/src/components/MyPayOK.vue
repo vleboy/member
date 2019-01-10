@@ -16,7 +16,7 @@
               <v-card flat>
                 <v-card-text>
                   <div>下单成功</div>
-                  <div>订单号：D000001</div>
+                  <div>订单号：{{order.id}}</div>
                   <div>工作人员会尽快为您发货</div>
                 </v-card-text>
               </v-card>
@@ -36,6 +36,7 @@ export default {
   data() {
     return {};
   },
+  props: ["order"],
   methods: {},
   computed: {
     openMyPayOK: {

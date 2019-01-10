@@ -3,16 +3,19 @@
     <!-- <Header/> -->
     <router-view/>
     <Bottom/>
+    <Loading/>
   </div>
 </template>
 
 <script>
 // import Header from "../components/Header";
 import Bottom from "../components/Bottom";
+import Loading from "../components/Loading";
 export default {
   components: {
     // Header,
-    Bottom
+    Bottom,
+    Loading
   },
   data() {
     return {};

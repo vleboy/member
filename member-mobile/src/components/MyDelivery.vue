@@ -98,6 +98,7 @@ export default {
   },
   methods: {
     async userGet() {
+      this.$store.commit("openLoading", true);
       let _id = localStorage.getItem("_id");
       let res = await this.$store.dispatch("userGet", { _id });
       if (res.err) {
@@ -108,8 +109,10 @@ export default {
         this.form.deliveryMobile = res.res.deliveryMobile;
         this.form.deliveryAddress = res.res.deliveryAddress;
       }
+      this.$store.commit("openLoading", false);
     },
     async confirm() {
+      this.$store.commit("openLoading", true);
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
         if (!this.form[f]) this.formHasErrors = true;
@@ -135,6 +138,7 @@ export default {
         this.snackMsg.color = "warning";
       }
       this.snackMsg.isShow = true;
+      this.$store.commit("openLoading", false);
     }
   },
   computed: {

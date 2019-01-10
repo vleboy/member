@@ -13,7 +13,7 @@
           <template slot="items" slot-scope="props">
             <td>{{ props.item.createdAt | formatDate }}</td>
             <td>{{ props.item.project }}</td>
-            <td>{{ props.item.type }}</td>
+            <td>{{ props.item.type == 'OUT' ? '支出' : '收入' }}</td>
             <td>{{ props.item.amount }}</td>
             <td>{{ props.item.balance }}</td>
             <td>{{ props.item.remark }}</td>
@@ -56,6 +56,7 @@ export default {
   },
   methods: {
     async billQuery() {
+      this.$store.commit("openLoading", true);
       let id = localStorage.getItem("id");
       let res = await this.$store.dispatch("billQuery", { userId: id });
       // let res = {
@@ -74,6 +75,7 @@ export default {
       if (!res.err) {
         this.bills = res.res;
       }
+      this.$store.commit("openLoading", false);
     }
   },
   filters: {

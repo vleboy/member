@@ -78,9 +78,10 @@ export default {
       if (!res.err) {
         this.user.balance = res.res.balance;
       }
-      this.$refs['amount'] && this.$refs['amount'].reset()
+      this.$refs["amount"] && this.$refs["amount"].reset();
     },
     async confirm() {
+      this.$store.commit("openLoading", true);
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
         if (!this.form[f]) this.formHasErrors = true;
@@ -91,7 +92,8 @@ export default {
         let res = await this.$store.dispatch("billInsert", {
           userId: id,
           type: "OUT",
-          amount: this.form.amount
+          amount: this.form.amount,
+          project: "提现"
         });
         if (res.err) {
           this.snackMsg.msg = res.res;
@@ -106,6 +108,7 @@ export default {
         this.snackMsg.color = "warning";
       }
       this.snackMsg.isShow = true;
+      this.$store.commit("openLoading", false);
     }
   },
   computed: {

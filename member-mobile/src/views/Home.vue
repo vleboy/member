@@ -68,7 +68,7 @@
       </v-card>
     </v-footer>
     <MyDelivery v-on:child-event="userGet"/>
-    <MyPay :selectedProducts="selectedProducts" :user="user" :totalPrice="totalPrice"/>
+    <MyPay :selectedProducts="selectedProducts" :user="user" :totalPrice="totalPrice" v-on:child-event="productQuery"/>
   </v-layout>
 </template>
 
@@ -115,10 +115,12 @@ export default {
       }
     },
     async productQuery() {
+      this.$store.commit("openLoading", true);
       let res = await this.$store.dispatch("productQuery", {});
       if (!res.err) {
         this.products = res.res;
       }
+      this.$store.commit("openLoading", false);
     },
     add(item) {
       if (item.num < 100) {
