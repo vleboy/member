@@ -51,8 +51,11 @@
                 clearable
               ></v-text-field>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs8>
               <v-text-field ref="wechatnumber" v-model="form.wechatnumber" label="微信号" clearable></v-text-field>
+            </v-flex>
+            <v-flex xs4>
+              <v-checkbox ref="iswechatpay" v-model="form.iswechatpay" label="微信收款"></v-checkbox>
             </v-flex>
             <v-flex xs12>
               <v-select
@@ -158,6 +161,7 @@ export default {
         idnumber: "",
         mobile: "",
         wechatnumber: "",
+        iswechatpay: false,
         bankname: "",
         banknumber: "",
         password: "",
