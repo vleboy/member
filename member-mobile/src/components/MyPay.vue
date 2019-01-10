@@ -27,8 +27,7 @@
               <v-subheader>订购产品</v-subheader>
               <v-card flat>
                 <v-card-text>
-                  <div>治疗仪 x 2</div>
-                  <div>治疗仪 x 2</div>
+                  <div v-for="item in selectedProducts" :key="item.id">{{item.name}} x {{item.num}}</div>
                 </v-card-text>
               </v-card>
             </v-list>
@@ -39,13 +38,13 @@
               <v-card flat>
                 <v-card-text>
                   <!-- <div>您的当前余额：</div> -->
-                  <div>本次支付：</div>
+                  <div>本次支付：￥{{totalPrice}}</div>
                 </v-card-text>
               </v-card>
             </v-list>
           </v-flex>
           <v-flex xs12 align-self-center>
-            <v-btn color="success" @click="confirm">确定</v-btn>
+            <v-btn color="success" @click="confirm">确认订购</v-btn>
           </v-flex>
         </v-layout>
       </v-card>
@@ -64,36 +63,18 @@ export default {
   components: {
     MyPayOK
   },
-  created: function() {
-    this.userGet();
-  },
+  created: function() {},
   data() {
     return {
       snackMsg: {
         isShow: false,
         color: "success",
         msg: ""
-      },
-      user: {
-        deliveryName: "",
-        deliveryMobile: "",
-        deliveryAddress: ""
       }
     };
   },
+  props: ["selectedProducts", "user", "totalPrice"],
   methods: {
-    async userGet() {
-      let _id = localStorage.getItem("_id");
-      let res = await this.$store.dispatch("userGet", { _id });
-      if (res.err) {
-        this.snackMsg.msg = res.res;
-        this.snackMsg.color = "error";
-      } else {
-        this.user.deliveryName = res.res.deliveryName;
-        this.user.deliveryMobile = res.res.deliveryMobile;
-        this.user.deliveryAddress = res.res.deliveryAddress;
-      }
-    },
     async confirm() {
       this.openMyPay = false;
       this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);

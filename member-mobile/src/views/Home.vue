@@ -30,28 +30,29 @@
     <v-flex xs12>
       <v-list subheader three-line>
         <v-subheader>产品订购</v-subheader>
-        <v-list-tile v-for="item in items" :key="item.title" avatar ripple @click="diplomacy">
+        <v-list-tile v-for="item in products" :key="item.id" avatar ripple>
           <!-- <v-list-tile-avatar> -->
           <v-list-tile-content>
-            <img :src="item.avatar" height="80">
+            <img :src="item.img" height="80">
           </v-list-tile-content>
           <!-- </v-list-tile-avatar> -->
           <v-list-tile-content>
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
+            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ item.desc }}</v-list-tile-sub-title>
+            <v-list-tile-sub-title>￥{{ item.price }}</v-list-tile-sub-title>
           </v-list-tile-content>
 
           <v-list-tile-action>
             <!-- <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text> -->
             <v-btn icon>
-              <v-icon :color="item.active ? 'teal' : 'grey'">remove</v-icon>
+              <v-icon color="teal" @click="remove(item)">remove</v-icon>
             </v-btn>
           </v-list-tile-action>
-          <v-list-tile-action>0</v-list-tile-action>
+          <v-list-tile-action>{{item.num}}</v-list-tile-action>
           <v-list-tile-action>
             <!-- <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text> -->
             <v-btn icon>
-              <v-icon :color="item.active ? 'teal' : 'grey'">add</v-icon>
+              <v-icon color="teal" @click="add(item)">add</v-icon>
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
@@ -60,20 +61,21 @@
     <v-footer height="auto">
       <v-card class="flex" flat tile>
         <v-card-title>
-          <strong class="subheading">共计{{productNum}}件产品 合计{{price}}元</strong>
+          <strong class="subheading">共计{{totalNum}}件产品 合计{{totalPrice}}元</strong>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="openMyPay">确定</v-btn>
+          <v-btn v-if="totalNum > 0" color="success" @click="openMyPay">确定</v-btn>
         </v-card-title>
       </v-card>
     </v-footer>
     <MyDelivery v-on:child-event="userGet"/>
-    <MyPay/>
+    <MyPay :selectedProducts="selectedProducts" :user="user" :totalPrice="totalPrice"/>
   </v-layout>
 </template>
 
 <script>
 import MyDelivery from "../components/MyDelivery.vue";
 import MyPay from "../components/MyPay.vue";
+import _ from "lodash";
 export default {
   created: function() {
     this.userGet();
@@ -88,36 +90,29 @@ export default {
       deliveryMobile: "",
       deliveryAddress: ""
     },
-    items: [
+    products: [
       {
-        active: true,
-        title: "产品1",
-        subtitle: "500",
-        avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-        action: "15 min"
+        id: 1,
+        name: "治疗仪",
+        desc: "描述",
+        img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+        price: "500",
+        activity: "活动",
+        num: 0
       },
       {
-        active: true,
-        title: "产品2",
-        subtitle: "500",
-        avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-        action: "15 min"
-      },
-      {
-        title: "产品3",
-        subtitle: "500",
-        avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-        action: "15 min"
-      },
-      {
-        title: "产品4",
-        subtitle: "500",
-        avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
-        action: "15 min"
+        id: 2,
+        name: "多功能床",
+        desc: "描述",
+        img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+        price: "2000",
+        activity: "现价2000",
+        num: 0
       }
     ],
-    productNum: 0,
-    price: 0
+    selectedProducts: [],
+    totalNum: 0,
+    totalPrice: 0
   }),
   methods: {
     async userGet() {
@@ -127,8 +122,41 @@ export default {
         this.user = res.res;
       }
     },
-    diplomacy() {
-      console.log("外交");
+    async productQuery() {
+      let res = await this.$store.dispatch("productQuery", {});
+      if (!res.err) {
+        this.products = res.res;
+      }
+    },
+    add(item) {
+      if (item.num < 100) {
+        item.num++;
+        this.totalNum++;
+        this.totalPrice += +item.price;
+        this.totalPrice = parseFloat(this.totalPrice.toFixed(2));
+      }
+      let selectedProduct = _.find(this.selectedProducts, { id: item.id });
+      if (selectedProduct) {
+        selectedProduct.num = item.num;
+      } else {
+        this.selectedProducts.push({
+          id: item.id,
+          name: item.name,
+          num: item.num
+        });
+      }
+    },
+    remove(item) {
+      if (item.num > 0) {
+        item.num--;
+        this.totalNum--;
+        this.totalPrice -= +item.price;
+        this.totalPrice = parseFloat(this.totalPrice.toFixed(2));
+      }
+      let selectedProduct = _.find(this.selectedProducts, { id: item.id });
+      if (selectedProduct) {
+        selectedProduct.num = item.num;
+      }
     },
     openMyDelivery() {
       this.$store.commit("openMyDelivery", !this.$store.state.openMyDelivery);
