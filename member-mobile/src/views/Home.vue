@@ -11,7 +11,7 @@
           </v-card-text>
           <v-layout justify-end>
             <v-card-actions>
-              <v-btn color="info" @click="openDialog">修改</v-btn>
+              <v-btn color="info" @click="openMyDelivery">修改</v-btn>
             </v-card-actions>
           </v-layout>
         </v-card>
@@ -57,18 +57,30 @@
         </v-list-tile>
       </v-list>
     </v-flex>
+    <v-footer height="auto">
+      <v-card class="flex" flat tile>
+        <v-card-title>
+          <strong class="subheading">共计{{productNum}}件产品 合计{{price}}元</strong>
+          <v-spacer></v-spacer>
+          <v-btn color="success" @click="openMyPay">确定</v-btn>
+        </v-card-title>
+      </v-card>
+    </v-footer>
     <MyDelivery v-on:child-event="userGet"/>
+    <MyPay/>
   </v-layout>
 </template>
 
 <script>
 import MyDelivery from "../components/MyDelivery.vue";
+import MyPay from "../components/MyPay.vue";
 export default {
   created: function() {
     this.userGet();
   },
   components: {
-    MyDelivery
+    MyDelivery,
+    MyPay
   },
   data: () => ({
     user: {
@@ -103,7 +115,9 @@ export default {
         avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
         action: "15 min"
       }
-    ]
+    ],
+    productNum: 0,
+    price: 0
   }),
   methods: {
     async userGet() {
@@ -116,8 +130,11 @@ export default {
     diplomacy() {
       console.log("外交");
     },
-    openDialog() {
+    openMyDelivery() {
       this.$store.commit("openMyDelivery", !this.$store.state.openMyDelivery);
+    },
+    openMyPay() {
+      this.$store.commit("openMyPay", !this.$store.state.openMyPay);
     }
   }
 };
