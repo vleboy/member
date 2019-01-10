@@ -78,6 +78,7 @@ import MyPay from "../components/MyPay.vue";
 import _ from "lodash";
 export default {
   created: function() {
+    this.productQuery();
     this.userGet();
   },
   components: {
@@ -92,21 +93,12 @@ export default {
     },
     products: [
       {
-        id: 1,
-        name: "治疗仪",
-        desc: "描述",
-        img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-        price: "500",
-        activity: "活动",
-        num: 0
-      },
-      {
-        id: 2,
-        name: "多功能床",
-        desc: "描述",
-        img: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-        price: "2000",
-        activity: "现价2000",
+        id: 0,
+        name: "",
+        desc: "",
+        img: "", //https://cdn.vuetifyjs.com/images/lists/1.jpg
+        price: "",
+        activity: "",
         num: 0
       }
     ],
