@@ -13,7 +13,9 @@ export default new Vuex.Store({
     openMyAccount: false,
     openMyBill: false,
     openMyAchievement: false,
-    openMyDelivery: false
+    openMyDelivery: false,
+    openMyPay: false,
+    openMyPayOK: false
   },
   mutations: {
     openRegister(state, params) {
@@ -30,6 +32,12 @@ export default new Vuex.Store({
     },
     openMyDelivery(state, params) {
       state.openMyDelivery = params
+    },
+    openMyPay(state, params) {
+      state.openMyPay = params
+    },
+    openMyPayOK(state, params) {
+      state.openMyPayOK = params
     }
   },
   actions: {
@@ -55,6 +63,10 @@ export default new Vuex.Store({
     },
     async billQuery(state, data) {
       const res = await axios.post(`${domain}/xnosql/bill/query`, data)
+      return res.data
+    },
+    async productQuery(state, data) {
+      const res = await axios.post(`${domain}/xnosql/product/query`, data)
       return res.data
     },
     async orderInsert(state, data) {
