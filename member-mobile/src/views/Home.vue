@@ -68,7 +68,7 @@
       </v-card>
     </v-footer>
     <MyDelivery v-on:child-event="userGet"/>
-    <MyPay :selectedProducts="selectedProducts" :user="user" :totalPrice="totalPrice"/>
+    <MyPay :selectedProducts="selectedProducts" :user="user" :totalPrice="totalPrice" v-on:child-event="productQuery"/>
   </v-layout>
 </template>
 

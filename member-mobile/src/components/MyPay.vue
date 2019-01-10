@@ -99,6 +99,7 @@ export default {
         this.openMyPay = false;
         this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);
       }
+      this.$emit("child-event", {});
       this.$store.commit("openLoading", false);
     }
   },
