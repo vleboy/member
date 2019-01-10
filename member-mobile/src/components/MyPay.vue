@@ -45,7 +45,7 @@
             </v-list>
           </v-flex>
           <v-flex xs12 align-self-center>
-            <v-btn color="success">确定</v-btn>
+            <v-btn color="success" @click="confirm">确定</v-btn>
           </v-flex>
         </v-layout>
       </v-card>
@@ -55,10 +55,15 @@
       {{snackMsg.msg}}
       <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
     </v-snackbar>
+    <MyPayOK/>
   </v-layout>
 </template>
 <script>
+import MyPayOK from "../components/MyPayOK.vue";
 export default {
+  components: {
+    MyPayOK
+  },
   created: function() {
     this.userGet();
   },
@@ -90,7 +95,8 @@ export default {
       }
     },
     async confirm() {
-      this.snackMsg.isShow = true;
+      this.openMyPay = false;
+      this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);
     }
   },
   computed: {
