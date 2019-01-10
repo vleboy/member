@@ -39,6 +39,8 @@
     <v-toolbar app fixed clipped-left dense v-if="isShow">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>会员系统后台</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn flat @click="logout">登出</v-btn>
     </v-toolbar>
     <v-content>
       <router-view/>
@@ -57,6 +59,12 @@ export default {
   computed: {
     isShow() {
       return this.$route.path == "/" ? false : true;
+    }
+  },
+  methods: {
+    logout() {
+      localStorage.clear();
+      this.$router.push({ path: "/" });
     }
   }
 };

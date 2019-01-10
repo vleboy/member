@@ -1,23 +1,35 @@
 <template>
   <v-container fluid fill-height justify-center>
-    <v-flex xs12>
-      <v-data-table :headers="headers" :items="desserts" hide-actions>
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.id }}</td>
-          <td>{{ props.item.time }}</td>
-          <td>{{ props.item.userId }}</td>
-          <td>{{ props.item.price }}</td>
-          <td>{{ props.item.product }}</td>
-          <td>{{ props.item.deliveryAddress }}</td>
-          <td>{{ props.item.status }}</td>
-          <td>
-            <a>发货</a> |
-            <a>冻结</a> |
-            <a>取消</a>
-          </td>
-        </template>
-      </v-data-table>
-    </v-flex>
+    <v-layout row wrap>
+      <v-flex xs2>
+        <v-select solo :items="['全部', '未发货', '已发货', '已冻结','已取消']" label="订单状态" clearable></v-select>
+      </v-flex>
+      <v-flex xs7></v-flex>
+      <v-flex xs2>
+        <v-text-field solo label="订单号/会员编号" clearable></v-text-field>
+      </v-flex>
+      <v-flex xs1>
+        <v-btn color="primary">查询</v-btn>
+      </v-flex>
+      <v-flex xs12>
+        <v-data-table :headers="headers" :items="desserts" hide-actions>
+          <template slot="items" slot-scope="props">
+            <td>{{ props.item.id }}</td>
+            <td>{{ props.item.time }}</td>
+            <td>{{ props.item.userId }}</td>
+            <td>{{ props.item.price }}</td>
+            <td>{{ props.item.product }}</td>
+            <td>{{ props.item.deliveryAddress }}</td>
+            <td>{{ props.item.status }}</td>
+            <td>
+              <a>发货</a> |
+              <a>冻结</a> |
+              <a>取消</a>
+            </td>
+          </template>
+        </v-data-table>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
