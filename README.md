@@ -66,6 +66,14 @@ POST http://localhost:3636/xnosql/order/insert (√)
     err:true/false
     res:失败原因
 }
+产品查询接口：POST
+POST http://localhost:3636/xnosql/product/query ()
+{
+}
+{
+    err:true/false
+    res:[产品列表数组]
+}
 业绩查询接口：有待设计
 
 PC端接口
