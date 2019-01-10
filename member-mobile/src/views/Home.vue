@@ -134,6 +134,7 @@ export default {
         this.selectedProducts.push({
           id: item.id,
           name: item.name,
+          price: item.price,
           num: item.num
         });
       }
