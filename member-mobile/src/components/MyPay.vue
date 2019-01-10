@@ -79,6 +79,7 @@ export default {
   props: ["selectedProducts", "user", "totalPrice"],
   methods: {
     async confirm() {
+      this.$store.commit("openLoading", true);
       let products = [];
       let data = { userId: localStorage.getItem("id"), products };
       for (let product of this.selectedProducts) {
@@ -98,6 +99,7 @@ export default {
         this.openMyPay = false;
         this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);
       }
+      this.$store.commit("openLoading", false);
     }
   },
   computed: {
