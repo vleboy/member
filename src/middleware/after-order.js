@@ -7,7 +7,7 @@ const router = new Router()
 const _ = require('lodash')
 const log = require('tracer').colorConsole({ level: config.log.level })
 // 持久化相关
- const ObjectId = require('mongodb').ObjectID
+const ObjectId = require('mongodb').ObjectID
 const collection = 'order'
 
 /**
@@ -16,7 +16,9 @@ const collection = 'order'
 router.post('/order/insert', async (ctx, next) => {
     let inparam = ctx.request.body
     let amount = inparam.price * -1
+    await mongodb.insert('bill', { userId: inparam.userId, type: 'OUT', amount:Math.abs(amount) , createdAt: Date.now() ,remark:inparam.id,project:'购买产品'})
     await mongodb.update('user', { _id: ObjectId(ctx._id) }, { $inc: { balance: amount } })
+    ctx.body = { err: false, res: inparam.id }
     return next()
 })
 

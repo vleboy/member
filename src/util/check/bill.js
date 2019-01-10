@@ -10,7 +10,7 @@ function check(inparam) {
         amount,
     } = inparam
 
-    if (!(type || amount || userId)) {
+    if (!type || !amount || !userId) {
         error.res = '请输入正确的参数'
     }
     amount = parseFloat(amount)

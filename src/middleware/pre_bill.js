@@ -18,7 +18,8 @@ const check = require('../util/check/bill')
  * @param type OUT IN
  * @param amount 金额
  * @param userId 用户ID
- * 
+ * @param project 项目
+ * @param remark 备注
  * 生成参数
  * @param id 订单ID/编号
  */

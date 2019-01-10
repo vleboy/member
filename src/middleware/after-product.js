@@ -14,21 +14,21 @@ const collection = 'product'
  * 新增产品中间件
  */
 router.post('/product/insert', async (ctx, next) => {
-        // let r = await mongodb.find(collection)
-        // r.map((item)=>{
-        //     item.num = 0
-        // })
-        // ctx.body = { err: false, res: r } 
+    // let r = await mongodb.find(collection)
+    // r.map((item)=>{
+    //     item.num = 0
+    // })
+    // ctx.body = { err: false, res: r } 
 })
 
 router.post('/product/query', async (ctx, next) => {
 
 
     let r = await mongodb.find(collection)
-    r.map((item)=>{
+    r.map((item) => {
         item.num = 0
     })
-    ctx.body = { err: false, res: r } 
+    ctx.body = { err: false, res: r }
     return next()
 })
 module.exports = router

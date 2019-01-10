@@ -13,33 +13,16 @@ function check(inparam) {
 */
     let {
         products,
-        price,
         userId, 
-        deliveryName,
-        deliveryMobile,
-        deliveryAddress 
     } = inparam
 
-    if (!(products || price || userId ||deliveryName||deliveryMobile||deliveryAddress)) {
+    if (!products || !userId ) {
         error.res = '请输入正确的参数'
     }
     if(products.length ===0){
         error.res = '产品不存在'
     }
-    if(price < 0){
-        error.res = '产品价格不能为负'
-    }
-    if (deliveryName) {
-        if (!deliveryMobile || deliveryMobile.length > 11 || deliveryMobile.length < 6) {
-            error.res = '请输入正确的收货人电话'
-        }
-        if (!deliveryAddress || deliveryAddress.length < 3) {
-            error.res = '请输入正确的收货人地址'
-        }
-    }else {
-        error.res = '请输入正确的收货人'
-    }
-    price = parseFloat(price)
+
     if (error.res) {
         throw error
     }
