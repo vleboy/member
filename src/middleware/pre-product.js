@@ -34,23 +34,24 @@ router.post('/product/insert', async (ctx, next) => {
         throw { err: true, res: '产品已存在' }
     }
     else {
+        inparam.price = +inparam.price
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
         return next()
     }
 
 })
-router.post('/product/query', async (ctx, next) => {
+// router.post('/product/query', async (ctx, next) => {
 
 
-    let token = ctx.tokenVerify
-    console.log(token)
-        if(token){
-            let r= await mongodb.find(collection)
-            ctx.body = { err: false, res: r }  // 返回检查结果和生成的openid
-            return next()
-        }else{
-            throw { err: true, res: 'token 错误' }
-        }
+//    // let token = ctx.tokenVerify
+   
+//        // if(token){
+//           //  let r= await mongodb.find(collection)
+//            // ctx.body = { err: false, res: r }  // 返回检查结果和生成的openid
+//             return next()
+//        // }else{
+//           //  throw { err: true, res: 'token 错误' }
+//        // }
 
-})
+// })
 module.exports = router

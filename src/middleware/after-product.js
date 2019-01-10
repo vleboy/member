@@ -14,6 +14,11 @@ const collection = 'product'
  * 新增产品中间件
  */
 router.post('/product/insert', async (ctx, next) => {
+        let r = await mongodb.find(collection)
+        r.map((item)=>{
+            item.num = 0
+        })
+        ctx.body = { err: false, res: r } 
 })
 
 module.exports = router
