@@ -21,7 +21,8 @@ const log = require('tracer').colorConsole({ level: config.log.level })     // �
 // 初始化应用服务
 const app = new Koa()
 // 启用静态资源服务
-// app.use(mount(staticRoot, staticServer(__dirname + '/static')))
+app.use(mount('/mobile/', staticServer(__dirname + '/member-mobile/dist')))
+app.use(mount('/admin/', staticServer(__dirname + '/member-admin/dist')))
 
 app.use(mount('/', cors()))             // 跨域中间件
 app.use(xerror(config.error))           // 全局错误捕获中间件，必须第一位使用，参数1：错误配置
