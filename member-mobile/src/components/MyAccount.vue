@@ -73,17 +73,15 @@ export default {
   },
   methods: {
     async userGet() {
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
       let _id = localStorage.getItem("_id");
       let res = await this.$store.dispatch("userGet", { _id });
       if (!res.err) {
         this.user.balance = res.res.balance;
       }
-      this.$refs['amount'] && this.$refs['amount'].reset()
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$refs["amount"] && this.$refs["amount"].reset();
     },
     async confirm() {
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", true);
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
         if (!this.form[f]) this.formHasErrors = true;
@@ -109,7 +107,7 @@ export default {
         this.snackMsg.color = "warning";
       }
       this.snackMsg.isShow = true;
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", false);
     }
   },
   computed: {

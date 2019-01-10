@@ -115,12 +115,12 @@ export default {
       }
     },
     async productQuery() {
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", true);
       let res = await this.$store.dispatch("productQuery", {});
       if (!res.err) {
         this.products = res.res;
       }
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", false);
     },
     add(item) {
       if (item.num < 100) {

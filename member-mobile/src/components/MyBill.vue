@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     async billQuery() {
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", true);
       let id = localStorage.getItem("id");
       let res = await this.$store.dispatch("billQuery", { userId: id });
       // let res = {
@@ -75,7 +75,7 @@ export default {
       if (!res.err) {
         this.bills = res.res;
       }
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", false);
     }
   },
   filters: {

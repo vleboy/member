@@ -183,7 +183,7 @@ export default {
       });
     },
     async confirm() {
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", true);
       this.formHasErrors = false;
       Object.keys(this.form).forEach(f => {
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
@@ -204,7 +204,7 @@ export default {
         this.snackMsg.color = "warning";
       }
       this.snackMsg.isShow = true;
-      this.$store.commit("openLoading", !this.$store.state.openLoading);
+      this.$store.commit("openLoading", false);
     }
   },
   computed: {
