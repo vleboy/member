@@ -18,9 +18,7 @@ const check = require('../util/check/login')
 router.use('/login', async (ctx, next) => {
     const inparam = ctx.request.body
     check(inparam)
-   
-    const r = await mongodb.find(collection,{"$or":[ { username: inparam.username },{mobile:inparam.mobile}]})
-    console.log(inparam,r)
+    const r = await mongodb.find(collection,{"$or":[ { id: inparam.id },{mobile:inparam.mobile}]})
     inparam._id = r[0]._id ; inparam.id = r[0].id
     if (r.length > 0) {
         if (inparam.password && inparam.password === r[0].password){
