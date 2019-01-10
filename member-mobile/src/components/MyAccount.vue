@@ -92,7 +92,8 @@ export default {
         let res = await this.$store.dispatch("billInsert", {
           userId: id,
           type: "OUT",
-          amount: this.form.amount
+          amount: this.form.amount,
+          project: "提现"
         });
         if (res.err) {
           this.snackMsg.msg = res.res;

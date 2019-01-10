@@ -13,7 +13,7 @@
           <template slot="items" slot-scope="props">
             <td>{{ props.item.createdAt | formatDate }}</td>
             <td>{{ props.item.project }}</td>
-            <td>{{ props.item.type }}</td>
+            <td>{{ props.item.type == 'OUT' ? '支出' : '收入' }}</td>
             <td>{{ props.item.amount }}</td>
             <td>{{ props.item.balance }}</td>
             <td>{{ props.item.remark }}</td>

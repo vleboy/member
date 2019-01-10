@@ -7,7 +7,7 @@ const domain = 'http://192.168.3.242:3636'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const vuex = new Vuex.Store({
   state: {
     openRegister: false,
     openMyAccount: false,
@@ -79,8 +79,33 @@ export default new Vuex.Store({
     }
   }
 })
+export default vuex
 
+axios.defaults.timeout = 30000;
 axios.interceptors.request.use((config) => {
   config.headers.token = localStorage.getItem('token')
   return config
 })
+
+axios.interceptors.response.use(config => {
+  return config;
+}, err => {
+  vuex.commit("openLoading", false);
+  Promise.resolve(err);
+})
+// axios.interceptors.response.use(data => {
+//   if (data.status && data.status == 200 && data.data.status == 'error') {
+//     Message.error({ message: data.data.msg });
+//     return;
+//   }
+//   return data;
+// }, err => {
+//   if (err.response.status == 504 || err.response.status == 404) {
+//     Message.error({ message: '服务器被吃了⊙﹏⊙∥' });
+//   } else if (err.response.status == 403) {
+//     Message.error({ message: '权限不足,请联系管理员!' });
+//   } else {
+//     Message.error({ message: '未知错误!' });
+//   }
+//   return Promise.resolve(err);
+// })
