@@ -68,7 +68,17 @@
       </v-card>
     </v-footer>
     <MyDelivery v-on:child-event="userGet"/>
-    <MyPay :selectedProducts="selectedProducts" :user="user" :totalPrice="totalPrice" v-on:child-event="productQuery"/>
+    <MyPay
+      :selectedProducts="selectedProducts"
+      :user="user"
+      :totalPrice="totalPrice"
+      v-on:child-event="productQuery"
+    />
+    <!--提示信息-->
+    <v-snackbar v-model="snackMsg.isShow" top auto-height :color="snackMsg.color">
+      {{snackMsg.msg}}
+      <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
+    </v-snackbar>
   </v-layout>
 </template>
 
@@ -86,6 +96,11 @@ export default {
     MyPay
   },
   data: () => ({
+    snackMsg: {
+      isShow: false,
+      color: "success",
+      msg: ""
+    },
     user: {
       deliveryName: "",
       deliveryMobile: "",
@@ -157,7 +172,17 @@ export default {
       this.$store.commit("openMyDelivery", !this.$store.state.openMyDelivery);
     },
     openMyPay() {
-      this.$store.commit("openMyPay", !this.$store.state.openMyPay);
+      if (
+        !this.user.deliveryAddress ||
+        !this.user.deliveryName ||
+        !this.user.deliveryMobile
+      ) {
+        this.snackMsg.color = "warning";
+        this.snackMsg.msg = "请先填写收货地址";
+        this.snackMsg.isShow = true;
+      } else {
+        this.$store.commit("openMyPay", !this.$store.state.openMyPay);
+      }
     }
   }
 };

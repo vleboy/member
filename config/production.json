@@ -24,7 +24,6 @@
     },
     "server": {
         "port": 3636,
-        "staticRoot": "/xserver/static/",
         "controllerRoot": "/xserver",
         "controllerDir": "/src/controller/",
         "middlewareDir": "/src/middleware/",
