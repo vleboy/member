@@ -7,7 +7,7 @@ const router = new Router()
 const _ = require('lodash')
 const log = require('tracer').colorConsole({ level: config.log.level })
 // 持久化相关
-const ObjectId = require('mongodb').ObjectID
+//const ObjectId = require('mongodb').ObjectID
 const collection = 'order'
 const product = 'product'
 const check = require('../util/check/order')
@@ -35,7 +35,6 @@ router.post('/order/insert', async (ctx, next) => {
     inparam.products.map((item) => {
         inparamIdArry.push(item.id)
     })
-    //console.log(inparamIdArry)
     const r = await mongodb.find(product, { id: { "$in": inparamIdArry } })
     r.map((item) => {
         recIdArry.push(item.id)

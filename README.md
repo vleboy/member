@@ -67,7 +67,7 @@ POST http://localhost:3636/xnosql/order/insert (√)
     res:失败原因
 }
 产品查询接口：POST
-POST http://localhost:3636/xnosql/product/query ()
+POST http://localhost:3636/xnosql/product/query (√)
 {
 }
 {

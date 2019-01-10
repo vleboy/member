@@ -39,5 +39,18 @@ router.post('/product/insert', async (ctx, next) => {
     }
 
 })
+router.post('/product/query', async (ctx, next) => {
 
+
+    let token = ctx.tokenVerify
+    console.log(token)
+        if(token){
+            let r= await mongodb.find(collection)
+            ctx.body = { err: false, res: r }  // 返回检查结果和生成的openid
+            return next()
+        }else{
+            throw { err: true, res: 'token 错误' }
+        }
+
+})
 module.exports = router
