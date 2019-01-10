@@ -54,7 +54,7 @@
       {{snackMsg.msg}}
       <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
     </v-snackbar>
-    <MyPayOK/>
+    <MyPayOK :order="order"/>
   </v-layout>
 </template>
 <script>
@@ -70,6 +70,9 @@ export default {
         isShow: false,
         color: "success",
         msg: ""
+      },
+      order: {
+        id: null
       }
     };
   },
@@ -85,11 +88,13 @@ export default {
           num: product.num
         });
       }
-      let res = await this.$store.dispatch("billInsert", data);
+      let res = await this.$store.dispatch("orderInsert", data);
       if (res.err) {
+        this.snackMsg.isShow = true;
         this.snackMsg.msg = res.res;
         this.snackMsg.color = "warning";
       } else {
+        this.order.id = res.res;
         this.openMyPay = false;
         this.$store.commit("openMyPayOK", !this.$store.state.openMyPayOK);
       }
