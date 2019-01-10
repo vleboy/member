@@ -37,20 +37,27 @@ router.post('/order/insert', async (ctx, next) => {
     })
     const r = await mongodb.find(product, { id: { "$in": inparamIdArry } })
     r.map((item) => {
-        recIdArry.push(item.id)
-        priceRes += +item.price
+        recIdArry.push(item.id)  
     })
     let x = _.difference(inparamIdArry, recIdArry)
     if (x.length != 0) {
         throw { err: true, res: `产品【${x}】不存在或已下架` }
     }
+    
+    r.map((item) => {
+        inparam.products.map((i)=>{
+            if(i.price === item.price){
+                priceRes += (item.price * i.num) 
+            }
+        })
+        
+    })
     if (priceRes != inparam.price || priceRes < 0) {
         throw { err: true, res: `订单价格信息不正确` }
     }
+
     inparam.createdAt = Date.now()
     return next()
-
-
 })
 
 module.exports = router

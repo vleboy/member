@@ -20,8 +20,6 @@ function check(inparam) {
         if (!deliveryAddress || deliveryAddress.length < 3) {
             error.res = '请输入正确的收货人地址'
         }
-    }else {
-        error.res = '请输入正确的收货人'
     }
     if (error.res) {
         throw error
