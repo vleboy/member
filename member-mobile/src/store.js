@@ -15,7 +15,8 @@ export default new Vuex.Store({
     openMyAchievement: false,
     openMyDelivery: false,
     openMyPay: false,
-    openMyPayOK: false
+    openMyPayOK: false,
+    openLoading: false
   },
   mutations: {
     openRegister(state, params) {
@@ -38,6 +39,9 @@ export default new Vuex.Store({
     },
     openMyPayOK(state, params) {
       state.openMyPayOK = params
+    },
+    openLoading(state, params) {
+      state.openLoading = params
     }
   },
   actions: {

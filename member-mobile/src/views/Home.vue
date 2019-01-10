@@ -78,6 +78,7 @@ import MyPay from "../components/MyPay.vue";
 import _ from "lodash";
 export default {
   created: function() {
+    this.$store.commit("openLoading", !this.$store.state.openLoading);
     this.productQuery();
     this.userGet();
   },
@@ -113,6 +114,7 @@ export default {
       if (!res.err) {
         this.user = res.res;
       }
+      this.$store.commit("openLoading", !this.$store.state.openLoading);
     },
     async productQuery() {
       let res = await this.$store.dispatch("productQuery", {});

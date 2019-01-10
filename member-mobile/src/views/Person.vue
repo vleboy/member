@@ -89,11 +89,13 @@ export default {
   }),
   methods: {
     async userGet() {
+      this.$store.commit("openLoading", !this.$store.state.openLoading);
       let _id = localStorage.getItem("_id");
       let res = await this.$store.dispatch("userGet", { _id });
       if (!res.err) {
         this.user = res.res;
       }
+      this.$store.commit("openLoading", !this.$store.state.openLoading);
     },
     logout() {
       localStorage.clear();
