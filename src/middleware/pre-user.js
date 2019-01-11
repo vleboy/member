@@ -55,7 +55,6 @@ router.post('/user/insert', async (ctx, next) => {
     }
     else {
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
-
     }
     //查找推荐人
     r = await mongodb.find(collection, { id: inparam.recommendnumber })
@@ -88,7 +87,6 @@ router.post('/user/insert', async (ctx, next) => {
         }
         inparam.levelIndex = r[0].levelIndex
         inparam.levelIndex.push(inparam.id)
-        
     } else {
         if (inparam.parentId === 'root') {
             inparam.levelIndex = [inparam.id]//系统第一人
