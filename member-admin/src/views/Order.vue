@@ -12,10 +12,10 @@
         <v-btn color="primary">查询</v-btn>
       </v-flex>
       <v-flex xs12>
-        <v-data-table :headers="headers" :items="desserts" hide-actions>
+        <v-data-table :headers="headers" :items="orders" hide-actions>
           <template slot="items" slot-scope="props">
             <td>{{ props.item.id }}</td>
-            <td>{{ props.item.time }}</td>
+            <td>{{ props.item.createdAt | formatDate}}</td>
             <td>{{ props.item.userId }}</td>
             <td>{{ props.item.price }}</td>
             <td>{{ props.item.product }}</td>
@@ -34,12 +34,16 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 export default {
+  created: function() {
+    this.orderQuery();
+  },
   data() {
     return {
       headers: [
         { text: "订单号", value: "id", sortable: false },
-        { text: "时间", value: "time", sortable: false },
+        { text: "时间", value: "createdAt", sortable: false },
         { text: "会员编号", value: "userId", sortable: false },
         { text: "价格", value: "price", sortable: false },
         { text: "产品", value: "product", sortable: false },
@@ -47,18 +51,34 @@ export default {
         { text: "订单状态", value: "status", sortable: false },
         { text: "操作", value: "action", sortable: false }
       ],
-      desserts: [
-        {
-          time: "2019-01-01 12:30:00",
-          id: "000001",
-          userId: "MY100001",
-          price: 2610,
-          product: "多功能治疗仪x1",
-          deliveryAddress: "备注信息",
-          status: "已提交"
-        }
+      props: ["openUserId"],
+      orders: [
+        // {
+        //   time: "2019-01-01 12:30:00",
+        //   id: "000001",
+        //   userId: "MY100001",
+        //   price: 2610,
+        //   product: "多功能治疗仪x1",
+        //   deliveryAddress: "备注信息",
+        //   status: "已提交"
+        // }
       ]
     };
+  },
+  methods: {
+    async orderQuery() {
+      this.$store.commit("openLoading", true);
+      let res = await this.$store.dispatch("orderQuery", {});
+      if (!res.err) {
+        this.orders = res.res;
+      }
+      this.$store.commit("openLoading", false);
+    }
+  },
+  filters: {
+    formatDate(timestamp) {
+      return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    }
   }
 };
 </script>
