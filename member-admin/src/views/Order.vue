@@ -26,7 +26,7 @@
             <td>{{ props.item.userId }}</td>
             <td>{{ props.item.price }}</td>
             <td>
-              <span v-for="item in props.item.products" :key="item.id">{{ item.name }} x{{item.num}}</span>
+              <span v-for="item in props.item.products" :key="item.id">{{ item.name }}x{{item.num}}；</span>
             </td>
             <td>{{ props.item.deliveryAddress }}</td>
             <td>{{ props.item.status }}</td>
