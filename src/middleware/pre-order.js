@@ -80,6 +80,7 @@ router.post('/order/query', async (ctx, next) => {
         inparam['$or'] = [{ id: inparam.key }, { userId: inparam.key }]
         delete inparam.key
     }
+    return next()
 })
 
 module.exports = router

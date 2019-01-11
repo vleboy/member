@@ -138,6 +138,7 @@ router.post('/user/query', async (ctx, next) => {
         inparam['$or'] = [{ id: inparam.key }, { username: inparam.key }, { mobile: inparam.key }]
         delete inparam.key
     }
+    return next()
 })
 
 module.exports = router
