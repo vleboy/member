@@ -53,6 +53,10 @@ const vuex = new Vuex.Store({
       const res = await axios.post(`${domain}/xnosql/user/update`, data)
       return res.data
     },
+    async userDelete(state, data) {
+      const res = await axios.get(`${domain}/xnosql/user/delete/${data._id}`)
+      return res.data
+    },
     async billInsert(state, data) {
       const res = await axios.post(`${domain}/xnosql/bill/insert`, data)
       return res.data

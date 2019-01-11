@@ -19,7 +19,7 @@
         <v-btn color="primary">查询</v-btn>
       </v-flex>
       <v-flex xs12>
-        <v-data-table :headers="headers" :items="orders" hide-actions>
+        <v-data-table :headers="headers" :items="orders" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
             <td>{{ props.item.id }}</td>
             <td>{{ props.item.createdAt | formatDate}}</td>

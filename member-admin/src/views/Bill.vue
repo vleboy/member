@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height justify-center>
     <v-flex xs12>
-      <v-data-table :headers="headers" :items="desserts" hide-actions>
+      <v-data-table :headers="headers" :items="desserts" hide-actions no-data-text="暂无数据">
         <template slot="items" slot-scope="props">
           <td>{{ props.item.createdAt }}</td>
           <td>{{ props.item.project }}</td>

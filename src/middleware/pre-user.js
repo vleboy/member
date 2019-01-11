@@ -115,7 +115,9 @@ router.post('/user/update', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
-    checkLogin(inparam)
+    if (!inparam.status) {
+        checkUpdate(inparam)
+    }
     if (token.role == 'admin' || token.id == inparam.id) {
         return next()
     } else {
