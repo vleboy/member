@@ -10,7 +10,7 @@ Vue.use(Vuex)
 const vuex = new Vuex.Store({
   state: {
     openRegister: false,
-    openUser: false,
+    openUserInfo: false,
     openUserBill: false,
     openUserAchievement: false,
     openLoading: false
@@ -19,8 +19,8 @@ const vuex = new Vuex.Store({
     openRegister(state, params) {
       state.openRegister = params
     },
-    openUser(state, params) {
-      state.openUser = params
+    openUserInfo(state, params) {
+      state.openUserInfo = params
     },
     openUserBill(state, params) {
       state.openUserBill = params

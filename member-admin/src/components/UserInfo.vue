@@ -1,9 +1,9 @@
 <template>
   <v-layout column>
-    <v-dialog v-model="openUser" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog v-model="openUserInfo" fullscreen hide-overlay transition="dialog-bottom-transition">
       <v-card ref="form">
         <v-toolbar dark>
-          <v-btn icon dark @click="openUser = false">
+          <v-btn icon dark @click="openUserInfo = false">
             <v-icon>close</v-icon>
           </v-btn>
           <v-toolbar-title>用户详细信息</v-toolbar-title>
@@ -89,6 +89,17 @@ export default {
     }
   }),
   props: ["openUserId"],
+  computed: {
+    openUserInfo: {
+      get() {
+        this.openUserId && this.userGet();
+        return this.$store.state.openUserInfo;
+      },
+      set(val) {
+        this.$store.commit("openUserInfo", val);
+      }
+    }
+  },
   methods: {
     async userGet() {
       this.$store.commit("openLoading", true);
@@ -97,17 +108,6 @@ export default {
         this.user = res.res;
       }
       this.$store.commit("openLoading", false);
-    }
-  },
-  computed: {
-    openUser: {
-      get() {
-        this.openUserId && this.userGet();
-        return this.$store.state.openUser;
-      },
-      set(val) {
-        this.$store.commit("openUser", val);
-      }
     }
   }
 };

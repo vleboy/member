@@ -17,7 +17,7 @@
         <v-data-table :headers="headers" :items="users" hide-actions>
           <template slot="items" slot-scope="props">
             <td>
-              <a @click="openUser(props.item._id)">{{ props.item.id }}</a>
+              <a @click="openUserInfo(props.item._id)">{{ props.item.id }}</a>
             </td>
             <td>{{ props.item.username }}</td>
             <td>{{ props.item.createAt }}</td>
@@ -33,8 +33,8 @@
             <td>{{ props.item.recommendnumber }}</td>
             <td>{{ props.item.balance }}</td>
             <td>
-              <a>业绩</a> |
-              <a>账单</a>
+              <a @click="openUserAchievement(props.item.id)">业绩</a> |
+              <a @click="openUserBill(props.item.id)">账单</a>
             </td>
             <td>
               <a>改</a> |
@@ -45,21 +45,27 @@
         </v-data-table>
       </v-flex>
       <Register/>
-      <User :openUserId="openUserId"/>
+      <UserInfo :openUserId="openUserInfoId"/>
+      <UserBill :openUserId="openUserBillId"/>
+      <!-- <UserAchievement :openUserId="openUserAchievementId"/> -->
     </v-layout>
   </v-container>
 </template>
 
 <script>
 import Register from "../components/Register.vue";
-import User from "../components/User.vue";
+import UserInfo from "../components/UserInfo.vue";
+import UserBill from "../components/UserBill.vue";
+// import UserAchievement from "../components/UserAchievement.vue";
 export default {
   created: function() {
     this.userQuery();
   },
   components: {
     Register,
-    User
+    UserInfo,
+    UserBill
+    // UserAchievement
   },
   data() {
     return {
@@ -78,20 +84,33 @@ export default {
         { text: "安置编号", value: "parentId", sortable: false },
         { text: "推荐编号", value: "recommendnumber", sortable: false },
         { text: "余额", value: "balance", sortable: false },
-        { text: "详情", value: "detail", sortable: false },
+        { text: "业绩/账单", value: "detail", sortable: false },
         { text: "操作", value: "action", sortable: false }
       ],
       users: [],
-      openUserId: null
+      openUserInfoId: null,
+      openUserBillId: null,
+      openUserAchievementId: null
     };
   },
   methods: {
     openRegister() {
       this.$store.commit("openRegister", !this.$store.state.openRegister);
     },
-    openUser(openUserId) {
-      this.openUserId = openUserId;
-      this.$store.commit("openUser", !this.$store.state.openUser);
+    openUserInfo(openUserId) {
+      this.openUserInfoId = openUserId;
+      this.$store.commit("openUserInfo", !this.$store.state.openUserInfo);
+    },
+    async openUserBill(openUserId) {
+      this.openUserBillId = openUserId;
+      this.$store.commit("openUserBill", !this.$store.state.openUserBill);
+    },
+    async openUserAchievement(openUserId) {
+      this.openUserAchievementId = openUserId;
+      this.$store.commit(
+        "openUserAchievement",
+        !this.$store.state.openUserAchievement
+      );
     },
     async userQuery() {
       this.$store.commit("openLoading", true);
