@@ -197,6 +197,7 @@ export default {
           this.snackMsg.isShow = true;
           this.snackMsg.color = "success";
           this.snackMsg.msg = "操作成功";
+          this.userQuery();
         }
       }
     }
