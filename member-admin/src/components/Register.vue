@@ -54,7 +54,7 @@
             <v-flex xs6>
               <v-text-field ref="wechatnumber" v-model="form.wechatnumber" label="微信号" clearable></v-text-field>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs6>
               <v-select
                 ref="bankname"
                 v-model="form.bankname"
@@ -65,7 +65,7 @@
                 clearable
               ></v-select>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs6>
               <v-text-field
                 ref="banknumber"
                 v-model="form.banknumber"
@@ -193,6 +193,7 @@ export default {
           this.snackMsg.color = "success";
           this.openRegister = false;
           this.resetForm();
+          this.$emit("child-event", {});
         }
       } else {
         this.snackMsg.msg = "请检查输入";

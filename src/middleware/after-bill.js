@@ -14,7 +14,6 @@ const collection = 'bill'
  * 新增账单中间件
  */
 router.post('/bill/insert', async (ctx, next) => {
-
     let inparam = ctx.request.body
     let amount = Math.abs(inparam.amount)
     if (inparam.type === 'OUT') {
