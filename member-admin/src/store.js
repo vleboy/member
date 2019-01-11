@@ -76,7 +76,11 @@ const vuex = new Vuex.Store({
     async orderInsert(state, data) {
       const res = await axios.post(`${domain}/xnosql/order/insert`, data)
       return res.data
-    }
+    },
+    async orderUpdate(state, data) {
+      const res = await axios.post(`${domain}/xnosql/order/update`, data)
+      return res.data
+    },
   }
 })
 export default vuex

@@ -25,12 +25,14 @@
             <td>{{ props.item.createdAt | formatDate}}</td>
             <td>{{ props.item.userId }}</td>
             <td>{{ props.item.price }}</td>
-            <td>{{ props.item.product }}</td>
+            <td>
+              <span v-for="item in props.item.products" :key="item.id">{{ item.name }} x{{item.num}}</span>
+            </td>
             <td>{{ props.item.deliveryAddress }}</td>
             <td>{{ props.item.status }}</td>
             <td>
               <a @click="changeStatus(props.item._id,props.item.id,'delivery','发货')">发货</a> |
-              <a @click="changeStatus(props.item._id,props.item.id,'freeze','冻结')">冻结</a> |
+              <!-- <a @click="changeStatus(props.item._id,props.item.id,'freeze','冻结')">冻结</a> | -->
               <a @click="changeStatus(props.item._id,props.item.id,'cancel','取消')">取消</a>
             </td>
           </template>
@@ -56,7 +58,7 @@ export default {
       items: [
         { text: "未发货", value: "init" },
         { text: "已发货", value: "delivery" },
-        { text: "已冻结", value: "freeze" },
+        // { text: "已冻结", value: "freeze" },
         { text: "已取消", value: "cancel" }
       ],
       headers: [
@@ -104,7 +106,7 @@ export default {
           this.snackMsg.isShow = true;
           this.snackMsg.color = "success";
           this.snackMsg.msg = "操作成功";
-          this.userQuery();
+          this.orderQuery();
         }
       }
     }
