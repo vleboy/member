@@ -1,9 +1,18 @@
 <template>
   <v-container fluid fill-height justify-center>
     <v-layout row wrap>
-      <v-flex xs8>
-        <v-switch @change="userQuery" v-model="isAudit" label="待审用户"></v-switch>
+      <v-flex xs2>
+        <!-- <v-switch @change="userQuery" v-model="isAudit" label="待审用户"></v-switch> -->
+        <v-select
+          v-model="query.status"
+          @change="userQuery"
+          solo
+          :items="items"
+          label="用户状态"
+          clearable
+        ></v-select>
       </v-flex>
+      <v-flex xs6></v-flex>
       <v-flex xs2>
         <v-text-field v-model="queryKey" solo label="编号/姓名/手机号" clearable></v-text-field>
       </v-flex>
@@ -69,6 +78,11 @@ export default {
   },
   data() {
     return {
+      items: [
+        { text: "待审核", value: "init" },
+        { text: "已冻结", value: "freeze" },
+        { text: "正常", value: "normal" }
+      ],
       headers: [
         { text: "编号", value: "id", sortable: false },
         { text: "姓名", value: "username", sortable: false },
@@ -87,7 +101,7 @@ export default {
         { text: "业绩/账单", value: "detail", sortable: false },
         { text: "操作", value: "action", sortable: false }
       ],
-      isAudit: true,
+      // isAudit: true,
       queryKey: null,
       query: {},
       users: [],
@@ -117,9 +131,9 @@ export default {
     },
     async userQuery() {
       this.$store.commit("openLoading", true);
-      if (this.isAudit) {
-        this.query.status = "init";
-      }
+      // if (this.isAudit) {
+      //   this.query.status = "init";
+      // }
       if (this.queryKey) {
         this.query.id = this.queryKey;
       } else {

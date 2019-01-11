@@ -2,7 +2,14 @@
   <v-container fluid fill-height justify-center>
     <v-layout row wrap>
       <v-flex xs2>
-        <v-select solo :items="['全部', '未发货', '已发货', '已冻结','已取消']" label="订单状态" clearable></v-select>
+        <v-select
+          v-model="query.status"
+          @change="orderQuery"
+          solo
+          :items="items"
+          label="订单状态"
+          clearable
+        ></v-select>
       </v-flex>
       <v-flex xs7></v-flex>
       <v-flex xs2>
@@ -41,6 +48,12 @@ export default {
   },
   data() {
     return {
+      items: [
+        { text: "未发货", value: "init" },
+        { text: "已发货", value: "delivery" },
+        { text: "已冻结", value: "freeze" },
+        { text: "已取消", value: "cancel" }
+      ],
       headers: [
         { text: "订单号", value: "id", sortable: false },
         { text: "时间", value: "createdAt", sortable: false },
@@ -62,7 +75,8 @@ export default {
         //   deliveryAddress: "备注信息",
         //   status: "已提交"
         // }
-      ]
+      ],
+      query: {}
     };
   },
   methods: {
