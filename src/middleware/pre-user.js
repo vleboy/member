@@ -116,15 +116,10 @@ router.post('/user/update', async (ctx, next) => {
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
     checkLogin(inparam)
-    let r = await mongodb.find(collection, { id: token.id })
-    if (r.length > 0) {
-        if (token.role === 'admin' || r[0].id === inparam.id) {
-            return next()
-        } else {
-            throw { err: true, res: '该用户没有修改权限' }
-        }
+    if (token.role == 'admin' || token.id == inparam.id) {
+        return next()
     } else {
-        throw { err: true, res: 'token 错误' }
+        throw { err: true, res: '该用户没有修改权限' }
     }
 })
 
