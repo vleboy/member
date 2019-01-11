@@ -66,6 +66,7 @@ router.post('/order/insert', async (ctx, next) => {
     inparam.price = priceRes
     inparam.id = 'D' + _.random(000000, 999999)
     inparam.createdAt = Date.now()
+    inparam.status = 'init'
     ctx._id = token._id
     return next()
 })
