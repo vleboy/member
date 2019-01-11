@@ -11,7 +11,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 const collection = 'user'
 // 处理函数逻辑
 const check = require('../util/check/user')
-const checkLogin = require('../util/check/update')
+const checkUpdate = require('../util/check/update')
 /**
  * 注册用户中间件
  * 输入参数
@@ -26,6 +26,12 @@ const checkLogin = require('../util/check/update')
  * @param address 地址                          必填，非唯一
  * @param parentId 安置编号                 
  * @param recommendnumber 推荐编号              必填，唯一
+ * 内置属性
+ * @param inviteWallet20 邀请奖励钱包   true/flase
+ * @param inviteWallet80
+ * @param areaWallet 市场奖励
+ * @param leaderWallet 领导奖励
+ * 
  * 
  * @param deliveryName 收货人
  * @param deliveryMobile 收货人电话
@@ -113,7 +119,6 @@ router.post('/user/insert', async (ctx, next) => {
         inparam.balance = 0; inparam.iswechatpay = false
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
         return next()
-
     }
 
 })
@@ -127,9 +132,10 @@ router.post('/user/update', async (ctx, next) => {
     let fromUser = ctx.tokenVerify
     //console.log('fromUser:',fromUser)
     let toUser = ctx.request.body
-    checkLogin(toUser)
+    checkUpdate(toUser)
     let r = await mongodb.find(collection, { id: fromUser.id })
     if (r.length > 0) {
+
         if (fromUser.role === 'admin' || r[0].id === toUser.id) {
             return next()
         } else {
