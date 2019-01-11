@@ -44,7 +44,7 @@
           </template>
         </v-data-table>
       </v-flex>
-      <Register/>
+      <Register v-on:child-event="userQuery"/>
       <UserInfo :openUserId="openUserInfoId"/>
       <UserBill :openUserId="openUserBillId"/>
       <!-- <UserAchievement :openUserId="openUserAchievementId"/> -->
