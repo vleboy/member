@@ -123,6 +123,19 @@ router.post('/user/update', async (ctx, next) => {
     }
 })
 
+/**
+ * 删除用户中间件
+ */
+router.post('/user/delete', async (ctx, next) => {
+    //当前登录用户是否具备修改目标用户权限
+    let token = ctx.tokenVerify
+    let inparam = ctx.request.body
+    if (token.role == 'admin') {
+        return next()
+    } else {
+        throw { err: true, res: '该用户没有删除权限' }
+    }
+})
 
 /**
  * 查询用户中间件
