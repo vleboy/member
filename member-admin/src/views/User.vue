@@ -14,10 +14,10 @@
         <v-btn @click="openRegister" color="primary">添加用户</v-btn>
       </v-flex>
       <v-flex xs12>
-        <v-data-table :headers="headers" :items="desserts" hide-actions>
+        <v-data-table :headers="headers" :items="users" hide-actions>
           <template slot="items" slot-scope="props">
             <td>
-              <a>{{ props.item.id }}</a>
+              <a @click="openUser(props.item._id)">{{ props.item.id }}</a>
             </td>
             <td>{{ props.item.username }}</td>
             <td>{{ props.item.createAt }}</td>
@@ -45,15 +45,21 @@
         </v-data-table>
       </v-flex>
       <Register/>
+      <User :openUserId="openUserId"/>
     </v-layout>
   </v-container>
 </template>
 
 <script>
 import Register from "../components/Register.vue";
+import User from "../components/User.vue";
 export default {
+  created: function() {
+    this.userQuery();
+  },
   components: {
-    Register
+    Register,
+    User
   },
   data() {
     return {
@@ -75,29 +81,25 @@ export default {
         { text: "详情", value: "detail", sortable: false },
         { text: "操作", value: "action", sortable: false }
       ],
-      desserts: [
-        {
-          id: "000001",
-          username: "张三",
-          createAt: "2019-01-01 12:30:00",
-          // address: "四川绵阳",
-          // mobile: "18780004427",
-          // idnumber: "878765444567898765",
-          // wechatnumber: "we998",
-          // iswechatpay: false,
-          // bank: "工商银行",
-          // banknumber: "213123123123123123",
-          level: "普通会员",
-          parentId: "MY001",
-          recommendnumber: "MY001",
-          balance: "1000.00"
-        }
-      ]
+      users: [],
+      openUserId: null
     };
   },
   methods: {
     openRegister() {
       this.$store.commit("openRegister", !this.$store.state.openRegister);
+    },
+    openUser(openUserId) {
+      this.openUserId = openUserId;
+      this.$store.commit("openUser", !this.$store.state.openUser);
+    },
+    async userQuery() {
+      this.$store.commit("openLoading", true);
+      let res = await this.$store.dispatch("userQuery", {});
+      if (!res.err) {
+        this.users = res.res;
+      }
+      this.$store.commit("openLoading", false);
     }
   }
 };

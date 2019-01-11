@@ -18,7 +18,7 @@
             <v-card-text>
               <v-form>
                 <v-text-field
-                  v-model="nickName"
+                  v-model="username"
                   prepend-icon="person"
                   name="login"
                   :label="label"
@@ -27,6 +27,7 @@
                   maxlength="5"
                 ></v-text-field>
                 <v-text-field
+                  v-model="password"
                   prepend-icon="lock"
                   name="password"
                   label="输入密码"
@@ -51,9 +52,9 @@
       </v-layout>
     </v-parallax>
     <!--错误提示-->
-    <v-snackbar v-model="err" top auto-height color="warning">
-      {{errMsg}}
-      <v-btn color="gray" flat @click="err = false">关闭</v-btn>
+    <v-snackbar v-model="snackMsg.isShow" top auto-height :color="snackMsg.color">
+      {{snackMsg.msg}}
+      <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
     </v-snackbar>
   </v-layout>
 </template>
@@ -62,40 +63,45 @@
 export default {
   data() {
     return {
-      nickName: "",
-      openid: null,
-      // regNickName: "",
-      // loginNickName: "",
-      label: "输入手机号/MY号",
-      dialog: false,
-      err: false,
-      errMsg: ""
+      username: null,
+      password: null,
+      snackMsg: {
+        isShow: false,
+        color: "success",
+        msg: ""
+      }
     };
   },
   created: function() {
     // 身份认证有效期内，直接跳转
-    // if (localStorage.getItem("token")) {
-    //   this.$router.push({ path: "/home" });
-    // }
+    if (localStorage.getItem("token")) {
+      this.$router.push({ path: "/home" });
+    }
   },
   methods: {
     // 登录
     async login() {
-      if (this.nickName) {
-        // let res = await this.$store.dispatch("login", {
-        //   nickName: this.nickName
-        // });
-        let res = { err: false, res: "tokentest" };
+      if (this.username && this.password) {
+        let inparam = { id: this.username, password: this.password };
+        if (parseInt(this.username)) {
+          inparam.mobile = this.username;
+          delete inparam.id;
+        }
+        let res = await this.$store.dispatch("login", inparam);
         if (res.err) {
-          this.err = res.err;
-          this.errMsg = res.res;
+          this.snackMsg.isShow = true;
+          this.snackMsg.color = "warning";
+          this.snackMsg.msg = res.res;
         } else {
-          localStorage.setItem("token", res.res);
+          localStorage.setItem("_id", res.res._id);
+          localStorage.setItem("id", res.res.id);
+          localStorage.setItem("token", res.res.token);
           this.$router.push({ path: "/home" });
         }
       } else {
-        this.err = true;
-        this.errMsg = "请输入手机号/MY号";
+        this.snackMsg.isShow = true;
+        this.snackMsg.color = "warning";
+        this.snackMsg.msg = "请输入帐号密码";
       }
     }
   }
