@@ -86,6 +86,8 @@ router.post('/user/insert', async (ctx, next) => {
         if (r[0].levelIndex.indexOf(a[0].id) === -1) {
             throw { err: true, res: '该安置编码不合理' }//该安置编码不合理
         }
+        inparam.levelIndex = r[0].levelIndex
+        inparam.levelIndex.push(inparam.id)
         
     } else {
         if (inparam.parentId === 'root') {
@@ -99,8 +101,6 @@ router.post('/user/insert', async (ctx, next) => {
     if (r.length > 0) {
         throw { err: true, res: '网络错误，请重试' }
     } else {
-        inparam.levelIndex = r[0].levelIndex
-        inparam.levelIndex.push(inparam.id)
         inparam.createdAt = Date.now()
         inparam.balance = 0; inparam.iswechatpay = false
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
