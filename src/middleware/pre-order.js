@@ -77,7 +77,8 @@ router.post('/order/query', async (ctx, next) => {
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
     if (inparam.key) {
-        inparam = { "$or": [{ id: inparam.key }, { userId: inparam.key }] }
+        inparam['$or'] = [{ id: inparam.key }, { userId: inparam.key }]
+        delete inparam.key
     }
 })
 
