@@ -7,19 +7,21 @@ router.get('/test', async (ctx, next) => {
 
 })
 
-async function check(){
+// async function check(){
     
-}
+// }
 
-let map = {
-    'key':8,
-    'val':{
-        'A':0.1,
-        'B':0.2
-    }
+// let map = {
+//     'key':8,
+//     'val':{
+//         'A':0.1,
+//         'B':0.2
+//     }
 
-}
+// }
 //A:[A]
 //B1:[A,B1]
 //B2:[A,B2]
 //C1:[A,B2,C1]
+
+module.exports = router
