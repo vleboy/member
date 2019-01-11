@@ -9,7 +9,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 // 持久化相关
 //const ObjectId = require('mongodb').ObjectID
 const collection = 'order'
-const product = 'product'
+const productCollection = 'product'
 const check = require('../util/check/order')
 /**
  * 新增订单中间件
@@ -36,7 +36,7 @@ router.post('/order/insert', async (ctx, next) => {
     inparam.products.map((item) => {
         inparamIdArry.push(item.id)
     })
-    const r = await mongodb.find(product, { id: { "$in": inparamIdArry } })
+    const r = await mongodb.find(productCollection, { id: { "$in": inparamIdArry } })
     r.map((item) => {
         recIdArry.push(item.id)
     })
@@ -48,6 +48,7 @@ router.post('/order/insert', async (ctx, next) => {
         inparam.products.map((i) => {
             if (i.id == item.id) {
                 if (i.price == item.price) {
+                    i.name = r.name
                     priceRes += (item.price * i.num)
                 } else {
                     throw { err: true, res: `订单价格信息不正确` }
@@ -59,11 +60,25 @@ router.post('/order/insert', async (ctx, next) => {
     if (tokenRes[0].balance < priceRes) {
         throw { err: true, res: `下单失败，余额不足，当前余额为${tokenRes[0].balance},订单金额为${priceRes}` }
     }
+    inparam.deliveryAddress = tokenRes.deliveryAddress
+    inparam.deliveryMobile = tokenRes.deliveryMobile
+    inparam.deliveryName = tokenRes.deliveryName
     inparam.price = priceRes
     inparam.id = 'D' + _.random(000000, 999999)
     inparam.createdAt = Date.now()
     ctx._id = token._id
     return next()
+})
+
+/**
+ * 查询订单中间件
+ */
+router.post('/order/query', async (ctx, next) => {
+    let token = ctx.tokenVerify
+    let inparam = ctx.request.body
+    if (inparam.key) {
+        inparam = { "$or": [{ id: inparam.key }, { userId: inparam.key }] }
+    }
 })
 
 module.exports = router
