@@ -42,7 +42,6 @@ router.post('/bill/insert', async (ctx, next) => {
 })
 
 router.post('/bill/query', async (ctx, next) => {
-
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
     if (token.role === 'admin' || token.id === toUser.userId) {
