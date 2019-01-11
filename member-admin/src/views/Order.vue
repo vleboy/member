@@ -31,7 +31,9 @@
             <td>{{ props.item.deliveryAddress }}</td>
             <td>{{ props.item.status }}</td>
             <td>
-              <a @click="changeStatus(props.item._id,props.item.id,'delivery','发货')">发货</a> |
+              <span v-if="props.item.status == 'init'">
+                <a @click="changeStatus(props.item._id,props.item.id,'delivery','发货')">发货</a> |
+              </span>
               <!-- <a @click="changeStatus(props.item._id,props.item.id,'freeze','冻结')">冻结</a> | -->
               <a @click="changeStatus(props.item._id,props.item.id,'cancel','取消')">取消</a>
             </td>
