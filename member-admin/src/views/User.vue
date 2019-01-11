@@ -47,8 +47,16 @@
               <a @click="openUserBill(props.item.id)">账单</a>
             </td>
             <td>
+              <span v-if="props.item.status == 'init'">
+                <a @click="changeStatus(props.item._id,props.item.username,'normal','审核')">审核</a> |
+              </span>
               <a @click="openRegister(props.item._id)">改</a> |
-              <a @click="freeze(props.item._id,props.item.username)">冻</a> |
+              <span v-if="props.item.status != 'freeze'">
+                <a @click="changeStatus(props.item._id,props.item.username,'freeze','冻结')">冻</a> |
+              </span>
+              <span v-if="props.item.status == 'freeze'">
+                <a @click="changeStatus(props.item._id,props.item.username,'normal','解冻')">解冻</a> |
+              </span>
               <a @click="del(props.item._id,props.item.username)">删</a>
             </td>
           </template>
@@ -156,12 +164,12 @@ export default {
       }
       this.$store.commit("openLoading", false);
     },
-    async freeze(_id, username) {
-      if (confirm(`确认冻结用户 ${username}?`)) {
+    async changeStatus(_id, username, status, operation) {
+      if (confirm(`确认${operation}用户 ${username}?`)) {
         this.$store.commit("openLoading", true);
         let res = await this.$store.dispatch("userUpdate", {
           _id,
-          status: "freeze"
+          status
         });
         this.$store.commit("openLoading", false);
         if (res.err) {
@@ -172,6 +180,7 @@ export default {
           this.snackMsg.isShow = true;
           this.snackMsg.color = "success";
           this.snackMsg.msg = "操作成功";
+          this.userQuery();
         }
       }
     },
