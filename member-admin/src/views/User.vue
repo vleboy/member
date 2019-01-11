@@ -2,13 +2,13 @@
   <v-container fluid fill-height justify-center>
     <v-layout row wrap>
       <v-flex xs8>
-        <v-switch label="待审用户"></v-switch>
+        <v-switch @change="userQuery" v-model="isAudit" label="待审用户"></v-switch>
       </v-flex>
       <v-flex xs2>
-        <v-text-field solo label="编号/姓名/手机号" clearable></v-text-field>
+        <v-text-field v-model="queryKey" solo label="编号/姓名/手机号" clearable></v-text-field>
       </v-flex>
       <v-flex xs1>
-        <v-btn color="primary">查询</v-btn>
+        <v-btn @click="userQuery" color="primary">查询</v-btn>
       </v-flex>
       <v-flex xs1>
         <v-btn @click="openRegister" color="primary">添加用户</v-btn>
@@ -87,6 +87,9 @@ export default {
         { text: "业绩/账单", value: "detail", sortable: false },
         { text: "操作", value: "action", sortable: false }
       ],
+      isAudit: true,
+      queryKey: null,
+      query: {},
       users: [],
       openUserInfoId: null,
       openUserBillId: null,
@@ -114,7 +117,15 @@ export default {
     },
     async userQuery() {
       this.$store.commit("openLoading", true);
-      let res = await this.$store.dispatch("userQuery", {});
+      if (this.isAudit) {
+        this.query.status = "init";
+      }
+      if (this.queryKey) {
+        this.query.id = this.queryKey;
+      } else {
+        delete this.query.id;
+      }
+      let res = await this.$store.dispatch("userQuery", this.query);
       if (!res.err) {
         this.users = res.res;
       }
