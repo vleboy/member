@@ -116,11 +116,6 @@ router.post('/user/insert', async (ctx, next) => {
 
         inparam.levelIndex = r[0].levelIndex
         inparam.levelIndex.push(inparam.id)
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 205a12852034c8e1b1ee6eee24bec236d8eb100d
     } else {
         if (inparam.parentId === 'root') {
             inparam.levelIndex = [inparam.id]//系统第一人
