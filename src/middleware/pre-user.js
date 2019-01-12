@@ -27,8 +27,8 @@ const checkUpdate = require('../util/check/update')
  * @param parentId 安置编号                 
  * @param recommendnumber 推荐编号              必填，唯一
  * 内置属性
- * @param inviteWallet20 邀请奖励钱包   true/flase
- * @param inviteWallet80
+ * @param referralBonuses 邀请奖励钱包           
+ * referralBonuses{status:'null/phase1/phase2',phase1:id,第一阶段奖励值（他儿子激活时选择的套餐价格的20%），phase2:id第二阶段奖励值（通常他儿子激活时选择的套餐价格的80%，但是若phase1=0,那么这里只能是套餐价格20%）}
  * @param areaWallet 市场奖励
  * @param leaderWallet 领导奖励
  * 
@@ -103,6 +103,12 @@ router.post('/user/insert', async (ctx, next) => {
     } else {
         inparam.createdAt = Date.now()
         inparam.balance = 0; inparam.iswechatpay = false
+
+        inparam.referralBonuses = {
+            status:'null',
+            phase1:{id:null,price:0},
+            phase2:{id:null,price:0}
+        }
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
         return next()
     }
