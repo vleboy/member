@@ -29,13 +29,15 @@
               <span v-for="item in props.item.products" :key="item.id">{{ item.name }}x{{item.num}}；</span>
             </td>
             <td>{{ props.item.deliveryAddress }}</td>
-            <td>{{ props.item.status }}</td>
+            <td>{{ props.item.status | toStatus}}</td>
             <td>
               <span v-if="props.item.status == 'init'">
                 <a @click="changeStatus(props.item._id,props.item.id,'delivery','发货')">发货</a> |
               </span>
               <!-- <a @click="changeStatus(props.item._id,props.item.id,'freeze','冻结')">冻结</a> | -->
-              <a @click="changeStatus(props.item._id,props.item.id,'cancel','取消')">取消</a>
+              <span v-if="props.item.status == 'init'">
+                <a @click="changeStatus(props.item._id,props.item.id,'cancel','取消')">取消</a>
+              </span>
             </td>
           </template>
         </v-data-table>
@@ -116,6 +118,18 @@ export default {
   filters: {
     formatDate(timestamp) {
       return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    },
+    toStatus(status) {
+      switch (status) {
+        case "init":
+          return "待收货";
+        case "delivery":
+          return "已发货";
+        case "cancel":
+          return "已取消";
+        default:
+          break;
+      }
     }
   }
 };
