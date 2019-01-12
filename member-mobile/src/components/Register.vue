@@ -97,7 +97,26 @@
             <v-flex xs12>
               <v-text-field ref="level" v-model="form.level" label="级别" readonly></v-text-field>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs6>
+              <v-select
+                @change="changeProvince"
+                ref="province"
+                v-model="form.province"
+                :items="provinces"
+                required
+                :rules="[rules.required]"
+              ></v-select>
+            </v-flex>
+            <v-flex xs6>
+              <v-select
+                ref="city"
+                v-model="form.city"
+                :items="citys"
+                required
+                :rules="[rules.required]"
+              ></v-select>
+            </v-flex>
+            <!-- <v-flex xs12>
               <v-text-field
                 ref="address"
                 v-model="form.address"
@@ -106,7 +125,7 @@
                 :rules="[rules.required]"
                 clearable
               ></v-text-field>
-            </v-flex>
+            </v-flex>-->
             <v-flex xs12>
               <v-text-field
                 ref="parentId"
@@ -137,6 +156,7 @@
   </v-layout>
 </template>
 <script>
+import pc from "../plugins/pc.js";
 export default {
   data() {
     return {
@@ -156,6 +176,8 @@ export default {
         color: "success",
         msg: ""
       },
+      provinces: [],
+      citys: [],
       form: {
         username: "",
         idnumber: "",
@@ -166,7 +188,9 @@ export default {
         banknumber: "",
         password: "",
         level: "普通会员",
-        address: "",
+        province: "",
+        city: "",
+        // address: "",
         parentId: localStorage.getItem("id"),
         recommendnumber: localStorage.getItem("id")
       },
@@ -205,11 +229,35 @@ export default {
       }
       this.snackMsg.isShow = true;
       this.$store.commit("openLoading", false);
+    },
+    changeProvince(e) {
+      this.citys = [];
+      for (let province of pc) {
+        if (province.name == e) {
+          for (let city of province.child) {
+            this.citys.push(city.name);
+          }
+          break;
+        }
+      }
+      this.form.province = e;
+      this.form.city = this.citys[0];
     }
   },
   computed: {
     openRegister: {
       get() {
+        if (this.$store.state.openRegister == true && !this.form.username) {
+          // 初始化省市二级联动
+          for (let province of pc) {
+            this.provinces.push(province.name);
+          }
+          this.form.province = pc[0].name;
+          for (let city of pc[0].child) {
+            this.citys.push(city.name);
+          }
+          this.form.city = this.citys[0];
+        }
         return this.$store.state.openRegister;
       },
       set(val) {
