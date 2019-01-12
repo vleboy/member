@@ -14,7 +14,7 @@
       </v-flex>
       <v-flex xs6></v-flex>
       <v-flex xs2>
-        <v-text-field v-model="queryKey" solo label="编号/姓名/手机号" clearable></v-text-field>
+        <v-text-field v-model="query.key" solo label="编号/姓名/手机号" clearable></v-text-field>
       </v-flex>
       <v-flex xs1>
         <v-btn @click="userQuery" color="primary">查询</v-btn>
@@ -23,13 +23,14 @@
         <v-btn @click="openRegister" color="primary">添加用户</v-btn>
       </v-flex>
       <v-flex xs12>
-        <v-data-table :headers="headers" :items="users" hide-actions>
+        <v-data-table :headers="headers" :items="users" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
             <td>
               <a @click="openUserInfo(props.item._id)">{{ props.item.id }}</a>
             </td>
             <td>{{ props.item.username }}</td>
-            <td>{{ props.item.createAt }}</td>
+            <td>{{ props.item.createdAt | formatDate}}</td>
+            <td>{{ props.item.mobile }}</td>
             <!-- <td>{{ props.item.address }}</td>
             <td>{{ props.item.mobile }}</td>
             <td>{{ props.item.idnumber }}</td>
@@ -45,23 +46,40 @@
               <a @click="openUserAchievement(props.item.id)">业绩</a> |
               <a @click="openUserBill(props.item.id)">账单</a>
             </td>
+            <td>{{ props.item.status | toStatus}}</td>
             <td>
-              <a>改</a> |
-              <a>冻</a> |
-              <a>删</a>
+              <span v-if="props.item.status == 'init'">
+                <a @click="changeStatus(props.item._id,props.item.username,'normal','审核')">审核</a> |
+              </span>
+              <a @click="openRegister(props.item._id)">改</a> |
+              <span v-if="props.item.status == 'normal'">
+                <a @click="changeStatus(props.item._id,props.item.username,'freeze','冻结')">冻</a> |
+              </span>
+              <span v-if="props.item.status == 'freeze'">
+                <a @click="changeStatus(props.item._id,props.item.username,'normal','解冻')">解冻</a> |
+              </span>
+              <span v-if="props.item.status == 'init'">
+                <a @click="del(props.item._id,props.item.username)">删</a>
+              </span>
             </td>
           </template>
         </v-data-table>
       </v-flex>
-      <Register v-on:child-event="userQuery"/>
+      <Register v-on:child-event="userQuery" :openUserChangeId="openUserChangeId"/>
       <UserInfo :openUserId="openUserInfoId"/>
       <UserBill :openUserId="openUserBillId"/>
       <!-- <UserAchievement :openUserId="openUserAchievementId"/> -->
     </v-layout>
+    <!--错误提示-->
+    <v-snackbar v-model="snackMsg.isShow" top auto-height :color="snackMsg.color">
+      {{snackMsg.msg}}
+      <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
 <script>
+import dayjs from "dayjs";
 import Register from "../components/Register.vue";
 import UserInfo from "../components/UserInfo.vue";
 import UserBill from "../components/UserBill.vue";
@@ -87,8 +105,8 @@ export default {
         { text: "编号", value: "id", sortable: false },
         { text: "姓名", value: "username", sortable: false },
         { text: "注册时间", value: "createAt", sortable: false },
+        { text: "手机", value: "mobile", sortable: false },
         // { text: "居住地", value: "address", sortable: false },
-        // { text: "手机", value: "mobile", sortable: false },
         // { text: "证件号", value: "idnumber", sortable: false },
         // { text: "微信号", value: "wechatnumber", sortable: false },
         // { text: "微信收款", value: "iswechatpay", sortable: false },
@@ -98,20 +116,33 @@ export default {
         { text: "安置编号", value: "parentId", sortable: false },
         { text: "推荐编号", value: "recommendnumber", sortable: false },
         { text: "余额", value: "balance", sortable: false },
-        { text: "业绩/账单", value: "detail", sortable: false },
-        { text: "操作", value: "action", sortable: false }
+        { text: "业绩/账单", value: "detail", sortable: false, width: 150 },
+        { text: "用户状态", value: "status", sortable: false },
+        { text: "操作", value: "action", sortable: false, width: 150 }
       ],
-      // isAudit: true,
-      queryKey: null,
-      query: {},
+      query: {
+        status: "init",
+        key: null
+      },
       users: [],
+      openUserChangeId: null,
       openUserInfoId: null,
       openUserBillId: null,
-      openUserAchievementId: null
+      openUserAchievementId: null,
+      snackMsg: {
+        isShow: false,
+        color: "success",
+        msg: ""
+      }
     };
   },
   methods: {
-    openRegister() {
+    openRegister(openUserChangeId) {
+      if (typeof openUserChangeId == "string") {
+        this.openUserChangeId = openUserChangeId;
+      } else {
+        this.openUserChangeId = null;
+      }
       this.$store.commit("openRegister", !this.$store.state.openRegister);
     },
     openUserInfo(openUserId) {
@@ -131,19 +162,65 @@ export default {
     },
     async userQuery() {
       this.$store.commit("openLoading", true);
-      // if (this.isAudit) {
-      //   this.query.status = "init";
-      // }
-      if (this.queryKey) {
-        this.query.id = this.queryKey;
-      } else {
-        delete this.query.id;
-      }
       let res = await this.$store.dispatch("userQuery", this.query);
       if (!res.err) {
         this.users = res.res;
       }
       this.$store.commit("openLoading", false);
+    },
+    async changeStatus(_id, username, status, operation) {
+      if (confirm(`确认${operation}用户 ${username}?`)) {
+        this.$store.commit("openLoading", true);
+        let res = await this.$store.dispatch("userUpdate", {
+          _id,
+          status
+        });
+        this.$store.commit("openLoading", false);
+        if (res.err) {
+          this.snackMsg.isShow = true;
+          this.snackMsg.color = "warning";
+          this.snackMsg.msg = res.res;
+        } else {
+          this.snackMsg.isShow = true;
+          this.snackMsg.color = "success";
+          this.snackMsg.msg = "操作成功";
+          this.userQuery();
+        }
+      }
+    },
+    async del(_id, username) {
+      if (confirm(`确认删除用户 ${username}?`)) {
+        this.$store.commit("openLoading", true);
+        let res = await this.$store.dispatch("userDelete", { _id });
+        this.$store.commit("openLoading", false);
+        if (res.err) {
+          this.snackMsg.isShow = true;
+          this.snackMsg.color = "warning";
+          this.snackMsg.msg = res.res;
+        } else {
+          this.snackMsg.isShow = true;
+          this.snackMsg.color = "success";
+          this.snackMsg.msg = "操作成功";
+          this.userQuery();
+        }
+      }
+    }
+  },
+  filters: {
+    formatDate(timestamp) {
+      return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    },
+    toStatus(status) {
+      switch (status) {
+        case "init":
+          return "待审核";
+        case "normal":
+          return "正常";
+        case "freeze":
+          return "已冻结";
+        default:
+          break;
+      }
     }
   }
 };

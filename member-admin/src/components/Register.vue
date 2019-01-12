@@ -6,13 +6,15 @@
           <v-btn icon dark @click="openRegister = false">
             <v-icon>close</v-icon>
           </v-btn>
-          <v-toolbar-title>会员注册</v-toolbar-title>
+          <v-toolbar-title v-if="openUserChangeId">会员修改</v-toolbar-title>
+          <v-toolbar-title v-else>会员注册</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn slot="activator" icon @click="resetForm">
+            <v-btn v-if="!openUserChangeId" slot="activator" icon @click="resetForm">
               <v-icon>refresh</v-icon>
             </v-btn>
-            <v-btn dark flat @click="confirm">提交申请</v-btn>
+            <v-btn v-if="openUserChangeId" dark flat @click="confirm">提交修改</v-btn>
+            <v-btn v-else dark flat @click="confirm">提交申请</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-container>
@@ -94,7 +96,26 @@
             <v-flex xs12>
               <v-text-field ref="level" v-model="form.level" label="级别" readonly></v-text-field>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs6>
+              <v-select
+                ref="province"
+                @change="changeProvince"
+                v-model="form.province"
+                :items="provinces"
+                required
+                :rules="[rules.required]"
+              ></v-select>
+            </v-flex>
+            <v-flex xs6>
+              <v-select
+                ref="city"
+                v-model="form.city"
+                :items="citys"
+                required
+                :rules="[rules.required]"
+              ></v-select>
+            </v-flex>
+            <!-- <v-flex xs12>
               <v-text-field
                 ref="address"
                 v-model="form.address"
@@ -103,8 +124,8 @@
                 :rules="[rules.required]"
                 clearable
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12>
+            </v-flex>-->
+            <v-flex xs12 v-show="allowChange">
               <v-text-field
                 ref="parentId"
                 v-model="form.parentId"
@@ -114,7 +135,7 @@
                 clearable
               ></v-text-field>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs12 v-show="allowChange">
               <v-text-field
                 ref="recommendnumber"
                 v-model="form.recommendnumber"
@@ -134,6 +155,7 @@
   </v-layout>
 </template>
 <script>
+import pc from "../plugins/pc.js";
 export default {
   data() {
     return {
@@ -153,6 +175,8 @@ export default {
         color: "success",
         msg: ""
       },
+      provinces: [],
+      citys: [],
       form: {
         username: "",
         idnumber: "",
@@ -162,16 +186,50 @@ export default {
         banknumber: "",
         password: "",
         level: "普通会员",
-        address: "",
+        province: "",
+        city: "",
+        // address: "",
         parentId: localStorage.getItem("id"),
         recommendnumber: localStorage.getItem("id")
       },
-      formHasErrors: false
+      formHasErrors: false,
+      allowChange: true
     };
+  },
+  props: ["openUserChangeId"],
+  computed: {
+    openRegister: {
+      get() {
+        if (this.$store.state.openRegister == true && !this.form.username) {
+          // 初始化省市二级联动
+          for (let province of pc) {
+            this.provinces.push(province.name);
+          }
+          this.form.province = pc[0].name;
+          for (let city of pc[0].child) {
+            this.citys.push(city.name);
+          }
+          this.form.city = this.citys[0];
+          // 修改时读取用户信息
+          if (this.openUserChangeId) {
+            this.userGet();
+          }
+        }
+        return this.$store.state.openRegister;
+      },
+      set(val) {
+        this.resetForm();
+        this.$store.commit("openRegister", val);
+      }
+    }
   },
   methods: {
     resetForm() {
+      // this.openUserChangeId = null;
+      this.allowChange = true;
       this.formHasErrors = false;
+      this.provinces = [];
+      this.citys = [];
       Object.keys(this.form).forEach(f => {
         if (f != "level" && f != "parentId" && f != "recommendnumber") {
           this.$refs[f].reset();
@@ -184,12 +242,22 @@ export default {
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        let res = await this.$store.dispatch("reg", this.form);
+        let res = {};
+        if (this.openUserChangeId) {
+          let data = { _id: this.openUserChangeId, ...this.form };
+          res = await this.$store.dispatch("userUpdate", data);
+        } else {
+          res = await this.$store.dispatch("reg", this.form);
+        }
         if (res.err) {
           this.snackMsg.msg = res.res;
           this.snackMsg.color = "warning";
         } else {
-          this.snackMsg.msg = "注册申请成功";
+          if (this.openUserChangeId) {
+            this.snackMsg.msg = "修改成功";
+          } else {
+            this.snackMsg.msg = "注册申请成功";
+          }
           this.snackMsg.color = "success";
           this.openRegister = false;
           this.resetForm();
@@ -200,16 +268,54 @@ export default {
         this.snackMsg.color = "warning";
       }
       this.snackMsg.isShow = true;
-    }
-  },
-  computed: {
-    openRegister: {
-      get() {
-        return this.$store.state.openRegister;
-      },
-      set(val) {
-        this.$store.commit("openRegister", val);
+    },
+    async userGet() {
+      this.$store.commit("openLoading", true);
+      this.allowChange = false;
+      let res = await this.$store.dispatch("userGet", {
+        _id: this.openUserChangeId
+      });
+      if (!res.err) {
+        this.form.username = res.res.username;
+        this.form.idnumber = res.res.idnumber;
+        this.form.mobile = res.res.mobile;
+        this.form.wechatnumber = res.res.wechatnumber;
+        this.form.bankname = res.res.bankname;
+        this.form.banknumber = res.res.banknumber;
+        this.form.password = res.res.password;
+        this.form.level = res.res.level;
+        // (this.form.address = res.res.address),
+        for (let province of pc) {
+          if (province.name == res.res.province) {
+            this.citys = [];
+            for (let city of province.child) {
+              this.citys.push(city.name);
+            }
+            break;
+          }
+        }
+        this.form.province = res.res.province;
+        this.form.city = res.res.city;
+        this.form.parentId = res.res.parentId;
+        this.form.recommendnumber = res.res.recommendnumber;
+        if (res.res.status == "init") {
+          this.allowChange = true;
+        }
       }
+      this.$store.commit("openLoading", false);
+    },
+    changeProvince(e) {
+      this.citys = [];
+      for (let province of pc) {
+        if (province.name == e) {
+          for (let city of province.child) {
+            this.citys.push(city.name);
+          }
+          break;
+        }
+      }
+      this.form.province = e;
+      this.form.city = this.citys[0];
     }
   }
 };

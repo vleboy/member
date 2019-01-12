@@ -55,7 +55,6 @@ router.post('/user/insert', async (ctx, next) => {
     }
     else {
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
-
     }
     //查找推荐人
     r = await mongodb.find(collection, { id: inparam.recommendnumber })
@@ -117,8 +116,11 @@ router.post('/user/insert', async (ctx, next) => {
 
         inparam.levelIndex = r[0].levelIndex
         inparam.levelIndex.push(inparam.id)
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 205a12852034c8e1b1ee6eee24bec236d8eb100d
     } else {
         if (inparam.parentId === 'root') {
             inparam.levelIndex = [inparam.id]//系统第一人
@@ -151,7 +153,9 @@ router.post('/user/update', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
-    checkLogin(inparam)
+    if (!inparam.status) {
+        checkUpdate(inparam)
+    }
     if (token.role == 'admin' || token.id == inparam.id) {
         return next()
     } else {
@@ -159,6 +163,19 @@ router.post('/user/update', async (ctx, next) => {
     }
 })
 
+/**
+ * 删除用户中间件
+ */
+router.post('/user/delete', async (ctx, next) => {
+    //当前登录用户是否具备修改目标用户权限
+    let token = ctx.tokenVerify
+    let inparam = ctx.request.body
+    if (token.role == 'admin') {
+        return next()
+    } else {
+        throw { err: true, res: '该用户没有删除权限' }
+    }
+})
 
 /**
  * 查询用户中间件

@@ -45,14 +45,16 @@
     <v-content>
       <router-view/>
     </v-content>
-    <!-- <v-footer app fixed>
-      <div>2018-2019 &copy; </div>
-    </v-footer>-->
+    <Loading/>
   </div>
 </template>
 
 <script>
+import Loading from "../components/Loading";
 export default {
+  components: {
+    Loading
+  },
   data: () => ({
     drawer: null
   }),

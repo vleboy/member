@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-// const domain = `http://${window.location.hostname}:3636`
-const domain = 'http://home.vleboy.com:3636'
+// const domain = 'http://localhost:3636'
+// const domain = 'http://home.vleboy.com:3636'
+const domain = `http://${window.location.hostname}:3636`
 
 Vue.use(Vuex)
 
@@ -53,6 +54,10 @@ const vuex = new Vuex.Store({
       const res = await axios.post(`${domain}/xnosql/user/update`, data)
       return res.data
     },
+    async userDelete(state, data) {
+      const res = await axios.get(`${domain}/xnosql/user/delete/${data._id}`)
+      return res.data
+    },
     async billInsert(state, data) {
       const res = await axios.post(`${domain}/xnosql/bill/insert`, data)
       return res.data
@@ -72,7 +77,11 @@ const vuex = new Vuex.Store({
     async orderInsert(state, data) {
       const res = await axios.post(`${domain}/xnosql/order/insert`, data)
       return res.data
-    }
+    },
+    async orderUpdate(state, data) {
+      const res = await axios.post(`${domain}/xnosql/order/update`, data)
+      return res.data
+    },
   }
 })
 export default vuex
