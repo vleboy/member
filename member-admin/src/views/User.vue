@@ -46,18 +46,21 @@
               <a @click="openUserAchievement(props.item.id)">业绩</a> |
               <a @click="openUserBill(props.item.id)">账单</a>
             </td>
+            <td>{{ props.item.status | toStatus}}</td>
             <td>
               <span v-if="props.item.status == 'init'">
                 <a @click="changeStatus(props.item._id,props.item.username,'normal','审核')">审核</a> |
               </span>
               <a @click="openRegister(props.item._id)">改</a> |
-              <span v-if="props.item.status != 'freeze'">
+              <span v-if="props.item.status == 'normal'">
                 <a @click="changeStatus(props.item._id,props.item.username,'freeze','冻结')">冻</a> |
               </span>
               <span v-if="props.item.status == 'freeze'">
                 <a @click="changeStatus(props.item._id,props.item.username,'normal','解冻')">解冻</a> |
               </span>
-              <a @click="del(props.item._id,props.item.username)">删</a>
+              <span v-if="props.item.status == 'init'">
+                <a @click="del(props.item._id,props.item.username)">删</a>
+              </span>
             </td>
           </template>
         </v-data-table>
@@ -113,8 +116,9 @@ export default {
         { text: "安置编号", value: "parentId", sortable: false },
         { text: "推荐编号", value: "recommendnumber", sortable: false },
         { text: "余额", value: "balance", sortable: false },
-        { text: "业绩/账单", value: "detail", sortable: false },
-        { text: "操作", value: "action", sortable: false }
+        { text: "业绩/账单", value: "detail", sortable: false, width: 150 },
+        { text: "用户状态", value: "status", sortable: false },
+        { text: "操作", value: "action", sortable: false, width: 150 }
       ],
       query: {
         status: "init",
@@ -205,6 +209,18 @@ export default {
   filters: {
     formatDate(timestamp) {
       return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    },
+    toStatus(status) {
+      switch (status) {
+        case "init":
+          return "待审核";
+        case "normal":
+          return "正常";
+        case "freeze":
+          return "已冻结";
+        default:
+          break;
+      }
     }
   }
 };
