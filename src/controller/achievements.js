@@ -21,7 +21,7 @@ router.post('/test', async (ctx, next) => {
     let a = await updateUser(inparam, myDate)
     let b = await getReferralBonuses(inparam, myDate)
     let c = await getMarketBonuses(inparam, myDate)
-    
+
 
     ctx.body = { err: false, res: 'sucess' }
 
@@ -30,7 +30,7 @@ router.post('/test', async (ctx, next) => {
 })
 
 async function updateUser(inparam, date) {
-    console.log('激活价格',inparam.price)
+    console.log('激活价格', inparam.price)
     if (inparam.people[0].status.status != 'normal') {
         await mongodb.update('user', { _id: ObjectId(inparam.people[0]._id) }, { $set: { status: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } } })
     } else {
@@ -39,10 +39,9 @@ async function updateUser(inparam, date) {
 }
 
 //推荐奖与回本奖
-//规则1.每个人当天所获得的市场奖不能大于5000元。
-//规则2.奖金金额按照当前所得奖金者的左右区中扣除掉第一层金额的金额总和之小区的15%计算
-//规则3.每天的00:00~00:03,23:57~24:00,为系统结算期，此时不予激活用户
-//规则4.领导奖为当前获得市场奖的人的上级50%，上上级20%，上上上级10%
+//规则1.以安置位置来算，若旗下有一名非0点位成员，获得该成员点位金额的20%
+//规则2.以安置位置来算，若旗下有两名非0点位成员，获得该成员点位金额的100%
+//规则3.以安置点位来算, 若旗下有一名0点位成员，获得其中非0点位成员点位金额的20%
 async function getReferralBonuses(inparam, date) {
     inparam.id          //当前激活用户
     inparam.initPrice   //当前激活选择的用户的套餐价格
@@ -90,36 +89,45 @@ async function getReferralBonuses(inparam, date) {
     }
 }
 
-
+//市场奖和领导奖
+//规则1.每个人当天所获得的市场奖不能大于5000元。
+//规则2.奖金金额按照当前所得奖金者的左右区中扣除掉第一层金额的金额总和之小区的15%计算
+//规则3.每天的00:00~00:03,23:57~24:00,为系统结算期，此时不予激活用户
+//规则4.领导奖为当前获得市场奖的人的直接推荐人获得50%，直接推荐人的推荐人20%，直接推荐人的推荐人的推荐人10%
 async function getMarketBonuses(inparam, date) {
-    //如果当前当前状态变更的用户，位置等级小于3,则不会出现市场奖
-    let AchievementsBonuses = []
+
     let AchievementsBonuse = { userId: '', project: '市场奖', type: 'IN', amount: 0, createdAt: moment(date).valueOf(), remark: '当期市场奖', surplus: 0 }
-    console.log('当前用户层级长度', inparam.people[0].levelIndex.length)
+
+    //如果当前当前状态变更的用户，位置等级小于3,则不会出现市场奖
     if (inparam.people[0].levelIndex.length < 3) {
+        console.log(`当前用户【${inparam.people[0].username}】层级长度为【`, inparam.people[0].levelIndex.length, '】不会出现市场奖励')
         return
     }
-    console.log(`当前用户长度符合要求`)
+    console.log(`当前用户【${inparam.people[0].username}】层级长度为【${inparam.people[0].levelIndex.length}】, 可能会出现市场奖励'`)
     //获取当前可能需要返奖的用户
-    let bonuseUser = inparam.people[0].levelIndex.reverse()
-    let revPeopleLevelIndex = bonuseUser
-    if (bonuseUser.length > 0) {
-        bonuseUser = _.drop(bonuseUser, 2)
+    let bonuseUserIdGroup = inparam.people[0].levelIndex.reverse()
+    let nowPeopleLevelIndex = bonuseUserIdGroup
+    if (bonuseUserIdGroup.length > 0) {
+        bonuseUserIdGroup = _.drop(bonuseUserIdGroup, 2)
     }
+    //获取所有用户的信息
     let root = await mongodb.find('user', { levelIndex: 'root' })
-    //找到该用户的左区和该用户的右区
-    for (let index = 0; index < bonuseUser.length; index++) {
-        //for (let index = 0; index < 1; index++) {
+    //判断可能需要返奖的用户哪些需要返奖
+    for (let index = 0; index < bonuseUserIdGroup.length; index++) {
+        //从可能需要返奖的组里抽出一个人
+
         let activeBonuses = []
+        //查出该人的有效记奖励点位
         root.map((item) => {
-            if (item.levelIndex.indexOf(bonuseUser[index]) != -1) {
+            if (item.levelIndex.indexOf(bonuseUserIdGroup[index]) != -1) {
                 activeBonuses.push(item)
             }
         })
-        let left = []; let right = [];let leftName = [] ;let rightName = []
+        //将有效奖励点位，分区
+        let left = []; let right = []; let leftName = []; let rightName = []
         activeBonuses.map((item) => {
-            if (item.id != bonuseUser[index]) {
-                if (item.levelIndex.indexOf(revPeopleLevelIndex[index + 1]) != -1) {
+            if (item.id != bonuseUserIdGroup[index]) {
+                if (item.levelIndex.indexOf(nowPeopleLevelIndex[index + 1]) != -1) {
                     left.push(item)
                     leftName.push(item.username)
                 } else {
@@ -128,89 +136,92 @@ async function getMarketBonuses(inparam, date) {
                 }
             }
         })
-        console.log(`BonuseUser:${bonuseUser[index]},left:${leftName},right:${rightName}`)
-        //处理订单逻辑
+        console.log(`当前可能获取奖励的用户【${bonuseUserIdGroup[index]}】其有效奖励点位左区为:【${leftName}】,右区为:【${rightName}】`)
+        //处理奖励逻辑
         let leftPrice = 0; let rightPrice = 0;
-        let rr = await mongodb.find('user',{id:bonuseUser[index]})
-        console.log('rr',rr)
+        let bonuseUser = await mongodb.find('user', { id: bonuseUserIdGroup[index] })
+        console.log('开始计算当前可能获取奖励的用户【', bonuseUser[0].username, '】的左区金额')
+        //计算左区金额
         left.map((item) => {
-            if (item.id != rr[0].referralBonuses.phase1.id && item.id != rr[0].referralBonuses.phase2.id) {
+            if (item.id != bonuseUser[0].referralBonuses.phase1.id && item.id != bonuseUser[0].referralBonuses.phase2.id) {
                 leftPrice = item.status.price + leftPrice
-                console.log('leftPrice',leftPrice)
+                // console.log('leftPrice', leftPrice)
             }
-
-        })//计算左区金额
+        })
+        console.log('左区金额统计完毕，为【', leftPrice,'】')
+        console.log('开始计算当前可能获取奖励的用户【', bonuseUser[0].username, '】的右区金额')
+        //计算右区金额
         right.map((item) => {
-            if (item.id != rr[0].referralBonuses.phase1.id && item.id != rr[0].referralBonuses.phase2.id) {
+            if (item.id != bonuseUser[0].referralBonuses.phase1.id && item.id != bonuseUser[0].referralBonuses.phase2.id) {
                 rightPrice = item.status.price + rightPrice
-                console.log('rightPrice',rightPrice)
+                // console.log('rightPrice', rightPrice)
             }
-        })//计算右区金额
+        })
+        console.log('右区金额统计完毕，为【', rightPrice,'】')
+        console.log('开始计算当前可能获取奖励的用户【', bonuseUser[0].username, '】的右区金额')
+        console.log('开始对比左区与右区的金额大小，并计算出总奖励金额')
         if (leftPrice <= rightPrice) {
-            
+
             AchievementsBonuse.amount = leftPrice * 0.15//左区计奖
         } else {
-            
+
             AchievementsBonuse.amount = rightPrice * 0.15//右区计奖
         }
-        AchievementsBonuse.userId = bonuseUser[index]
-        //判断当日是否已经拥有5000
-        //获取第二日0点
-
-        let r = await mongodb.find('achievement', { userId: bonuseUser[index], project: '市场奖' })
-
-        //let a = moment(r[0].createdAt).isBefore()
-
-        //console.log(moment(date).isBefore(moment(r[0].createdAt).endOf('day')))
-
-        if (r.length > 0) {
-            //已经存在过奖励
-            let Bonuses = r[0].amount + AchievementsBonuse.amount - r[0].surplus
-            console.log('AchievementsBonuse_已经',AchievementsBonuse,'之前的奖励是',r[0].amount)
-            if (Bonuses > 5000) { AchievementsBonuse.amount = 5000, AchievementsBonuse.surplus = Bonuses - 5000 }
-            else { AchievementsBonuse.amount = Bonuses }
-            console.log('AchievementsBonuse',AchievementsBonuse)
-            if (moment(date).isBefore(moment(r[0].createdAt).endOf('day'))) {
-                let o = r[0]
-                o.amount = AchievementsBonuse.amount; o.createdAt = moment(date).valueOf()
-                await mongodb.update('achievement', { _id: ObjectId(r[0]._id) }, { $set: o }) //更新
-
-                //await mongodb.update('achievement', { _id: ObjectId(r[0]._id) }, { $set: { amount: AchievementsBonuse, createdAt: moment(date).valueOf() } }) //更新
+        console.log('开始对比左区与右区的金额大小，并计算出总奖励金额')
+        console.log('当前可能获取奖励的用户【', bonuseUser[0].username, '】获得的奖励金额为【', AchievementsBonuse.amount, '】')
+        AchievementsBonuse.userId = bonuseUserIdGroup[index]
+        console.log('查询当前可能获得奖励的用户【', bonuseUser[0].username, '】,今日已经获取的市场奖励金额')
+        let r = await mongodb.find('achievement', { userId: bonuseUserIdGroup[index], project: '市场奖' })
+        console.log('查询当前可能获得奖励的用户是否今日是否获得过市场奖励')
+        let isToday = null
+        r.map( (item) => {
+            if (moment(item.createdAt).isAfter(moment(data).startOf('day'))) {
+                isToday = item
             } else {
-                await mongodb.insert('achievement', AchievementsBonuse) //新建
+                isToday = null
             }
+        })
+        if (isToday != null) {
+            console.log('当前可能获得奖励的用户【', bonuseUser[0].username, '】已经获得过市场奖励,已获得的奖励是【', isToday.amount, '】')
+            let todayBonuses = isToday.amount + AchievementsBonuse.amount - isToday.surplus
+            console.log('当前可能获得奖励的用户【', bonuseUser[0].username, '】今日获得的奖励为【', todayBonuses, '】')
+            console.log('判断今日获得奖励是否大于5000')
+            if (todayBonuses > 5000) {
+                AchievementsBonuse.amount = 5000, AchievementsBonuse.surplus = todayBonuses - 5000
+                console.log('当前可能获得奖励的用户【', bonuseUser[0].username, '】今日获得的奖励为【', todayBonuses, '】大于5000，根据规则，其今日可获得奖励为【5000】')
+            } else {
+                AchievementsBonuse.amount = todayBonuses
+                console.log('当前可能获得奖励的用户【', bonuseUser[0].username, '】今日获得的奖励为【', todayBonuses, '】大于5000，根据规则，其今日可获得奖励为【', todayBonuses, '】')
+            }
+            isToday.amount = AchievementsBonuse.amount; isToday.createdAt = moment(date).valueOf()
+            await mongodb.update('achievement', { _id: ObjectId(r[0]._id) }, { $set: isToday })
 
         } else {
-            console.log('AchievementsBonuse_新建',AchievementsBonuse)
-            await mongodb.insert('achievement', AchievementsBonuse)//第一次获得市场奖 新建
+            console.log('当前可能获得奖励的用户【', bonuseUser[0].username, '】今日第一次获得市场奖')
+            await mongodb.insert('achievement', AchievementsBonuse)
         }
+        //计算领导奖励
+        let leaderLevel1Bonuse = AchievementsBonuse.amount * 0.50
+        let leaderLevel2Bonuse = AchievementsBonuse.amount * 0.20
+        let leaderLevel3Bonuse = AchievementsBonuse.amount * 0.10
+        let leader = bonuseUser[0].recommendIndex.reverse()
+        let leaderBonuse = { userId: '', project: '领导奖', type: 'IN', amount: 0, createdAt: moment(date).valueOf(), remark: '领导奖' }
 
-        //AchievementsBonuses.push(AchievementsBonuse)
-        console.log('AchievementsBonuseEnd',AchievementsBonuse)
-        let leaderLevel1 = AchievementsBonuse.amount * 0.50
-        let leaderLevel2 = AchievementsBonuse.amount * 0.20
-        let leaderLevel3 = AchievementsBonuse.amount * 0.10
-        let leader = rr.levelIndex.reverse()
-        let leaderBonuse = { userId: '', project: '领导奖', type: 'IN', amount: 0, createdAt: moment(date).valueOf(), remark: '领导奖'}
-
-        if(leader[1]){
+        if (leader[1]) {
             leaderBonuse.userId = leader[1]
-            leaderBonuse.amount = leaderLevel1
-            await mongodb.insert('achievement',leaderBonuse)
+            leaderBonuse.amount = leaderLevel1Bonuse
+            await mongodb.insert('achievement', leaderBonuse)
         }
-        if(leader[2]){
+        if (leader[2]) {
             leaderBonuse.userId = leader[2]
-            leaderBonuse.amount = leaderLevel2
-            await mongodb.insert('achievement',leaderBonuse)
+            leaderBonuse.amount = leaderLevel2Bonuse
+            await mongodb.insert('achievement', leaderBonuse)
         }
-        if(leader[3]){
+        if (leader[3]) {
             leaderBonuse.userId = leader[3]
-            leaderBonuse.amount = leaderLevel3
-            await mongodb.insert('achievement',leaderBonuse)
+            leaderBonuse.amount = leaderLevel3Bonuse
+            await mongodb.insert('achievement', leaderBonuse)
         }
-        
-        //await mongodb.insert('achievement', AchievementsBonuse)//第一次获得市场奖 新建
-
 
     }
 
