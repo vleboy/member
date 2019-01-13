@@ -51,6 +51,19 @@ export default {
   created: function() {
     this.userGet();
   },
+  computed: {
+    openMyAccount: {
+      get() {
+        if (this.$store.state.openMyAccount) {
+          this.userGet();
+        }
+        return this.$store.state.openMyAccount;
+      },
+      set(val) {
+        this.$store.commit("openMyAccount", val);
+      }
+    }
+  },
   data() {
     return {
       rules: {
@@ -109,17 +122,6 @@ export default {
       }
       this.snackMsg.isShow = true;
       this.$store.commit("openLoading", false);
-    }
-  },
-  computed: {
-    openMyAccount: {
-      get() {
-        this.userGet();
-        return this.$store.state.openMyAccount;
-      },
-      set(val) {
-        this.$store.commit("openMyAccount", val);
-      }
     }
   }
 };

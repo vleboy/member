@@ -74,6 +74,16 @@ export default {
   created: function() {
     this.userGet();
   },
+  computed: {
+    openMyDelivery: {
+      get() {
+        return this.$store.state.openMyDelivery;
+      },
+      set(val) {
+        this.$store.commit("openMyDelivery", val);
+      }
+    }
+  },
   data() {
     return {
       rules: {
@@ -139,16 +149,6 @@ export default {
       }
       this.snackMsg.isShow = true;
       this.$store.commit("openLoading", false);
-    }
-  },
-  computed: {
-    openMyDelivery: {
-      get() {
-        return this.$store.state.openMyDelivery;
-      },
-      set(val) {
-        this.$store.commit("openMyDelivery", val);
-      }
     }
   }
 };

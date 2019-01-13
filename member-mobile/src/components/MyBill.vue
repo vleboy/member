@@ -30,6 +30,19 @@ export default {
   created: function() {
     this.billQuery();
   },
+  computed: {
+    openMyBill: {
+      get() {
+        if (this.$store.state.openMyBill) {
+          this.billQuery();
+        }
+        return this.$store.state.openMyBill;
+      },
+      set(val) {
+        this.$store.commit("openMyBill", val);
+      }
+    }
+  },
   data() {
     return {
       headers: [
@@ -42,17 +55,6 @@ export default {
       ],
       bills: []
     };
-  },
-  computed: {
-    openMyBill: {
-      get() {
-        this.billQuery();
-        return this.$store.state.openMyBill;
-      },
-      set(val) {
-        this.$store.commit("openMyBill", val);
-      }
-    }
   },
   methods: {
     async billQuery() {

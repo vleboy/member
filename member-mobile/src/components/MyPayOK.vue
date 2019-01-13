@@ -33,11 +33,6 @@
 <script>
 export default {
   created: function() {},
-  data() {
-    return {};
-  },
-  props: ["order"],
-  methods: {},
   computed: {
     openMyPayOK: {
       get() {
@@ -47,6 +42,11 @@ export default {
         this.$store.commit("openMyPayOK", val);
       }
     }
-  }
+  },
+  data() {
+    return {};
+  },
+  props: ["order"],
+  methods: {}
 };
 </script>
