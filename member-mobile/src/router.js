@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/Login.vue'
-import Home from './views/Home.vue'
+import Shopping from './views/Shopping.vue'
 import Team from './views/Team.vue'
 import Person from './views/Person.vue'
 import Wallet from './views/Wallet.vue'
@@ -16,9 +16,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/home',
-      name: 'home',
-      component: Home
+      path: '/shopping',
+      name: 'shopping',
+      component: Shopping
     },
     {
       path: '/team',

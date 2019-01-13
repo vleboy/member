@@ -64,6 +64,16 @@ export default {
     MyPayOK
   },
   created: function() {},
+  computed: {
+    openMyPay: {
+      get() {
+        return this.$store.state.openMyPay;
+      },
+      set(val) {
+        this.$store.commit("openMyPay", val);
+      }
+    }
+  },
   data() {
     return {
       snackMsg: {
@@ -101,16 +111,6 @@ export default {
       }
       this.$emit("child-event", {});
       this.$store.commit("openLoading", false);
-    }
-  },
-  computed: {
-    openMyPay: {
-      get() {
-        return this.$store.state.openMyPay;
-      },
-      set(val) {
-        this.$store.commit("openMyPay", val);
-      }
     }
   }
 };

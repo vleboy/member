@@ -72,6 +72,19 @@
 
 <script>
 export default {
+  computed: {
+    openUserInfo: {
+      get() {
+        if (this.openUserId) {
+          this.userGet();
+        }
+        return this.$store.state.openUserInfo;
+      },
+      set(val) {
+        this.$store.commit("openUserInfo", val);
+      }
+    }
+  },
   data: () => ({
     user: {
       username: "",
@@ -91,17 +104,6 @@ export default {
     }
   }),
   props: ["openUserId"],
-  computed: {
-    openUserInfo: {
-      get() {
-        this.openUserId && this.userGet();
-        return this.$store.state.openUserInfo;
-      },
-      set(val) {
-        this.$store.commit("openUserInfo", val);
-      }
-    }
-  },
   methods: {
     async userGet() {
       this.$store.commit("openLoading", true);

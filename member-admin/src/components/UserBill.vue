@@ -27,6 +27,19 @@
 <script>
 import dayjs from "dayjs";
 export default {
+  computed: {
+    openUserBill: {
+      get() {
+        if (this.openUserId) {
+          this.billQuery();
+        }
+        return this.$store.state.openUserBill;
+      },
+      set(val) {
+        this.$store.commit("openUserBill", val);
+      }
+    }
+  },
   data() {
     return {
       headers: [
@@ -41,17 +54,6 @@ export default {
     };
   },
   props: ["openUserId"],
-  computed: {
-    openUserBill: {
-      get() {
-        this.openUserId && this.billQuery();
-        return this.$store.state.openUserBill;
-      },
-      set(val) {
-        this.$store.commit("openUserBill", val);
-      }
-    }
-  },
   methods: {
     async billQuery() {
       this.$store.commit("openLoading", true);

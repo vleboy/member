@@ -74,7 +74,7 @@ export default {
   created: function() {
     // 身份认证有效期内，直接跳转
     if (localStorage.getItem("token")) {
-      this.$router.push({ path: "/home" });
+      this.$router.push({ path: "/person" });
     }
   },
   methods: {
@@ -95,7 +95,7 @@ export default {
           localStorage.setItem("_id", res.res._id);
           localStorage.setItem("id", res.res.id);
           localStorage.setItem("token", res.res.token);
-          this.$router.push({ path: "/home" });
+          this.$router.push({ path: "/person" });
         }
       } else {
         this.snackMsg.isShow = true;

@@ -157,6 +157,32 @@
 <script>
 import pc from "../plugins/pc.js";
 export default {
+  computed: {
+    openRegister: {
+      get() {
+        if (this.$store.state.openRegister && !this.form.username) {
+          // 初始化省市二级联动
+          for (let province of pc) {
+            this.provinces.push(province.name);
+          }
+          this.form.province = pc[0].name;
+          for (let city of pc[0].child) {
+            this.citys.push(city.name);
+          }
+          this.form.city = this.citys[0];
+          // 修改时读取用户信息
+          if (this.openUserChangeId) {
+            this.userGet();
+          }
+        }
+        return this.$store.state.openRegister;
+      },
+      set(val) {
+        this.resetForm();
+        this.$store.commit("openRegister", val);
+      }
+    }
+  },
   data() {
     return {
       rules: {
@@ -197,32 +223,6 @@ export default {
     };
   },
   props: ["openUserChangeId"],
-  computed: {
-    openRegister: {
-      get() {
-        if (this.$store.state.openRegister == true && !this.form.username) {
-          // 初始化省市二级联动
-          for (let province of pc) {
-            this.provinces.push(province.name);
-          }
-          this.form.province = pc[0].name;
-          for (let city of pc[0].child) {
-            this.citys.push(city.name);
-          }
-          this.form.city = this.citys[0];
-          // 修改时读取用户信息
-          if (this.openUserChangeId) {
-            this.userGet();
-          }
-        }
-        return this.$store.state.openRegister;
-      },
-      set(val) {
-        this.resetForm();
-        this.$store.commit("openRegister", val);
-      }
-    }
-  },
   methods: {
     resetForm() {
       // this.openUserChangeId = null;

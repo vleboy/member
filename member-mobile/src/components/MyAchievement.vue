@@ -1,6 +1,11 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="openMyAchievement" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog
+      v-model="openMyAchievement"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="openMyAchievement = false">
@@ -26,6 +31,16 @@
 
 <script>
 export default {
+  computed: {
+    openMyAchievement: {
+      get() {
+        return this.$store.state.openMyAchievement;
+      },
+      set(val) {
+        this.$store.commit("openMyAchievement", val);
+      }
+    }
+  },
   data() {
     return {
       headers: [
@@ -47,16 +62,6 @@ export default {
         }
       ]
     };
-  },
-  computed: {
-    openMyAchievement: {
-      get() {
-        return this.$store.state.openMyAchievement;
-      },
-      set(val) {
-        this.$store.commit("openMyAchievement", val);
-      }
-    }
   }
 };
 </script>

@@ -14,14 +14,6 @@
 <script>
 export default {
   name: "Loading",
-  data: function() {
-    return {};
-  },
-  props: {
-    value: { type: Boolean, default: false },
-    message: { type: String, default: null },
-    progressColor: { type: String, default: "white" }
-  },
   computed: {
     openLoading: {
       get() {
@@ -31,6 +23,14 @@ export default {
         this.$store.commit("openLoading", val);
       }
     }
+  },
+  data: function() {
+    return {};
+  },
+  props: {
+    value: { type: Boolean, default: false },
+    message: { type: String, default: null },
+    progressColor: { type: String, default: "white" }
   }
 };
 </script>
