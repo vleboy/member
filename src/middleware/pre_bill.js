@@ -28,7 +28,7 @@ router.post('/bill/insert', async (ctx, next) => {
     let inparam = ctx.request.body
     check(inparam)
     let userRes = await mongodb.find('user', { id: inparam.userId })
-    if (token.role === 'admin' || token.id === inparam.userId) {
+    if (token.role == 'admin' || token.id == inparam.userId) {
         if (userRes[0].balance < inparam.amount) {
             throw { err: true, res: `余额不足，当前余额为${userRes[0].balance}` }
         } else {
@@ -44,7 +44,7 @@ router.post('/bill/insert', async (ctx, next) => {
 router.post('/bill/query', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
-    if (token.role === 'admin' || token.id === toUser.userId) {
+    if (token.role == 'admin' || token.id == toUser.userId) {
         return next()
     } else {
         throw { err: true, res: '该用户没有提现权限' }

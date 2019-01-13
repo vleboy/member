@@ -39,7 +39,7 @@ const checkUpdate = require('../util/check/update')
  * 
  * 生成参数
  * @param id 用户ID/编号，用于程序业务处理
- * @param status {status:状态：init待审核，freeze冻结，normal正常,changeAt:状态改变金额,price:状态金额，当激活用户时候选择的套餐金额}
+ * @param status {status:状态：init待审核，freeze冻结，normal正常,activateAt:状态改变金额,price:状态金额，当激活用户时候选择的套餐金额}
  * @param levelIndex 安置关系                   必填，
  * @param recommendIndex  推荐关系
  */
@@ -65,7 +65,7 @@ router.post('/user/insert', async (ctx, next) => {
         inparam.recommendIndex.push((inparam.id))
         inparam.status = { status: inparam.status || 'init', activateAt: null, price: 0 }
     } else {
-        if (inparam.recommendnumber === 'root') {
+        if (inparam.recommendnumber == 'root') {
             inparam.id = 'root'
             inparam.recommendIndex = [inparam.id]//系统第一人
             inparam.status = { status: inparam.status || 'normal', activateAt: Date.now(), price: 0 }
@@ -84,7 +84,7 @@ router.post('/user/insert', async (ctx, next) => {
         //console.log(a[0]) //推荐人对象
         //console.log(r[0]) //放置位置的父级对象
         //查看推荐人的安置编码是否在提交的安置编码人下的安置关系中
-        if (r[0].levelIndex.indexOf(a[0].id) === -1) {
+        if (r[0].levelIndex.indexOf(a[0].id) == -1) {
             throw { err: true, res: '该安置编码不合理' }//该安置编码不合理
         }
         //只能在激活的用户下安置新用户
@@ -117,7 +117,7 @@ router.post('/user/insert', async (ctx, next) => {
         inparam.levelIndex = r[0].levelIndex
         inparam.levelIndex.push(inparam.id)
     } else {
-        if (inparam.parentId === 'root') {
+        if (inparam.parentId == 'root') {
             inparam.levelIndex = [inparam.id]//系统第一人
             inparam.referralBonuses = {
                 status: 'null',

@@ -4,6 +4,7 @@ const moment = require('moment');
 const Router = require('koa-router')
 const router = new Router()
 const ObjectId = require('mongodb').ObjectID
+
 router.post('/test', async (ctx, next) => {
     myDate = new Date()
     if ((myDate.getHours() == 0 && myDate.getMinutes() < 3) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
@@ -18,9 +19,10 @@ router.post('/test', async (ctx, next) => {
     const father = await mongodb.find('user', { id: people[0].parentId })//查出当前状态变更的用户的上级
     inparam.people = people; inparam.father = father;
     inparam.price = inparam.initPrice
-    let a = await updateUser(inparam, myDate)
-    let b = await getReferralBonuses(inparam, myDate)
-    let c = await getMarketBonuses(inparam, myDate)
+    //记录需要返奖业绩，但不更新余额（余额需要在结算期更新，这里只更新业绩信息）
+    await updateUser(inparam, myDate)
+    await getReferralBonuses(inparam, myDate)
+    await getMarketBonuses(inparam, myDate)
 
 
     ctx.body = { err: false, res: 'sucess' }
@@ -62,7 +64,7 @@ async function getReferralBonuses(inparam, date) {
             console.log(`用户【${inparam.father[0].id}】获得第一阶段推荐奖`)
             console.log(`用户【${inparam.father[0].id}】第一阶段的推荐奖奖金系数为0.2`)
             console.log(`用户${inparam.father[0].id}获得第一阶段推荐奖，奖金为${o.phase1.price}`)
-            
+
             await mongodb.update('user', { _id: ObjectId(inparam.father[0]._id) }, { $set: { referralBonuses: o } })
             await mongodb.insert('achievement', { userId: inparam.father[0].id, project: '推荐奖', type: 'IN', amount: Math.abs(inparam.initPrice * 0.2), createdAt: moment(date).valueOf(), remark: '第一阶段' })
             return { userId: inparam.father[0].id, project: '推荐奖', type: 'IN', amount: Math.abs(inparam.initPrice * 0.2), createdAt: moment(date).valueOf(), remark: '第一阶段' }
@@ -236,11 +238,6 @@ async function getMarketBonuses(inparam, date) {
 
     }
 
-    //获取用户安置的根用户
-    //获取当前用户所在层级
-    //判断当前层级是否能够触发返奖
-    //判断触发返奖的用户数组
-    //记录需要返奖业绩，但不更新余额（余额需要在结算期更新，这里只更新业绩信息）
 }
 
 

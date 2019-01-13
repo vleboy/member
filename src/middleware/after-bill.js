@@ -16,7 +16,7 @@ const collection = 'bill'
 router.post('/bill/insert', async (ctx, next) => {
     let inparam = ctx.request.body
     let amount = Math.abs(inparam.amount)
-    if (inparam.type === 'OUT') {
+    if (inparam.type == 'OUT') {
         amount *= -1
     }
     await mongodb.update('user', { _id: ObjectId(ctx._id) }, { $inc: { balance: amount } })

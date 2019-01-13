@@ -17,6 +17,7 @@ const xlog = require('koa-xlog')                                            // k
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })     // 日志服务
 
+const settlement = require('./src/server/settlement')
 
 // 初始化应用服务
 const app = new Koa()
@@ -38,6 +39,8 @@ xnosql.init(app, config.server)                 // 初始化mongodb连接
 
 // 启动应用服务
 app.listen(port)
+
+setInterval(settlement,1500)
 log.info(`XServer应用启动【执行环境:${process.env.NODE_ENV},端口:${port}】`)
 log.warn(`模拟用户登录路径【localhost:${port}${config.server.controllerRoot}/auth/login】`)
 log.warn(`静态资源访问路径【localhost:${port}${staticRoot}*】`)

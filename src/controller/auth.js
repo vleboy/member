@@ -23,7 +23,7 @@ router.use('/login', async (ctx, next) => {
    
     if (r.length > 0) {
         inparam._id = r[0]._id ; inparam.id = r[0].id
-        if (inparam.password && inparam.password === r[0].password){
+        if (inparam.password && inparam.password == r[0].password){
             ctx.tokenSign = jwt.sign({ role:'admin',_id:r[0]._id,id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
             return next()
         }else{
