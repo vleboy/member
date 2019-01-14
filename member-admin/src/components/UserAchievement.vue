@@ -48,12 +48,10 @@ export default {
   data() {
     return {
       headers: [
-        { text: "时间", value: "createdAt", sortable: false },
-        { text: "项目", value: "project", sortable: false },
-        { text: "类型", value: "type", sortable: false },
-        { text: "金额", value: "amount", sortable: false },
-        { text: "余额", value: "balance", sortable: false },
-        { text: "备注", value: "remark", sortable: false }
+        { text: "市场", value: "market", sortable: false },
+        { text: "累积业绩", value: "accumulate", sortable: false },
+        { text: "本期业绩", value: "current", sortable: false },
+        { text: "奖金", value: "amount", sortable: false }
       ],
       achievements: []
     };
@@ -63,7 +61,9 @@ export default {
     async achievementQuery() {
       this.$store.commit("openLoading", true);
       let res = await this.$store.dispatch("achievementQuery", {
-        userId: this.openUserId
+        userId: this.openUserId,
+        time: "201901",
+        type: "up/down"
       });
       if (!res.err) {
         this.achievements = res.res;
