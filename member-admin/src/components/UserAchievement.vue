@@ -13,24 +13,20 @@
           </v-btn>
           <v-toolbar-title>用户业绩</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-select
-            v-model="time"
-            @change="achievementQuery"
-            outline
-            :items="times"
-            label="本期业绩"
-            clearable
-          ></v-select>
         </v-toolbar>
-
+        <v-select
+          v-model="time"
+          @change="achievementQuery"
+          outline
+          :items="times"
+          :label="timeLabel"
+        ></v-select>
         <v-data-table :headers="headers" :items="achievements" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.createdAt | formatDate }}</td>
-            <td>{{ props.item.project }}</td>
-            <td>{{ props.item.type == 'OUT' ? '支出' : '收入' }}</td>
+            <td>{{ props.item.market}}</td>
+            <td>{{ props.item.accumulate }}</td>
+            <td>{{ props.item.current }}</td>
             <td>{{ props.item.amount }}</td>
-            <td>{{ props.item.balance }}</td>
-            <td>{{ props.item.remark }}</td>
           </template>
         </v-data-table>
       </v-card>
@@ -41,6 +37,19 @@
 <script>
 import dayjs from "dayjs";
 export default {
+  created: function() {
+    let year = dayjs().year();
+    for (let i = 0; i < 12; i++) {
+      if (i < 9) {
+        this.times.push(`${year}.0${i + 1}(上)`);
+        this.times.push(`${year}.0${i + 1}(下)`);
+      } else {
+        this.times.push(`${year}.${i + 1}(上)`);
+        this.times.push(`${year}.${i + 1}(下)`);
+      }
+    }
+    this.time = this.currentTime();
+  },
   computed: {
     openUserAchievement: {
       get() {
@@ -64,16 +73,40 @@ export default {
       ],
       achievements: [],
       times: [],
-      time: ""
+      time: "",
+      timeLabel: "本期业绩"
     };
   },
   props: ["openUserId"],
   methods: {
+    currentTime() {
+      let year = dayjs().year();
+      let currentMonth = dayjs().month();
+      let currentDay = dayjs().date();
+      if (currentMonth < 9) {
+        if (currentDay <= 15) {
+          return `${year}.0${currentMonth + 1}(上)`;
+        } else {
+          return `${year}.0${currentMonth + 1}(下)`;
+        }
+      } else {
+        if (currentDay <= 15) {
+          return `${year}.${currentMonth + 1}(上)`;
+        } else {
+          return `${year}.0${currentMonth + 1}(下)`;
+        }
+      }
+    },
     async achievementQuery() {
       this.$store.commit("openLoading", true);
+      if (this.time == this.currentTime()) {
+        this.timeLabel = "本期业绩";
+      } else {
+        this.timeLabel = "往期业绩";
+      }
       let res = await this.$store.dispatch("achievementQuery", {
         userId: this.openUserId,
-        time: "201901,up"
+        time: this.time
       });
       if (!res.err) {
         this.achievements = res.res;
