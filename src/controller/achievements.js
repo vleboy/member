@@ -197,10 +197,10 @@ async function getMarketBonuses(inparam, date) {
             
             
         })
+        //当前用户当天获得的奖励是=计算总金额-今日之前总金额-今日之前总surplus
+        let todayBonuses = AchievementsBonuse.amount - subAmount - subSurplus
         if (isToday != null) {
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日已经获得过市场奖励,已获得的奖励是【', isToday.amount, '】')
-            //当前用户当天获得的奖励是=计算总金额-今日之前总金额-今日之前总surplus
-            let todayBonuses = AchievementsBonuse.amount - subAmount - subSurplus
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日获得的奖励为【', todayBonuses, '】')
             console.log('判断今日获得奖励是否大于5000')
             if (todayBonuses > 5000) {
@@ -214,6 +214,7 @@ async function getMarketBonuses(inparam, date) {
             await mongodb.update('achievement', { _id: ObjectId(r[0]._id) }, { $set: isToday })
 
         } else {
+            AchievementsBonuse = todayBonuses
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日第一次获得市场奖，奖金为【', AchievementsBonuse.amount, '】')
             await mongodb.insert('achievement', AchievementsBonuse)
         }
