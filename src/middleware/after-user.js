@@ -23,6 +23,13 @@ router.post('/user/insert', async (ctx, next) => {
  * 更新用户中间件
  */
 router.post('/user/update', async (ctx, next) => {
+
+    let inparam = ctx.request.body
+    if(inparam.status != 'normal'){
+        return next()
+    }
+
+
     myDate = new Date()
     if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
         throw { err: true, res: '当前为系统结算时间，请稍等再试' }
@@ -31,7 +38,7 @@ router.post('/user/update', async (ctx, next) => {
     if (token.role != 'admin') {
         throw { err: true, res: '当前账号没有权限' }
     }
-    let inparam = ctx.request.body
+
     const people = await mongodb.find('user', { _id: ObjectId(ctx._id) })//查出当前状态变更的用户
     if (people.length == 0) {
         throw { err: true, res: `找不到当前_id:${inparam}对应的用户，请查证` }
@@ -40,6 +47,7 @@ router.post('/user/update', async (ctx, next) => {
     inparam.people = people; inparam.father = father;
     inparam.price = inparam.initPrice
     //记录需要返奖业绩，但不更新余额（余额需要在结算期更新，这里只更新业绩信息）
+ 
     await achievements.updateUser(inparam, myDate)
     await achievements.getReferralBonuses(inparam, myDate)
     await achievements.getMarketBonuses(inparam, myDate)

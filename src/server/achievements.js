@@ -7,8 +7,8 @@ const ObjectId = require('mongodb').ObjectID
  async function updateUser(inparam, date) {
     console.log(`开始激活当前用户【${inparam.people[0].id}】`)
     console.log(`当前用户【${inparam.people[0].id}】激活套餐价格为${inparam.price}`)
-    if (inparam.people[0].status.status != 'normal') {
-        await mongodb.update('user', { _id: ObjectId(inparam.people[0]._id) }, { $set: { status: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } } })
+    if (inparam.people[0].status != 'normal') {
+        await mongodb.update('user', { _id: ObjectId(inparam.people[0]._id) }, { $set: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price} } )
     } else {
         console.log(`当前用户【${inparam.people[0].id}】已激活`)
     }
@@ -19,8 +19,8 @@ const ObjectId = require('mongodb').ObjectID
 //规则2.以安置位置来算，若旗下有两名非0点位成员，获得该成员点位金额的100%
 //规则3.以安置点位来算, 若旗下有一名0点位成员，获得其中非0点位成员点位金额的20%
 async function getReferralBonuses(inparam, date) {
-    inparam.id          //当前激活用户
-    inparam.initPrice   //当前激活选择的用户的套餐价格
+   // inparam.id          //当前激活用户
+   // inparam.initPrice   //当前激活选择的用户的套餐价格
 
     console.log('开始计算推荐奖')
     if (inparam.people.length > 0 && inparam.people[0].id != 'root') {
@@ -32,8 +32,17 @@ async function getReferralBonuses(inparam, date) {
 
 
             //更新状态
-            let o = inparam.father[0].referralBonuses
-            o.status = 'phase1'; o.phase1.id = inparam.id; o.phase1.price = inparam.initPrice * 0.2
+            let o =_.cloneDeep(inparam.father[0].referralBonuses)
+            console.log('1',o)
+             if(o.phase2.id == inparam.people[0].id)
+            {
+                o.phase1 = inparam.father[0].referralBonuses.phase2
+                o.phase2 = inparam.father[0].referralBonuses.phase1
+               
+            }
+            console.log('2',o)
+            o.status = 'phase1'; o.phase1.id = inparam.people[0].id; o.phase1.price = inparam.initPrice * 0.2
+            console.log('3',o)
             console.log(`用户【${inparam.father[0].id}】获得第一阶段推荐奖`)
             console.log(`用户【${inparam.father[0].id}】第一阶段的推荐奖奖金系数为0.2`)
             console.log(`用户${inparam.father[0].id}获得第一阶段推荐奖，奖金为${o.phase1.price}`)
@@ -41,7 +50,7 @@ async function getReferralBonuses(inparam, date) {
             await mongodb.update('user', { _id: ObjectId(inparam.father[0]._id) }, { $set: { referralBonuses: o } })
             await mongodb.insert('achievement', { userId: inparam.father[0].id, project: '推荐奖', type: 'IN', amount: Math.abs(inparam.initPrice * 0.2), createdAt: moment(date).valueOf(), remark: '第一阶段' })
             return { userId: inparam.father[0].id, project: '推荐奖', type: 'IN', amount: Math.abs(inparam.initPrice * 0.2), createdAt: moment(date).valueOf(), remark: '第一阶段' }
-        } else if (inparam.father[0].referralBonuses.status == 'phase1' && inparam.father[0].referralBonuses.phase1.id != inparam.id) {
+        } else if (inparam.father[0].referralBonuses.status == 'phase1' && inparam.father[0].referralBonuses.phase1.id != inparam.people[0].id) {
             //判断phase1是否为0套餐
             console.log(`用户【${inparam.father[0].id}】获得第二阶段推荐奖`)
             console.log(`开始判断用户【${inparam.father[0].id}】第一阶段的推荐奖奖金是否为0`)
@@ -49,14 +58,14 @@ async function getReferralBonuses(inparam, date) {
                 console.log(`用户【${inparam.father[0].id}】第一阶段的推荐奖奖金为【${inparam.father[0].referralBonuses.phase1.price}】`)
                 console.log(`用户【${inparam.father[0].id}】第二阶段的推荐奖奖金系数为0.8`)
                 let o = inparam.father[0].referralBonuses
-                o.status = 'phase2'; o.phase2.id = inparam.id; o.phase2.price = inparam.initPrice * 0.8
+                o.status = 'phase2'; o.phase2.id = inparam.people[0].id; o.phase2.price = inparam.initPrice * 0.8
                 console.log(`用户${inparam.father[0].id}获得第二阶段推荐奖，奖金为${o.phase2.price}`)
                 await mongodb.update('user', { _id: ObjectId(inparam.father[0]._id) }, { $set: { referralBonuses: o } })
             } else {
                 console.log(`用户【${inparam.father[0].id}】第一阶段的推荐奖奖金为0`)
                 console.log(`用户【${inparam.father[0].id}】第二阶段的推荐奖奖金系数为0.2`)
                 let o = inparam.father[0].referralBonuses
-                o.status = 'phase2'; o.phase2.id = inparam.id; o.phase2.price = inparam.initPrice * 0.2
+                o.status = 'phase2'; o.phase2.id = inparam.people[0].id; o.phase2.price = inparam.initPrice * 0.2
                 console.log(`用户${inparam.father[0].id}获得第二阶段推荐奖，奖金为${o.phase2.price}`)
                 await mongodb.update('user', { _id: ObjectId(inparam.father[0]._id) }, { $set: { referralBonuses: o } })
             }
@@ -128,7 +137,7 @@ async function getMarketBonuses(inparam, date) {
         //计算左区金额
         left.map((item) => {
             if (item.id != bonuseUser[0].referralBonuses.phase1.id && item.id != bonuseUser[0].referralBonuses.phase2.id) {
-                leftPrice = item.status.price + leftPrice
+                leftPrice = item.price + leftPrice
                 // console.log('leftPrice', leftPrice)
             }
         })
@@ -137,7 +146,7 @@ async function getMarketBonuses(inparam, date) {
         //计算右区金额
         right.map((item) => {
             if (item.id != bonuseUser[0].referralBonuses.phase1.id && item.id != bonuseUser[0].referralBonuses.phase2.id) {
-                rightPrice = item.status.price + rightPrice
+                rightPrice = item.price + rightPrice
                 // console.log('rightPrice', rightPrice)
             }
         })

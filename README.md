@@ -78,8 +78,7 @@ POST http://localhost:3636/xnosql/product/query (√)
 POST http://localhost:3636/xserver/achievementQuery
 {
     userId:userId,
-    time:'201901',
-    type:'up'/'down'
+    time:'201901,up'
 
 }
 {

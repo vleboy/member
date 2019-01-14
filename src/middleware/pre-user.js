@@ -63,12 +63,17 @@ router.post('/user/insert', async (ctx, next) => {
         inparam.id = 'MY' + _.random(10000000, 99999999).toString()
         inparam.recommendIndex = r[0].recommendIndex
         inparam.recommendIndex.push((inparam.id))
-        inparam.status = { status: inparam.status || 'init', activateAt: null, price: 0 }
+        inparam.status = inparam.status|| 'init'
+        inparam.activateAt= null
+        inparam.price=0
+
     } else {
         if (inparam.recommendnumber == 'root') {
             inparam.id = 'root'
             inparam.recommendIndex = [inparam.id]//系统第一人
-            inparam.status = { status: inparam.status || 'normal', activateAt: Date.now(), price: 0 }
+            inparam.status = inparam.status || 'normal'
+            inparam.activateAt= Date.now()
+            inparam.price=0
         } else {
             throw { err: true, res: '推荐编号错误，请查证' }//没有找到推荐人
         }
@@ -81,14 +86,14 @@ router.post('/user/insert', async (ctx, next) => {
         let a = await mongodb.find(collection, { id: inparam.recommendnumber })
         //将推荐人的安置编码与填写的安置编码人的安置关系对比
 
-        //console.log(a[0]) //推荐人对象
-        //console.log(r[0]) //放置位置的父级对象
+        console.log(a[0]) //推荐人对象
+        console.log(r[0]) //放置位置的父级对象
         //查看推荐人的安置编码是否在提交的安置编码人下的安置关系中
         if (r[0].levelIndex.indexOf(a[0].id) == -1) {
             throw { err: true, res: '该安置编码不合理' }//该安置编码不合理
         }
         //只能在激活的用户下安置新用户
-        if (r[0].status.status == 'init') {
+        if (r[0].status == 'init') {
             throw { err: true, res: '只能在激活的用户下安置新用户' }//该安置编码不合理
         }
         //上级的点位数只能为2个
