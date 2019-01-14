@@ -1,43 +1,16 @@
-// 路由相关
 const _ = require('lodash')
 const moment = require('moment');
-const Router = require('koa-router')
-const router = new Router()
 const ObjectId = require('mongodb').ObjectID
 
-router.post('/test', async (ctx, next) => {
-    myDate = new Date()
-    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
-        throw { err: true, res: '当前为系统结算时间，请稍等再试' }
-    }
-    let token = ctx.tokenVerify  // 获取TOKEN解析结果
-    if (token.role != 'admin') {
-        throw { err: true, res: '当前账号没有权限' }
-    }
-    let inparam = ctx.request.body
-    const people = await mongodb.find('user', { id: inparam.id })//查出当前状态变更的用户
-    const father = await mongodb.find('user', { id: people[0].parentId })//查出当前状态变更的用户的上级
-    inparam.people = people; inparam.father = father;
-    inparam.price = inparam.initPrice
-    //记录需要返奖业绩，但不更新余额（余额需要在结算期更新，这里只更新业绩信息）
-    await updateUser(inparam, myDate)
-    await getReferralBonuses(inparam, myDate)
-    await getMarketBonuses(inparam, myDate)
 
-
-    ctx.body = { err: false, res: 'sucess' }
-
-    //更新奖励状态
-    //更新用户状态
-})
-
-async function updateUser(inparam, date) {
-    console.log(`开始激活当前用户【${inparam.people.id}】`)
-    console.log(`当前用户【${inparam.people.id}】激活套餐价格为${inparam.price}`)
+//更新用户状态
+ async function updateUser(inparam, date) {
+    console.log(`开始激活当前用户【${inparam.people[0].id}】`)
+    console.log(`当前用户【${inparam.people[0].id}】激活套餐价格为${inparam.price}`)
     if (inparam.people[0].status.status != 'normal') {
         await mongodb.update('user', { _id: ObjectId(inparam.people[0]._id) }, { $set: { status: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } } })
     } else {
-        console.log(`当前用户【${inparam.people.id}】已激活`)
+        console.log(`当前用户【${inparam.people[0].id}】已激活`)
     }
 }
 
@@ -107,6 +80,7 @@ async function getReferralBonuses(inparam, date) {
 async function getMarketBonuses(inparam, date) {
 
     let AchievementsBonuse = { userId: '', project: '市场奖', type: 'IN', amount: 0, createdAt: moment(date).valueOf(), remark: '当期市场奖', surplus: 0 }
+    
 
     //如果当前当前状态变更的用户，位置等级小于3,则不会出现市场奖
     if (inparam.people[0].levelIndex.length < 3) {
@@ -116,7 +90,7 @@ async function getMarketBonuses(inparam, date) {
     console.log(`当前用户【${inparam.people[0].id}】层级长度为【${inparam.people[0].levelIndex.length}】, 可能会出现市场奖励'`)
     //获取当前可能需要返奖的用户
     let bonuseUserIdGroup = inparam.people[0].levelIndex.reverse()
-    let nowPeopleLevelIndex = bonuseUserIdGroup
+    let nowPeopleLevelIndex = _.cloneDeep(bonuseUserIdGroup)
     if (bonuseUserIdGroup.length > 0) {
         bonuseUserIdGroup = _.drop(bonuseUserIdGroup, 2)
     }
@@ -187,15 +161,12 @@ async function getMarketBonuses(inparam, date) {
         let subSurplus = 0
         let subAmount = 0
         r.map((item) => {
-            if (moment(item.createdAt).isAfter(moment(data).startOf('day'))) {
+            if (moment(item.createdAt).isAfter(moment(date).startOf('day'))) {
                 isToday = item
             } else {
-                isToday = null
                 subAmount += item.amount
                 subSurplus += item.surplus
             }
-            
-            
         })
         //当前用户当天获得的奖励是=计算总金额-今日之前总金额-今日之前总surplus
         let todayBonuses = AchievementsBonuse.amount - subAmount - subSurplus
@@ -211,10 +182,11 @@ async function getMarketBonuses(inparam, date) {
                 console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日获得的奖励为【', todayBonuses, '】大于5000，根据规则，其今日可获得奖励为【', todayBonuses, '】')
             }
             isToday.amount = AchievementsBonuse.amount; isToday.createdAt = moment(date).valueOf()
-            await mongodb.update('achievement', { _id: ObjectId(r[0]._id) }, { $set: isToday })
+           console.log(bonuseUser[0])
+            await mongodb.update('achievement', { _id: ObjectId(bonuseUser[0]._id) }, { $set: isToday })
 
         } else {
-            AchievementsBonuse = todayBonuses
+            AchievementsBonuse.amount = todayBonuses
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日第一次获得市场奖，奖金为【', AchievementsBonuse.amount, '】')
             await mongodb.insert('achievement', AchievementsBonuse)
         }
@@ -248,5 +220,7 @@ async function getMarketBonuses(inparam, date) {
 
 }
 
+module.exports = {
+    updateUser,getReferralBonuses,getMarketBonuses
 
-module.exports = router
+}

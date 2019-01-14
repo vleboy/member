@@ -103,7 +103,7 @@ router.post('/user/insert', async (ctx, next) => {
             let o = r[0].referralBonuses
             o.phase1.id = inparam.id
             await mongodb.update('user', { id: r[0].id }, { $set: { referralBonuses: o } })
-        }else{
+        } else {
             let o = r[0].referralBonuses
             o.phase1.id = inparam.id
             await mongodb.update('user', { id: r[0].id }, { $set: { referralBonuses: o } })
@@ -150,6 +150,8 @@ router.post('/user/update', async (ctx, next) => {
     let inparam = ctx.request.body
     if (!inparam.status) {
         checkUpdate(inparam)
+    } else {
+        ctx._id = inparam._id
     }
     if (token.role == 'admin' || token.id == inparam.id) {
         return next()
