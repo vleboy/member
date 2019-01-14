@@ -3,8 +3,9 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 // const domain = 'http://localhost:3636'
-const domain = 'http://home.vleboy.com:3636'
-// const domain = `http://${window.location.hostname}:3636`
+// const domain = 'http://192.168.3.148:3636'
+// const domain = 'http://home.vleboy.com:3636'
+const domain = `http://${window.location.hostname}:3636`
 
 Vue.use(Vuex)
 
@@ -83,7 +84,7 @@ const vuex = new Vuex.Store({
       return res.data
     },
     async achievementQuery(state, data) {
-      const res = await axios.post(`${domain}/xnosql/achievement/query`, data)
+      const res = await axios.post(`${domain}/xserver/achievementQuery`, data)
       return res.data
     }
   }

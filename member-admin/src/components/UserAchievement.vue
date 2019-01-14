@@ -13,7 +13,16 @@
           </v-btn>
           <v-toolbar-title>用户业绩</v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-select
+            v-model="time"
+            @change="achievementQuery"
+            outline
+            :items="times"
+            label="本期业绩"
+            clearable
+          ></v-select>
         </v-toolbar>
+
         <v-data-table :headers="headers" :items="achievements" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
             <td>{{ props.item.createdAt | formatDate }}</td>
@@ -48,14 +57,14 @@ export default {
   data() {
     return {
       headers: [
-        { text: "时间", value: "createdAt", sortable: false },
-        { text: "项目", value: "project", sortable: false },
-        { text: "类型", value: "type", sortable: false },
-        { text: "金额", value: "amount", sortable: false },
-        { text: "余额", value: "balance", sortable: false },
-        { text: "备注", value: "remark", sortable: false }
+        { text: "市场", value: "market", sortable: false },
+        { text: "累积业绩", value: "accumulate", sortable: false },
+        { text: "本期业绩", value: "current", sortable: false },
+        { text: "奖金", value: "amount", sortable: false }
       ],
-      achievements: []
+      achievements: [],
+      times: [],
+      time: ""
     };
   },
   props: ["openUserId"],
@@ -63,7 +72,9 @@ export default {
     async achievementQuery() {
       this.$store.commit("openLoading", true);
       let res = await this.$store.dispatch("achievementQuery", {
-        userId: this.openUserId
+        userId: this.openUserId,
+        time: "201901",
+        type: "up/down"
       });
       if (!res.err) {
         this.achievements = res.res;
