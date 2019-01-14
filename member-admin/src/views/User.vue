@@ -73,7 +73,7 @@
         <v-card>
           <v-card-title>用户审核</v-card-title>
           <v-card-text>
-            <v-select :items="[0,2980]" v-model="initPrice" label="套餐选择"></v-select>
+            <v-select :items="[2980,0]" v-model="initPrice" label="套餐选择"></v-select>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -143,7 +143,7 @@ export default {
       openUserBillId: null,
       openUserAchievementId: null,
       openAudit: false,
-      initPrice: 0,
+      initPrice: 2980,
       snackMsg: {
         isShow: false,
         color: "success",
@@ -185,7 +185,7 @@ export default {
     },
     async changeStatus(_id, username, status, operation) {
       if (operation == "审核" && status == "init") {
-        this.initPrice = 0;
+        this.initPrice = 2980;
         this.openAudit = true;
         this._idTemp = _id;
       } else if (
