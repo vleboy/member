@@ -73,8 +73,7 @@ export default {
       this.$store.commit("openLoading", true);
       let res = await this.$store.dispatch("achievementQuery", {
         userId: this.openUserId,
-        time: "201901",
-        type: "up/down"
+        time: "201901,up"
       });
       if (!res.err) {
         this.achievements = res.res;
