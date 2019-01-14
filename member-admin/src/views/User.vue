@@ -49,7 +49,7 @@
             <td>{{ props.item.status | toStatus}}</td>
             <td>
               <span v-if="props.item.status == 'init'">
-                <a @click="changeStatus(props.item._id,props.item.username,'normal','审核')">审核</a> |
+                <a @click="changeStatus(props.item._id,props.item.username,'init','审核')">审核</a> |
               </span>
               <a @click="openRegister(props.item._id)">改</a> |
               <span v-if="props.item.status == 'normal'">
@@ -68,7 +68,20 @@
       <Register v-on:child-event="userQuery" :openUserChangeId="openUserChangeId"/>
       <UserInfo :openUserId="openUserInfoId"/>
       <UserBill :openUserId="openUserBillId"/>
-      <!-- <UserAchievement :openUserId="openUserAchievementId"/> -->
+      <UserAchievement :openUserId="openUserAchievementId"/>
+      <v-dialog v-model="openAudit" max-width="600">
+        <v-card>
+          <v-card-title>用户审核</v-card-title>
+          <v-card-text>
+            <v-select :items="[0,2980]" v-model="initPrice" label="套餐选择"></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="error" flat="flat" @click="openAudit = false">取消</v-btn>
+            <v-btn color="success" flat="flat" @click="changeStatus(null,null,'normal','审核')">确认</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
     <!--错误提示-->
     <v-snackbar v-model="snackMsg.isShow" top auto-height :color="snackMsg.color">
@@ -83,7 +96,7 @@ import dayjs from "dayjs";
 import Register from "../components/Register.vue";
 import UserInfo from "../components/UserInfo.vue";
 import UserBill from "../components/UserBill.vue";
-// import UserAchievement from "../components/UserAchievement.vue";
+import UserAchievement from "../components/UserAchievement.vue";
 export default {
   created: function() {
     this.userQuery();
@@ -91,8 +104,8 @@ export default {
   components: {
     Register,
     UserInfo,
-    UserBill
-    // UserAchievement
+    UserBill,
+    UserAchievement
   },
   data() {
     return {
@@ -129,6 +142,8 @@ export default {
       openUserInfoId: null,
       openUserBillId: null,
       openUserAchievementId: null,
+      openAudit: false,
+      initPrice: 0,
       snackMsg: {
         isShow: false,
         color: "success",
@@ -169,13 +184,24 @@ export default {
       this.$store.commit("openLoading", false);
     },
     async changeStatus(_id, username, status, operation) {
-      if (confirm(`确认${operation}用户 ${username}?`)) {
+      if (operation == "审核" && status == "init") {
+        this.openAudit = true;
+        this._idTemp = _id;
+      } else if (
+        (operation == "审核" && status == "normal") ||
+        confirm(`确认${operation}用户 ${username}?`)
+      ) {
         this.$store.commit("openLoading", true);
-        let res = await this.$store.dispatch("userUpdate", {
-          _id,
-          status
-        });
+        let data = { status };
+        if (_id) {
+          data._id = _id;
+        } else {
+          data._id = this._idTemp;
+          data.initPrice = this.initPrice;
+        }
+        let res = await this.$store.dispatch("userUpdate", data);
         this.$store.commit("openLoading", false);
+        this.openAudit = false;
         if (res.err) {
           this.snackMsg.isShow = true;
           this.snackMsg.color = "warning";

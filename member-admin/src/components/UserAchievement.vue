@@ -1,0 +1,80 @@
+<template>
+  <v-layout row justify-center>
+    <v-dialog
+      v-model="openUserAchievement"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <v-toolbar>
+          <v-btn icon dark @click="openUserAchievement = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>用户业绩</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-data-table :headers="headers" :items="achievements" hide-actions no-data-text="暂无数据">
+          <template slot="items" slot-scope="props">
+            <td>{{ props.item.createdAt | formatDate }}</td>
+            <td>{{ props.item.project }}</td>
+            <td>{{ props.item.type == 'OUT' ? '支出' : '收入' }}</td>
+            <td>{{ props.item.amount }}</td>
+            <td>{{ props.item.balance }}</td>
+            <td>{{ props.item.remark }}</td>
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-dialog>
+  </v-layout>
+</template>
+
+<script>
+import dayjs from "dayjs";
+export default {
+  computed: {
+    openUserAchievement: {
+      get() {
+        if (this.$store.state.openUserAchievement) {
+          this.achievementQuery();
+        }
+        return this.$store.state.openUserAchievement;
+      },
+      set(val) {
+        this.$store.commit("openUserAchievement", val);
+      }
+    }
+  },
+  data() {
+    return {
+      headers: [
+        { text: "时间", value: "createdAt", sortable: false },
+        { text: "项目", value: "project", sortable: false },
+        { text: "类型", value: "type", sortable: false },
+        { text: "金额", value: "amount", sortable: false },
+        { text: "余额", value: "balance", sortable: false },
+        { text: "备注", value: "remark", sortable: false }
+      ],
+      achievements: []
+    };
+  },
+  props: ["openUserId"],
+  methods: {
+    async achievementQuery() {
+      this.$store.commit("openLoading", true);
+      let res = await this.$store.dispatch("achievementQuery", {
+        userId: this.openUserId
+      });
+      if (!res.err) {
+        this.achievements = res.res;
+      }
+      this.$store.commit("openLoading", false);
+    }
+  },
+  filters: {
+    formatDate(timestamp) {
+      return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    }
+  }
+};
+</script>
