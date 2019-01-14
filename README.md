@@ -74,6 +74,14 @@ POST http://localhost:3636/xnosql/product/query (√)
     err:true/false
     res:[产品列表数组]
 }
-业绩查询接口：有待设计
+业绩查询接口：POST
+POST http://localhost:3636/xnosql/achievement/query
+{
+}
+{
+    err:true/false
+    res:[业绩列表数组]
+}
+
 
 PC端接口
