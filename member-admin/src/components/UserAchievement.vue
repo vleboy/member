@@ -63,7 +63,7 @@ export default {
         { text: "奖金", value: "amount", sortable: false }
       ],
       achievements: [],
-      times:[],
+      times: [],
       time: ""
     };
   },
