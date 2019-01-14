@@ -7,7 +7,7 @@ const ObjectId = require('mongodb').ObjectID
 
 router.post('/test', async (ctx, next) => {
     myDate = new Date()
-    if ((myDate.getHours() == 0 && myDate.getMinutes() < 3) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
         throw { err: true, res: '当前为系统结算时间，请稍等再试' }
     }
     let token = ctx.tokenVerify  // 获取TOKEN解析结果
@@ -184,16 +184,18 @@ async function getMarketBonuses(inparam, date) {
         let r = await mongodb.find('achievement', { userId: bonuseUserIdGroup[index], project: '市场奖' })
         console.log('查询当前可能获得奖励的用户是否今日是否获得过市场奖励')
         let isToday = null
+        let subSurplus = 0
         r.map((item) => {
             if (moment(item.createdAt).isAfter(moment(data).startOf('day'))) {
                 isToday = item
             } else {
                 isToday = null
             }
+            subSurplus += item.surplus
         })
         if (isToday != null) {
-            console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】已经获得过市场奖励,已获得的奖励是【', isToday.amount, '】')
-            let todayBonuses = isToday.amount + AchievementsBonuse.amount - isToday.surplus
+            console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日已经获得过市场奖励,已获得的奖励是【', isToday.amount, '】')
+            let todayBonuses = isToday.amount + AchievementsBonuse.amount - subSurplus
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日获得的奖励为【', todayBonuses, '】')
             console.log('判断今日获得奖励是否大于5000')
             if (todayBonuses > 5000) {
