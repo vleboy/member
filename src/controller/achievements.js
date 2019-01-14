@@ -185,17 +185,22 @@ async function getMarketBonuses(inparam, date) {
         console.log('查询当前可能获得奖励的用户是否今日是否获得过市场奖励')
         let isToday = null
         let subSurplus = 0
+        let subAmount = 0
         r.map((item) => {
             if (moment(item.createdAt).isAfter(moment(data).startOf('day'))) {
                 isToday = item
             } else {
                 isToday = null
+                subAmount += item.amount
+                subSurplus += item.surplus
             }
-            subSurplus += item.surplus
+            
+            
         })
         if (isToday != null) {
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日已经获得过市场奖励,已获得的奖励是【', isToday.amount, '】')
-            let todayBonuses = isToday.amount + AchievementsBonuse.amount - subSurplus
+            //当前用户当天获得的奖励是=计算总金额-今日之前总金额-今日之前总surplus
+            let todayBonuses = AchievementsBonuse.amount - subAmount - subSurplus
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日获得的奖励为【', todayBonuses, '】')
             console.log('判断今日获得奖励是否大于5000')
             if (todayBonuses > 5000) {
