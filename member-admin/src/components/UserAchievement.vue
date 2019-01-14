@@ -13,7 +13,16 @@
           </v-btn>
           <v-toolbar-title>用户业绩</v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-select
+            v-model="time"
+            @change="achievementQuery"
+            outline
+            :items="items"
+            label="本期业绩"
+            clearable
+          ></v-select>
         </v-toolbar>
+
         <v-data-table :headers="headers" :items="achievements" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
             <td>{{ props.item.createdAt | formatDate }}</td>
@@ -53,7 +62,8 @@ export default {
         { text: "本期业绩", value: "current", sortable: false },
         { text: "奖金", value: "amount", sortable: false }
       ],
-      achievements: []
+      achievements: [],
+      time: ""
     };
   },
   props: ["openUserId"],
