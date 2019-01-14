@@ -17,7 +17,7 @@
             v-model="time"
             @change="achievementQuery"
             outline
-            :items="items"
+            :items="times"
             label="本期业绩"
             clearable
           ></v-select>
@@ -63,6 +63,7 @@ export default {
         { text: "奖金", value: "amount", sortable: false }
       ],
       achievements: [],
+      times:[],
       time: ""
     };
   },

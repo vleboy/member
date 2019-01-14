@@ -185,6 +185,7 @@ export default {
     },
     async changeStatus(_id, username, status, operation) {
       if (operation == "审核" && status == "init") {
+        this.initPrice = 0;
         this.openAudit = true;
         this._idTemp = _id;
       } else if (
