@@ -17,6 +17,7 @@ const vuex = new Vuex.Store({
     openMyDelivery: false,
     openMyPay: false,
     openMyPayOK: false,
+    openMyQR: false,
     openQRScan: false,
     openLoading: false
   },
@@ -41,6 +42,9 @@ const vuex = new Vuex.Store({
     },
     openMyPayOK(state, params) {
       state.openMyPayOK = params
+    },
+    openMyQR(state, params) {
+      state.openMyQR = params
     },
     openQRScan(state, params) {
       state.openQRScan = params

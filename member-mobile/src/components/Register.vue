@@ -171,6 +171,11 @@ export default {
             this.citys.push(city.name);
           }
           this.form.city = this.citys[0];
+          // 初始化推荐人
+          if (this.qrcode) {
+            this.form.parentId = this.qrcode;
+            this.form.recommendnumber = this.qrcode;
+          }
         }
         return this.$store.state.openRegister;
       },
@@ -218,6 +223,7 @@ export default {
       formHasErrors: false
     };
   },
+  props: ["qrcode"],
   methods: {
     resetForm() {
       this.formHasErrors = false;

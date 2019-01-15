@@ -18,17 +18,17 @@
       </v-list>
     </v-flex>
     <Register/>
-    <QRScan/>
+    <MyQR/>
   </v-layout>
 </template>
 
 <script>
+import MyQR from "../components/MyQR.vue";
 import Register from "../components/Register.vue";
-import QRScan from "../components/QRScan.vue";
 export default {
   components: {
-    Register,
-    QRScan
+    MyQR,
+    Register
   },
   data: () => ({
     items: [
@@ -41,8 +41,8 @@ export default {
       },
       {
         active: true,
-        title: "扫码注册",
-        subtitle: "扫码注册新会员",
+        title: "我的二维码",
+        subtitle: "用于提供扫码注册新会员",
         icon: "person_add"
       }
     ]
@@ -52,7 +52,7 @@ export default {
       if (title == "会员注册") {
         this.$store.commit("openRegister", !this.$store.state.openRegister);
       } else {
-        this.$store.commit("openQRScan", !this.$store.state.openQRScan);
+        this.$store.commit("openMyQR", !this.$store.state.openMyQR);
       }
     }
   }

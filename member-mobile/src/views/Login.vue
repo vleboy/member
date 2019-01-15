@@ -1,8 +1,9 @@
 <template>
   <v-layout d-flex justify-center fill-height>
     <v-parallax src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg" height="800">
-      <div class="text-xs-center">建议您【添加到主屏幕】或【收藏】以便下次打开</div>
-      <div class="text-xs-center">若添加失败，请在系统中对本浏览器应用允许开启【创建桌面快捷方式】权限</div>
+      <div class="text-xs-center">会员系统</div>
+      <!-- <div class="text-xs-center">建议您【添加到主屏幕】或【收藏】以便下次打开</div> -->
+      <!-- <div class="text-xs-center">若添加失败，请在系统中对本浏览器应用允许开启【创建桌面快捷方式】权限</div> -->
       <!--登录/注册-->
       <v-layout align-center justify-center fill-height>
         <v-flex xs12 sm4 mr-1>
@@ -10,6 +11,7 @@
             <v-toolbar dark color="primary">
               <v-toolbar-title>登录</v-toolbar-title>
               <v-spacer></v-spacer>
+              <v-btn color="success" @click="scanReg">扫码注册</v-btn>
             </v-toolbar>
             <v-card-text>
               <v-form>
@@ -55,11 +57,16 @@
       {{snackMsg.msg}}
       <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
     </v-snackbar>
+    <QRScan/>
   </v-layout>
 </template>
 
 <script>
+import QRScan from "../components/QRScan.vue";
 export default {
+  components: {
+    QRScan
+  },
   data() {
     return {
       username: null,
@@ -102,6 +109,10 @@ export default {
         this.snackMsg.color = "warning";
         this.snackMsg.msg = "请输入帐号密码";
       }
+    },
+    // 扫码注册
+    scanReg() {
+      this.$store.commit("openQRScan", !this.$store.state.openQRScan);
     }
   }
 };
