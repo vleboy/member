@@ -8,7 +8,7 @@ async function updateUser(inparam, date) {
     console.log(`开始激活当前用户【${inparam.people[0].id}】`)
     console.log(`当前用户【${inparam.people[0].id}】激活套餐价格为${inparam.price}`)
     if (inparam.people[0].status != 'normal') {
-        await mongodb.update('user', { _id: ObjectId(inparam.people[0]._id) }, { $set: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } })
+        await mongodb.update('user', { userId: inparam.people[0].id}, { $set: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } })
     } else {
         console.log(`当前用户【${inparam.people[0].id}】已激活`)
     }
