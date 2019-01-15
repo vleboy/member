@@ -14,7 +14,7 @@
       </v-flex>
       <v-flex xs6></v-flex>
       <v-flex xs2>
-        <v-text-field v-model="query.key" solo label="编号/姓名/手机号" clearable></v-text-field>
+        <v-text-field v-model="query.key" @input="inputChange" solo label="编号/姓名/手机号" clearable></v-text-field>
       </v-flex>
       <v-flex xs1>
         <v-btn @click="userQuery" color="primary">查询</v-btn>
@@ -39,8 +39,12 @@
             <td>{{ props.item.bank }}</td>
             <td>{{ props.item.banknumber }}</td>-->
             <td>{{ props.item.level }}</td>
-            <td>{{ props.item.parentId }}</td>
-            <td>{{ props.item.recommendnumber }}</td>
+            <td>
+              <a @click="jumpQuery(props.item.parentId)">{{ props.item.parentId }}</a>
+            </td>
+            <td>
+              <a @click="jumpQuery(props.item.recommendnumber)">{{ props.item.recommendnumber }}</a>
+            </td>
             <td>{{ props.item.balance }}</td>
             <td>
               <a @click="openUserAchievement(props.item.id)">业绩</a> |
@@ -188,7 +192,7 @@ export default {
         this.initPrice = 2980;
         this.openAudit = true;
         this._idTemp = _id;
-        this.idTemp = username
+        this.idTemp = username;
       } else if (
         (operation == "审核" && status == "normal") ||
         confirm(`确认${operation}用户 ${username}?`)
@@ -233,6 +237,16 @@ export default {
           this.userQuery();
         }
       }
+    },
+    inputChange() {
+      if (!this.query.key) {
+        this.userQuery();
+      }
+    },
+    jumpQuery(key) {
+      delete this.query.status;
+      this.query.key = key;
+      this.userQuery();
     }
   },
   filters: {

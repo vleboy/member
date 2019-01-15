@@ -13,7 +13,7 @@
       </v-flex>
       <v-flex xs7></v-flex>
       <v-flex xs2>
-        <v-text-field v-model="query.key" solo label="订单号/会员编号" clearable></v-text-field>
+        <v-text-field v-model="query.key" @input="inputChange" solo label="订单号/会员编号" clearable></v-text-field>
       </v-flex>
       <v-flex xs1>
         <v-btn @click="orderQuery" color="primary">查询</v-btn>
@@ -112,6 +112,11 @@ export default {
           this.snackMsg.msg = "操作成功";
           this.orderQuery();
         }
+      }
+    },
+    inputChange() {
+      if (!this.query.key) {
+        this.orderQuery();
       }
     }
   },
