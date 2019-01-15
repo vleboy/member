@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('dayjs');
 const _ =require('lodash')
 
 // console.log(moment().startOf('month').valueOf())
@@ -8,10 +8,10 @@ async function settlement() {
     //console.log('系统结算检查')
     //第一期结算
     //获取当前时间
-    nowTime = moment()
-    nowDate = nowTime.date()
-    nowHour = nowTime.hour()
-    nowMinute = nowTime.minute()
+   let nowTime = moment()
+    let nowDate = nowTime.date()
+    let nowHour = nowTime.hour()
+    let nowMinute = nowTime.minute()
 
     // nowDate = 14; nowHour = 23; nowMinute = 58;
     // let isSettlemented = false
@@ -33,7 +33,7 @@ async function settlement() {
                 achievements = await mongodb.find('achievements', { createdAt: { '$lte': nowTime.valueOf(), '$gt': moment().startOf('month').valueOf() } })
                 period = 1
             } else { //当月第二期
-                achievements = await mongodb.find('achievements', { createdAt: { '$gt': moment(moment().date('15')).startOf('day').valueOf(), '$lte': nowTime.valueOf() } })
+                achievements = await mongodb.find('achievements', { createdAt: { '$gt': moment().startOf('month').add(14, 'day').valueOf(), '$lte': nowTime.valueOf() } })
                 period = 2
             }
             //将结果保存在achievements数组中

@@ -16,7 +16,11 @@ const achievements = require('../server/achievements')
  */
 router.post('/user/insert', async (ctx, next) => {
     const inparam = ctx.request.body
-    ctx.body.res = jwt.sign({ id: inparam.id, username: inparam.username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)
+    let o ={}
+    o.token=jwt.sign({ id: inparam.id, username: inparam.username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)
+    o.userid = inparam.id
+    o.username = inparam.username
+    ctx.body.res = o
 })
 
 /**

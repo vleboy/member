@@ -86,8 +86,8 @@ router.post('/user/insert', async (ctx, next) => {
         let a = await mongodb.find(collection, { id: inparam.recommendnumber })
         //将推荐人的安置编码与填写的安置编码人的安置关系对比
 
-        console.log(a[0]) //推荐人对象
-        console.log(r[0]) //放置位置的父级对象
+        //console.log(a[0]) //推荐人对象
+        //console.log(r[0]) //放置位置的父级对象
         //查看推荐人的安置编码是否在提交的安置编码人下的安置关系中
         if (r[0].levelIndex.indexOf(a[0].id) == -1) {
             throw { err: true, res: '该安置编码不合理' }//该安置编码不合理
@@ -97,7 +97,7 @@ router.post('/user/insert', async (ctx, next) => {
             throw { err: true, res: '只能在激活的用户下安置新用户' }//该安置编码不合理
         }
         //上级的点位数只能为2个
-        console.log(r[0].referralBonuses)
+        //console.log(r[0].referralBonuses)
         if (r[0].referralBonuses.phase1.id != null && r[0].referralBonuses.phase2.id != null) {
             throw { err: true, res: `安置编码下已经存在了两个点位分别是【${r[0].referralBonuses.phase1.id}】和【${r[0].referralBonuses.phase1.id}】,请查证` }
         } else if (r[0].referralBonuses.phase1.id != null) {
