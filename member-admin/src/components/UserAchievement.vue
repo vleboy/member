@@ -14,19 +14,23 @@
           <v-toolbar-title>用户业绩</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-select
-          v-model="time"
-          @change="achievementQuery"
-          outline
-          :items="times"
-          :label="timeLabel"
-        ></v-select>
+        <v-card-title>
+          {{timeLabel}}奖金：{{amount}}
+          <v-spacer></v-spacer>
+          <v-select
+            v-model="time"
+            @change="achievementQuery"
+            outline
+            :items="times"
+            :label="timeLabel"
+          ></v-select>
+        </v-card-title>
         <v-data-table :headers="headers" :items="achievements" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
             <td>{{ props.item.market}}</td>
             <td>{{ props.item.accumulate }}</td>
             <td>{{ props.item.current }}</td>
-            <td>{{ props.item.amount }}</td>
+            <!-- <td>{{ props.item.amount }}</td> -->
           </template>
         </v-data-table>
       </v-card>
@@ -65,8 +69,8 @@ export default {
       headers: [
         { text: "市场", value: "market", sortable: false },
         { text: "累积业绩", value: "accumulate", sortable: false },
-        { text: "本期业绩", value: "current", sortable: false },
-        { text: "奖金", value: "amount", sortable: false }
+        { text: "本期业绩", value: "current", sortable: false }
+        // { text: "奖金", value: "amount", sortable: false }
       ],
       achievements: [],
       amount: 0,
