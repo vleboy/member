@@ -5,13 +5,13 @@ const Router = require('koa-router')
 const router = new Router()
 const ObjectId = require('mongodb').ObjectID
 
-router.post('/querys', async (ctx, next) => {
+router.post('/query', async (ctx, next) => {
     let inparam = ctx.request.body
     let time = inparam.time.split("(")
 
     // let res ={achievements:['market',accumulate:0,current],amount}
     // 判断用户输入是否正确
-    r = mongodb.find('user', { userId: inparam.userId })
+    r = await mongodb.find('user', { id: inparam.userId })
     let market1 = null; let market2 = null
     let accumulate1 = 0
     let upCurrent1 = 0
@@ -24,19 +24,21 @@ router.post('/querys', async (ctx, next) => {
     let upAmount2 = 0
     let downAmount2 = 0
     let amount = 0
+    let achievements = []
     if (r.length > 0) {
         //找到当前查询用户的referralBonuses中的状态
         if (r[0].referralBonuses.status != 'null') {
-            market1 = r[0].referralBonuses.phase1.userId
-            market2 = r[0].referralBonuses.phase2.userId
+            market1 = r[0].referralBonuses.phase1.id
+            market2 = r[0].referralBonuses.phase2.id
         }
     } else {
+       
         throw { err: true, res: `查询不到该用户【${inparam.userId}】，请查证` }
     }
 
     if (market1 != null) {
         //计算market1的市场
-        let r = mongodb.find('achievement', { userId: inparam.userId, market: market1 })//查询累计市场
+        let r = await mongodb.find('achievement', { userId: inparam.userId, market: market1 })//查询累计市场
 
         r.map(item => {
             accumulate1 = item.achievements + accumulate1
@@ -52,7 +54,7 @@ router.post('/querys', async (ctx, next) => {
 
     if (market2 != null) {
         //计算market2的市场
-        let r = mongodb.find('achievement', { userId: inparam.userId, market: market2 })//查询累计市场
+        let r = await mongodb.find('achievement', { userId: inparam.userId, market: market2 })//查询累计市场
 
         r.map(item => {
             accumulate2 = item.achievements + accumulate2
@@ -68,15 +70,15 @@ router.post('/querys', async (ctx, next) => {
     }
     if (time[1] == '上)') {
         amount = upAmount1 + upAmount2
-        achievements.push({ market1, accumulate1, upCurrent1 })
-        achievements.push({ market2, accumulate2, upCurrent2 })
+        achievements.push({ market:market1, accumulate:accumulate1, current:upCurrent1 })
+        achievements.push({ market:market2, accumulate:accumulate2, current:upCurrent2 })
     } else if (tiem[1] == '下)') {
         amount = downAmount1 + downAmount2
-        achievements.push({ market1, accumulate1, downCurrent1 })
-        achievements.push({ market2, accumulate2, downCurrent2 })
+        achievements.push({ market:market1, accumulate:accumulate1, current:downCurrent1 })
+        achievements.push({ market:market2, accumulate:accumulate2, current:downCurrent2 })
     }
 
-    ctx.body = { achievements, amount }
+    ctx.body = { err: false, res: { achievements, amount } }
     // console.log('o',o)
     //ctx.body = {}
     // { text: "市场", value: "market", 

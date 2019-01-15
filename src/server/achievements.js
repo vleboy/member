@@ -265,11 +265,12 @@ async function getMarketBonuses(inparam, date) {
                 achievementsBonuse.amount = todayBonuses
                 console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日获得的奖励为【', todayBonuses, '】小于或者等于5000，根据规则，其今日可获得奖励为【', todayBonuses, '】')
             }
-            isLeftToday.amount = achievementsBonuse.amount; isLeftToday.createdAt = moment(date).valueOf()
+            isLeftToday.amount = achievementsBonuse.amount; isLeftToday.createdAt = moment(date).valueOf();isLeftToday.achievements = leftPrice
             let now_id = isLeftToday._id
             delete isLeftToday._id
+            console.log('no03',isLeftToday)
             await mongodb.update('achievement', { _id: ObjectId(now_id) }, { $set: isLeftToday })
-
+            await mongodb.update('achievement', { market: rightMarket}, { $set: {achievements :rightPrice} })
         } else if (isRightToday != null) {
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日【', rightMarket, '】市场已经获得过市场奖励,已获得的奖励是【', isRightToday.amount, '】')
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日【', rightMarket, '】市场应该获得的奖励为【', rightTodayBonuses, '】')
@@ -284,8 +285,9 @@ async function getMarketBonuses(inparam, date) {
             isRightToday.amount = achievementsBonuse.amount; isRightToday.createdAt = moment(date).valueOf();isRightToday.achievements = rightPrice
             let now_id = isRightToday._id
             delete isRightToday._id
+            console.log('no04',isRightToday)
             await mongodb.update('achievement', { _id: ObjectId(now_id)}, { $set: isRightToday })
-
+            await mongodb.update('achievement', { market: leftMarket}, { $set: {achievements :leftPrice} })
         } else {
 
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日第一次获得市场奖，奖金为【', achievementsBonuse.amount, '】') //左区
@@ -294,12 +296,14 @@ async function getMarketBonuses(inparam, date) {
             achievementsBonuse.amount = 0
             achievementsBonuse.market = leftMarket
             achievementsBonuse.achievements = leftPrice
+            console.log('leftMarket01',achievementsBonuse)
             //rightMarket 业绩
             await mongodb.insert('achievement', achievementsBonuse)
             delete achievementsBonuse._id
             achievementsBonuse.amount = 0
             achievementsBonuse.market = rightMarket
             achievementsBonuse.achievements = rightPrice
+            console.log('rightMarket02',achievementsBonuse)
             await mongodb.insert('achievement', achievementsBonuse)
         }
         //计算领导奖励
