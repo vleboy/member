@@ -14,7 +14,7 @@
       </v-flex>
       <v-flex xs6></v-flex>
       <v-flex xs2>
-        <v-text-field v-model="query.key" solo label="编号/姓名/手机号" clearable></v-text-field>
+        <v-text-field v-model="query.key" @input="inputChange" solo label="编号/姓名/手机号" clearable></v-text-field>
       </v-flex>
       <v-flex xs1>
         <v-btn @click="userQuery" color="primary">查询</v-btn>
@@ -39,8 +39,12 @@
             <td>{{ props.item.bank }}</td>
             <td>{{ props.item.banknumber }}</td>-->
             <td>{{ props.item.level }}</td>
-            <td>{{ props.item.parentId }}</td>
-            <td>{{ props.item.recommendnumber }}</td>
+            <td>
+              <a @click="jumpQuery(props.item.parentId)">{{ props.item.parentId }}</a>
+            </td>
+            <td>
+              <a @click="jumpQuery(props.item.recommendnumber)">{{ props.item.recommendnumber }}</a>
+            </td>
             <td>{{ props.item.balance }}</td>
             <td>
               <a @click="openUserAchievement(props.item.id)">业绩</a> |
@@ -49,7 +53,7 @@
             <td>{{ props.item.status | toStatus}}</td>
             <td>
               <span v-if="props.item.status == 'init'">
-                <a @click="changeStatus(props.item._id,props.item.username,'init','审核')">审核</a> |
+                <a @click="changeStatus(props.item._id,props.item.id,'init','审核')">审核</a> |
               </span>
               <a @click="openRegister(props.item._id)">改</a> |
               <span v-if="props.item.status == 'normal'">
@@ -73,7 +77,7 @@
         <v-card>
           <v-card-title>用户审核</v-card-title>
           <v-card-text>
-            <v-select :items="[0,2980]" v-model="initPrice" label="套餐选择"></v-select>
+            <v-select :items="[2980,0]" v-model="initPrice" label="套餐选择"></v-select>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -143,7 +147,7 @@ export default {
       openUserBillId: null,
       openUserAchievementId: null,
       openAudit: false,
-      initPrice: 0,
+      initPrice: 2980,
       snackMsg: {
         isShow: false,
         color: "success",
@@ -185,9 +189,10 @@ export default {
     },
     async changeStatus(_id, username, status, operation) {
       if (operation == "审核" && status == "init") {
-        this.initPrice = 0;
+        this.initPrice = 2980;
         this.openAudit = true;
         this._idTemp = _id;
+        this.idTemp = username;
       } else if (
         (operation == "审核" && status == "normal") ||
         confirm(`确认${operation}用户 ${username}?`)
@@ -198,6 +203,7 @@ export default {
           data._id = _id;
         } else {
           data._id = this._idTemp;
+          data.id = this.idTemp;
           data.initPrice = this.initPrice;
         }
         let res = await this.$store.dispatch("userUpdate", data);
@@ -231,6 +237,16 @@ export default {
           this.userQuery();
         }
       }
+    },
+    inputChange() {
+      if (!this.query.key) {
+        this.userQuery();
+      }
+    },
+    jumpQuery(key) {
+      delete this.query.status;
+      this.query.key = key;
+      this.userQuery();
     }
   },
   filters: {

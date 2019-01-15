@@ -14,26 +14,48 @@
           <v-toolbar-title>我的业绩</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-data-table :headers="headers" :items="desserts" hide-actions>
+        <v-select
+          v-model="time"
+          @change="achievementQuery"
+          outline
+          :items="times"
+          :label="timeLabel"
+        ></v-select>
+        <v-data-table :headers="headers" :items="achievements" hide-actions no-data-text="暂无数据">
           <template slot="items" slot-scope="props">
-            <td>{{ props.item.time }}</td>
-            <td>{{ props.item.project }}</td>
-            <td>{{ props.item.type }}</td>
-            <td>{{ props.item.amount }}</td>
-            <td>{{ props.item.balance }}</td>
-            <td>{{ props.item.remark }}</td>
+            <td>{{ props.item.market}}</td>
+            <td>{{ props.item.accumulate }}</td>
+            <td>{{ props.item.current }}</td>
+            <!-- <td>{{ props.item.amount }}</td> -->
           </template>
         </v-data-table>
+        <v-layout align-center justify-center>
+          <h3>奖金：{{amount}}</h3>
+        </v-layout>
       </v-card>
     </v-dialog>
   </v-layout>
 </template>
 
 <script>
+import dayjs from "dayjs";
 export default {
+  created: function() {
+    for (let i = 0; i < 6; i++) {
+      let timePrefix = dayjs()
+        .subtract(i, "months")
+        .format("YYYY.MM");
+      this.times.push(`${timePrefix}(上)`);
+      this.times.push(`${timePrefix}(下)`);
+    }
+    this.time = this.currentTime();
+  },
   computed: {
     openMyAchievement: {
       get() {
+        if (this.$store.state.openMyAchievement) {
+          this.achievementQuery();
+        }
         return this.$store.state.openMyAchievement;
       },
       set(val) {
@@ -44,24 +66,45 @@ export default {
   data() {
     return {
       headers: [
-        { text: "时间", value: "time", sortable: false },
-        { text: "项目", value: "project", sortable: false },
-        { text: "类型", value: "type", sortable: false },
-        { text: "金额", value: "amount", sortable: false },
-        { text: "余额", value: "balance", sortable: false },
-        { text: "备注", value: "remark", sortable: false }
+        { text: "市场", value: "market", sortable: false },
+        { text: "累积业绩", value: "accumulate", sortable: false },
+        { text: "本期业绩", value: "current", sortable: false }
+        // { text: "奖金", value: "amount", sortable: false }
       ],
-      desserts: [
-        {
-          time: "2018.1.1 00:30",
-          project: "2018.12下奖金",
-          type: "收入",
-          amount: 2610,
-          balance: 2610,
-          remark: "备注信息"
-        }
-      ]
+      achievements: [],
+      amount: 0,
+      times: [],
+      time: "",
+      timeLabel: "本期业绩"
     };
+  },
+  methods: {
+    currentTime() {
+      let timePrefix = dayjs().format("YYYY.MM");
+      let currentDay = dayjs().date();
+      if (currentDay <= 15) {
+        return `${timePrefix}(上)`;
+      } else {
+        return `${timePrefix}(下)`;
+      }
+    },
+    async achievementQuery() {
+      this.$store.commit("openLoading", true);
+      if (this.time == this.currentTime()) {
+        this.timeLabel = "本期业绩";
+      } else {
+        this.timeLabel = "往期业绩";
+      }
+      let res = await this.$store.dispatch("achievementQuery", {
+        userId: localStorage.getItem("id"),
+        time: this.time
+      });
+      if (!res.err) {
+        this.achievements = res.res.achievements;
+        this.amount = res.res.amount;
+      }
+      this.$store.commit("openLoading", false);
+    }
   }
 };
 </script>

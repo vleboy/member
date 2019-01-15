@@ -94,7 +94,16 @@
               <v-text-field ref="password2" v-model="form.password2" label="再次确认" type="password" required></v-text-field>
             </v-flex>-->
             <v-flex xs12>
-              <v-text-field ref="level" v-model="form.level" label="级别" readonly></v-text-field>
+              <!-- <v-text-field ref="level" v-model="form.level" label="级别" readonly></v-text-field> -->
+              <v-select
+                ref="level"
+                v-model="form.level"
+                :items="['普通会员', '免费会员']"
+                label="级别"
+                required
+                :rules="[rules.required]"
+                clearable
+              ></v-select>
             </v-flex>
             <v-flex xs6>
               <v-select

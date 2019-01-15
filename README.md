@@ -78,12 +78,11 @@ POST http://localhost:3636/xnosql/product/query (√)
 POST http://localhost:3636/xserver/achievement/query
 {
     userId:userId,
-    time:'201901,up'
-
+    time:'201901(上)'
 }
 {
     err:true/false
-    res:[业绩列表数组]
+    res:{achievements:[market,accumulate,current],amount}
 }
 
 

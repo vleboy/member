@@ -15,47 +15,55 @@
             </v-card-actions>
           </v-layout>
         </v-card>
-        <!-- <v-list-tile> -->
-        <!-- <v-list-tile-content>
-            <v-list-tile-title>收货地址：1111111111111111111111111111111111111</v-list-tile-title>
-            <v-list-tile-title>收货人：</v-list-tile-title>
-            <v-list-tile-title>收货电话：</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn>修改</v-btn>
-        </v-list-tile-action>-->
-        <!-- </v-list-tile> -->
       </v-list>
     </v-flex>
     <v-flex xs12>
       <v-list subheader three-line>
         <v-subheader>产品订购</v-subheader>
-        <v-list-tile v-for="item in products" :key="item.id" avatar ripple>
-          <!-- <v-list-tile-avatar> -->
-          <v-list-tile-content>
-            <img :src="item.img" height="80">
-          </v-list-tile-content>
-          <!-- </v-list-tile-avatar> -->
-          <v-list-tile-content>
-            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ item.desc }}</v-list-tile-sub-title>
-            <v-list-tile-sub-title>￥{{ item.price }}</v-list-tile-sub-title>
-          </v-list-tile-content>
+        <template v-for="item in products">
+          <div :key="item.id">
+            <v-layout fluid fill-height justify-center>
+              <v-flex xs4>
+                <img :src="item.img" height="100">
+              </v-flex>
+              <v-flex xs4 align-self-center>
+                <div>{{ item.name }}</div>
+                <div class="font-weight-light">{{ item.desc }}</div>
+                <div>￥{{ item.price }}</div>
+              </v-flex>
+              <v-flex xs5 align-self-center>
+                <v-btn icon>
+                  <v-icon color="teal" @click="remove(item)">remove</v-icon>
+                </v-btn>
+                {{item.num}}
+                <v-btn icon>
+                  <v-icon color="teal" @click="add(item)">add</v-icon>
+                </v-btn>
+              </v-flex>
+            </v-layout>
 
-          <v-list-tile-action>
-            <!-- <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text> -->
-            <v-btn icon>
-              <v-icon color="teal" @click="remove(item)">remove</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-          <v-list-tile-action>{{item.num}}</v-list-tile-action>
-          <v-list-tile-action>
-            <!-- <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text> -->
-            <v-btn icon>
-              <v-icon color="teal" @click="add(item)">add</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+            <!-- <v-list-tile-content>
+            <img :src="item.img" height="80">
+            </v-list-tile-content>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ item.desc }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title>￥{{ item.price }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+
+            <v-list-tile-action>
+              <v-btn icon>
+                <v-icon color="teal" @click="remove(item)">remove</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <v-list-tile-action>{{item.num}}</v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn icon>
+                <v-icon color="teal" @click="add(item)">add</v-icon>
+              </v-btn>
+            </v-list-tile-action>-->
+          </div>
+        </template>
       </v-list>
     </v-flex>
     <v-footer height="auto">
