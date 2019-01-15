@@ -49,7 +49,7 @@
             <td>{{ props.item.status | toStatus}}</td>
             <td>
               <span v-if="props.item.status == 'init'">
-                <a @click="changeStatus(props.item._id,props.item.username,'init','审核')">审核</a> |
+                <a @click="changeStatus(props.item._id,props.item.id,'init','审核')">审核</a> |
               </span>
               <a @click="openRegister(props.item._id)">改</a> |
               <span v-if="props.item.status == 'normal'">
@@ -188,6 +188,7 @@ export default {
         this.initPrice = 2980;
         this.openAudit = true;
         this._idTemp = _id;
+        this.idTemp = username
       } else if (
         (operation == "审核" && status == "normal") ||
         confirm(`确认${operation}用户 ${username}?`)
@@ -198,6 +199,7 @@ export default {
           data._id = _id;
         } else {
           data._id = this._idTemp;
+          data.id = this.idTemp;
           data.initPrice = this.initPrice;
         }
         let res = await this.$store.dispatch("userUpdate", data);
