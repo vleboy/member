@@ -38,15 +38,12 @@
 import dayjs from "dayjs";
 export default {
   created: function() {
-    let year = dayjs().year();
-    for (let i = 0; i < 12; i++) {
-      if (i < 9) {
-        this.times.push(`${year}.0${i + 1}(上)`);
-        this.times.push(`${year}.0${i + 1}(下)`);
-      } else {
-        this.times.push(`${year}.${i + 1}(上)`);
-        this.times.push(`${year}.${i + 1}(下)`);
-      }
+    for (let i = 0; i < 6; i++) {
+      let timePrefix = dayjs()
+        .subtract(i, "months")
+        .format("YYYY.MM");
+      this.times.push(`${timePrefix}(上)`);
+      this.times.push(`${timePrefix}(下)`);
     }
     this.time = this.currentTime();
   },
@@ -72,6 +69,7 @@ export default {
         { text: "奖金", value: "amount", sortable: false }
       ],
       achievements: [],
+      amount: 0,
       times: [],
       time: "",
       timeLabel: "本期业绩"
@@ -79,21 +77,12 @@ export default {
   },
   methods: {
     currentTime() {
-      let year = dayjs().year();
-      let currentMonth = dayjs().month();
+      let timePrefix = dayjs().format("YYYY.MM");
       let currentDay = dayjs().date();
-      if (currentMonth < 9) {
-        if (currentDay <= 15) {
-          return `${year}.0${currentMonth + 1}(上)`;
-        } else {
-          return `${year}.0${currentMonth + 1}(下)`;
-        }
+      if (currentDay <= 15) {
+        return `${timePrefix}(上)`;
       } else {
-        if (currentDay <= 15) {
-          return `${year}.${currentMonth + 1}(上)`;
-        } else {
-          return `${year}.0${currentMonth + 1}(下)`;
-        }
+        return `${timePrefix}(下)`;
       }
     },
     async achievementQuery() {
@@ -108,7 +97,8 @@ export default {
         time: this.time
       });
       if (!res.err) {
-        this.achievements = res.res;
+        this.achievements = res.res.achievements;
+        this.amount = res.res.amount;
       }
       this.$store.commit("openLoading", false);
     }
