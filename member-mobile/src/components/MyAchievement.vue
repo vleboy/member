@@ -26,9 +26,12 @@
             <td>{{ props.item.market}}</td>
             <td>{{ props.item.accumulate }}</td>
             <td>{{ props.item.current }}</td>
-            <td>{{ props.item.amount }}</td>
+            <!-- <td>{{ props.item.amount }}</td> -->
           </template>
         </v-data-table>
+        <v-layout align-center justify-center>
+          <h3>奖金：{{amount}}</h3>
+        </v-layout>
       </v-card>
     </v-dialog>
   </v-layout>
@@ -65,8 +68,8 @@ export default {
       headers: [
         { text: "市场", value: "market", sortable: false },
         { text: "累积业绩", value: "accumulate", sortable: false },
-        { text: "本期业绩", value: "current", sortable: false },
-        { text: "奖金", value: "amount", sortable: false }
+        { text: "本期业绩", value: "current", sortable: false }
+        // { text: "奖金", value: "amount", sortable: false }
       ],
       achievements: [],
       amount: 0,
