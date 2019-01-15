@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/mobile/precache-manifest.1cab932c011bd17ea3c7a88998bf5bea.js"
+  "/mobile/precache-manifest.4a01a52d5681a4cf890973fef3d6e20d.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "member-mobile"});
