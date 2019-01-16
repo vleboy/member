@@ -29,7 +29,7 @@ router.post('/bill/insert', async (ctx, next) => {
     check(inparam)
     let userRes = await mongodb.find('user', { id: inparam.userId })
     if (token.role == 'admin' || token.id == inparam.userId) {
-        if (userRes[0].balance < inparam.amount) {
+        if (inparam.type == 'OUT' && userRes[0].balance < inparam.amount) {
             throw { err: true, res: `余额不足，当前余额为${userRes[0].balance}` }
         } else {
             inparam.createdAt = Date.now()
