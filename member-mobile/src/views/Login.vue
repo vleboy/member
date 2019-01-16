@@ -1,5 +1,5 @@
 <template>
-  <v-layout d-flex justify-center fill-height>
+  <v-layout fluid d-flex justify-center fill-height>
     <v-parallax src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg" height="800">
       <div class="text-xs-center">会员系统</div>
       <!-- <div class="text-xs-center">建议您【添加到主屏幕】或【收藏】以便下次打开</div> -->
