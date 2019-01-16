@@ -11,7 +11,7 @@
     },
     "auth": {
         "secret": "member",
-        "pass": ["/user/insert","/xserver/auth/login"],
+        "pass": ["/user/insert","/xserver/auth/login","/xnosql/user/insert"],
         "role":{
             "admin":[".*"],
             "financialAdmin":["/financial/*"],
