@@ -168,6 +168,7 @@ export default {
           this.snackMsg.isShow = true;
           this.snackMsg.msg = `${operation}款成功`;
           this.snackMsg.color = "success";
+          this.billQuery();
         }
       }
     },
