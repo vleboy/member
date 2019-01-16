@@ -11,7 +11,7 @@
             <v-toolbar dark color="primary">
               <v-toolbar-title>登录</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn color="success" @click="scanReg">扫码注册</v-btn>
+              <!-- <v-btn color="success" @click="scanReg">扫码注册</v-btn> -->
             </v-toolbar>
             <v-card-text>
               <v-form>
@@ -57,16 +57,16 @@
       {{snackMsg.msg}}
       <v-btn flat @click="snackMsg.isShow = false">关闭</v-btn>
     </v-snackbar>
-    <QRScan/>
+    <!-- <QRScan/> -->
   </v-layout>
 </template>
 
 <script>
-import QRScan from "../components/QRScan.vue";
+// import QRScan from "../components/QRScan.vue";
 export default {
-  components: {
-    QRScan
-  },
+  // components: {
+  //   QRScan
+  // },
   data() {
     return {
       username: null,

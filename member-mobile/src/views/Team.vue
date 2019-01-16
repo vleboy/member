@@ -39,12 +39,12 @@ export default {
         icon: "person_add"
         // iconClass: "grey lighten-1 white--text"
       },
-      {
-        active: true,
-        title: "我的二维码",
-        subtitle: "用于提供扫码注册新会员",
-        icon: "person_add"
-      }
+      // {
+      //   active: true,
+      //   title: "我的二维码",
+      //   subtitle: "用于提供扫码注册新会员",
+      //   icon: "person_add"
+      // }
     ]
   }),
   methods: {
