@@ -21,7 +21,7 @@
                   v-model="username"
                   prepend-icon="person"
                   name="login"
-                  :label="label"
+                  label="手机号或MY号"
                   type="text"
                   :messages="['手机号或MY号']"
                   maxlength="5"
