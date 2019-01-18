@@ -40,7 +40,7 @@ router.post('/bill/query', async (ctx, next) => {
                 }
 
 
-            } else if (body[body.length - 1 - index].tyep == 'OUT') {
+            } else if (body[body.length - 1 - index].type == 'OUT') {
                 if (index == 0) {
                     body[body.length - 1 - index].balance = body[body.length - 1 - index].balance - body[body.length - 1 - index].amount
                 } else {
