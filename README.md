@@ -48,9 +48,10 @@ POST http://localhost:3636/xnosql/bill/insert (√)
     res:失败原因
 }
 账单查询接口：POST，响应用户账单列表
-POST http://localhost:3636/xnosql/bill/query (√)
+POST http://localhost:3636/xnosql/bill/page (√)
 {
-    userId:MY10001
+    userId:MY10001,
+    
 }
 {
     err:账单数组列表，没有返回null

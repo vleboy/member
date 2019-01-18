@@ -41,10 +41,11 @@ router.post('/bill/insert', async (ctx, next) => {
     }
 })
 
-router.post('/bill/query', async (ctx, next) => {
+router.post('/bill/page', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
     if (token.role == 'admin' || token.id == toUser.userId) {
+        ctx.request.body.sort = { createdAt: -1 }
         return next()
     } else {
         throw { err: true, res: '该用户没有提现权限' }

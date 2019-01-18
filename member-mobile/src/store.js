@@ -75,7 +75,7 @@ const vuex = new Vuex.Store({
       return res.data
     },
     async billQuery(state, data) {
-      const res = await axios.post(`${domain}/xnosql/bill/query`, data)
+      const res = await axios.post(`${domain}/xnosql/bill/page`, data)
       return res.data
     },
     async productQuery(state, data) {
