@@ -98,7 +98,7 @@ router.post('/stat', async (ctx, next) => {
    
     r.map(item => {
         if(item.type == 'IN'){
-            accumulateIn  = accumulateIn + item.amount
+            accumulateIn  = accumulateIn + Math.abs(item.amount)
         }else if(item.type = 'OUT'){
             accumulateOut = accumulateOut + Math.abs(item.amount)
         }
