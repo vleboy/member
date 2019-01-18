@@ -89,6 +89,7 @@ import dayjs from "dayjs";
 export default {
   created: function() {
     this.billQuery();
+    this.statQuery();
   },
   data() {
     return {
@@ -139,6 +140,12 @@ export default {
         this.bills = res.res;
       }
       this.$store.commit("openLoading", false);
+    },
+    async statQuery() {
+      let res = await this.$store.dispatch("achievementStat", {});
+      if (!res.err) {
+        this.accumulate = res.res;
+      }
     },
     async openBillInOutDialog(dialogTitle) {
       this.dialogTitle = dialogTitle;

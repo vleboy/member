@@ -86,6 +86,10 @@ const vuex = new Vuex.Store({
     async achievementQuery(state, data) {
       const res = await axios.post(`${domain}/xserver/achievement/query`, data)
       return res.data
+    },
+    async achievementStat(state, data) {
+      const res = await axios.post(`${domain}/xserver/achievement/stat`, data)
+      return res.data
     }
   }
 })
