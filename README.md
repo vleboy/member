@@ -76,7 +76,7 @@ POST http://localhost:3636/xnosql/product/query (√)
     res:[产品列表数组]
 }
 业绩查询接口：POST
-POST http://localhost:3636/xserver/achievement/query
+POST http://localhost:3636/xserver/achievement/query(√)
 {
     userId:userId,
     time:'201901(上)'

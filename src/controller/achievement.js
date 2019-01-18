@@ -32,7 +32,7 @@ router.post('/query', async (ctx, next) => {
             market2 = r[0].referralBonuses.phase2.id
         }
     } else {
-       
+
         throw { err: true, res: `查询不到该用户【${inparam.userId}】，请查证` }
     }
 
@@ -70,12 +70,12 @@ router.post('/query', async (ctx, next) => {
     }
     if (time[1] == '上)') {
         amount = upAmount1 + upAmount2
-        achievements.push({ market:market1, accumulate:accumulate1, current:upCurrent1 })
-        achievements.push({ market:market2, accumulate:accumulate2, current:upCurrent2 })
+        achievements.push({ market: market1, accumulate: accumulate1, current: upCurrent1 })
+        achievements.push({ market: market2, accumulate: accumulate2, current: upCurrent2 })
     } else if (tiem[1] == '下)') {
         amount = downAmount1 + downAmount2
-        achievements.push({ market:market1, accumulate:accumulate1, current:downCurrent1 })
-        achievements.push({ market:market2, accumulate:accumulate2, current:downCurrent2 })
+        achievements.push({ market: market1, accumulate: accumulate1, current: downCurrent1 })
+        achievements.push({ market: market2, accumulate: accumulate2, current: downCurrent2 })
     }
 
     ctx.body = { err: false, res: { achievements, amount } }
@@ -89,5 +89,34 @@ router.post('/query', async (ctx, next) => {
     // ctx.body= {err:false,res}
 })
 
-
+router.post('/stat', async (ctx, next) => {
+   let r = await mongodb.find('bill', { userId: 'root' })
+    let accumulateIn = 0
+    let accumulateOut = 0
+    let accumulateBalance = 0
+    let accumulateMemberBalance = 0
+   
+    r.map(item => {
+        if(item.type == 'IN'){
+            accumulateIn  = accumulateIn + item.amount
+        }else if(item.type = 'OUT'){
+            accumulateOut = accumulateOut + Math.abs(item.amount)
+        }
+    })
+    r =await mongodb.find('user', { id: 'root' })
+    console.log(r)
+    accumulateBalance = r[0].balance
+    r =await mongodb.find('user',{id : { '$ne':'root'}})
+    r.map(item=>{
+        accumulateMemberBalance = accumulateMemberBalance + item.balance
+    })
+    ctx.body = {
+        err: false, res: {
+            accumulateIn: accumulateIn,
+            accumulateOut: accumulateOut,
+            accumulateBalance: accumulateBalance,
+            accumulateMemberBalance: accumulateBalance
+        }
+    }
+})
 module.exports = router
