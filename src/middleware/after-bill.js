@@ -34,7 +34,7 @@ router.post('/bill/page', async (ctx, next) => {
             console.log(index)
             if (body.res[body.res.length - 1 - index].type == 'IN') {
                 if (index == 0) {
-                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance + body.res[body.res.length - 1 - index].amount
+                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance +  Math.abs(body.res[body.res.length - 1 - index].amount)
                 } else {
                     body.res[body.res.length - 1 - index].balance = body.res[body.res.length - index].balance +Math.abs(body.res[body.res.length - 1 - index].amount) 
 
@@ -43,7 +43,7 @@ router.post('/bill/page', async (ctx, next) => {
 
             } else if (body.res[body.res.length - 1 - index].type == 'OUT') {
                 if (index == 0) {
-                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance - body.res[body.res.length - 1 - index].amount
+                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance -  Math.abs(body.res[body.res.length - 1 - index].amount)
                 } else {
                     body.res[body.res.length - 1 - index].balance = body.res[body.res.length - index].balance - Math.abs(body.res[body.res.length - 1 - index].amount)
 
