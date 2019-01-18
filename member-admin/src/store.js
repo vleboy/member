@@ -48,7 +48,7 @@ const vuex = new Vuex.Store({
       return res.data
     },
     async userQuery(state, data) {
-      const res = await axios.post(`${domain}/xnosql/user/query`, data)
+      const res = await axios.post(`${domain}/xnosql/user/page`, data)
       return res.data
     },
     async userUpdate(state, data) {
@@ -72,7 +72,7 @@ const vuex = new Vuex.Store({
       return res.data
     },
     async orderQuery(state, data) {
-      const res = await axios.post(`${domain}/xnosql/order/query`, data)
+      const res = await axios.post(`${domain}/xnosql/order/page`, data)
       return res.data
     },
     async orderInsert(state, data) {
@@ -100,6 +100,10 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(config => {
   return config;
 }, err => {
+  if (err.response.status == 401) {
+    localStorage.clear()
+    window.location.href = window.location.href.split('#')[0]
+  }
   vuex.commit("openLoading", false);
   Promise.resolve(err);
 })

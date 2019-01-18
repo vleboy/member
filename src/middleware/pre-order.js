@@ -74,9 +74,10 @@ router.post('/order/insert', async (ctx, next) => {
 /**
  * 查询订单中间件
  */
-router.post('/order/query', async (ctx, next) => {
+router.post('/order/page', async (ctx, next) => {
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
+    inparam.sort = { createdAt: -1 }
     if (inparam.key) {
         inparam['$or'] = [{ id: inparam.key }, { userId: inparam.key }]
         delete inparam.key
