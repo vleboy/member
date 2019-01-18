@@ -27,10 +27,13 @@ router.post('/bill/query', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let body = ctx.body
     console.log(body)
-    if (ctx.body.res.length > 0) {
+    console.log(body.res[body.res.length - 1])
+    if (body.res.length > 0) {
         body.res[body.res.length - 1].balance = 0
-        for (let index = 0; index < body.res.length; index++) {
+        for (let index = 0; index < body.res.length-1; index++) {
             body.res[body.res.length - 1 - index].balance = 0
+
+
             if (body.res[body.res.length - 1 - index].type == 'IN') {
                 if (index == 0) {
                     body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance + body.res[body.res.length - 1 - index].amount
