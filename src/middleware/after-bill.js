@@ -36,7 +36,7 @@ router.post('/bill/page', async (ctx, next) => {
                 if (index == 0) {
                     body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance + body.res[body.res.length - 1 - index].amount
                 } else {
-                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - index].balance + body.res[body.res.length - 1 - index].amount
+                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - index].balance +Math.abs(body.res[body.res.length - 1 - index].amount) 
 
                 }
 
@@ -45,7 +45,7 @@ router.post('/bill/page', async (ctx, next) => {
                 if (index == 0) {
                     body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance - body.res[body.res.length - 1 - index].amount
                 } else {
-                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - index].balance - body.res[body.res.length - 1 - index].amount
+                    body.res[body.res.length - 1 - index].balance = body.res[body.res.length - index].balance - Math.abs(body.res[body.res.length - 1 - index].amount)
 
                 }
 
