@@ -1,5 +1,5 @@
 const moment = require('dayjs');
-const _ =require('lodash')
+const _ = require('lodash')
 
 // console.log(moment().startOf('month').valueOf())
 // console.log(moment(moment().date('15')).startOf('day').format())
@@ -8,7 +8,7 @@ async function settlement() {
     //console.log('系统结算检查')
     //第一期结算
     //获取当前时间
-   let nowTime = moment()
+    let nowTime = moment()
     let nowDate = nowTime.date()
     let nowHour = nowTime.hour()
     let nowMinute = nowTime.minute()
@@ -49,7 +49,7 @@ async function settlement() {
             //     _id: '5c38538d0327214c839a9ce2', userId: "root2", type: "IN", amount: 4003, createdAt: 1547195277650, remark: "D961449", project: "推荐奖"
             // }]
 
-           let pushBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month()}月,第${period}期奖励`, project: '当期结算' }
+            let pushBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month()}月,第${period}期奖励`, project: '当期结算' }
 
             let achieveUser = []
             let pushBillTems = []
@@ -58,25 +58,26 @@ async function settlement() {
                     achieveUser.push(item.userId)
                 }
             })
-            
+
             achieveUser.map((item) => {
                 let userBillTemp = _.cloneDeep(pushBillTem)
                 let r = _.filter(achievements, _.iteratee(['userId', item]));
                 let userBill = 0;
                 r.map((i) => {
-                    userBill = i.amount + userBill
+                    userBill = Math.abs(i.amount) + userBill
                 })
                 userBillTemp.amount = userBill
                 userBillTemp.userId = item
                 pushBillTems.push(userBillTemp)
             })
-          
+
             pushBillTems.map(async (item) => {
-                console.log('item',item)
+                console.log('item', item)
                 await mongodb.insert('bill', item)
+                await mongodb.update('user', { id: item.userId }, { $inc: { balance: item.amount } })
             })
 
-           
+
         } else {
             console.log('系统正在结算中')
         }
