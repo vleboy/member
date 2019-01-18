@@ -75,7 +75,7 @@ const vuex = new Vuex.Store({
       return res.data
     },
     async billQuery(state, data) {
-      const res = await axios.post(`${domain}/xnosql/bill/query`, data)
+      const res = await axios.post(`${domain}/xnosql/bill/page`, data)
       return res.data
     },
     async productQuery(state, data) {
@@ -103,6 +103,10 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(config => {
   return config;
 }, err => {
+  if (err.response.status == 401) {
+    localStorage.clear()
+    window.location.href = window.location.href.split('#')[0]
+  }
   vuex.commit("openLoading", false);
   Promise.resolve(err);
 })
