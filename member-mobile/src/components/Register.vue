@@ -9,9 +9,9 @@
           <v-toolbar-title>会员注册</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn slot="activator" icon @click="resetForm">
+            <!-- <v-btn slot="activator" icon @click="resetForm">
               <v-icon>refresh</v-icon>
-            </v-btn>
+            </v-btn>-->
             <v-btn dark flat @click="confirm">提交申请</v-btn>
           </v-toolbar-items>
         </v-toolbar>
@@ -52,7 +52,14 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs8>
-              <v-text-field ref="wechatnumber" v-model="form.wechatnumber" label="微信号" clearable></v-text-field>
+              <v-text-field
+                ref="wechatnumber"
+                v-model="form.wechatnumber"
+                label="微信号"
+                :rules="[rules.wechatnumber]"
+                maxlength="19"
+                clearable
+              ></v-text-field>
             </v-flex>
             <v-flex xs4>
               <v-checkbox ref="iswechatpay" v-model="form.iswechatpay" label="微信收款"></v-checkbox>
@@ -195,6 +202,10 @@ export default {
         banknumber: value => {
           const pattern = /^[0-9]{1,19}$/;
           return pattern.test(value) || "请输入正确银行卡号";
+        },
+        wechatnumber: value => {
+          const pattern = /^[-_a-zA-Z0-9]{5,19}$/;
+          return pattern.test(value) || "请输入正确微信号";
         }
       },
       snackMsg: {
@@ -209,7 +220,7 @@ export default {
         idnumber: "",
         mobile: "",
         wechatnumber: "",
-        iswechatpay: false,
+        iswechatpay: true,
         bankname: "",
         banknumber: "",
         password: "",

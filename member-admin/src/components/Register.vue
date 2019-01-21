@@ -53,8 +53,18 @@
                 clearable
               ></v-text-field>
             </v-flex>
-            <v-flex xs6>
-              <v-text-field ref="wechatnumber" v-model="form.wechatnumber" label="微信号" clearable></v-text-field>
+            <v-flex xs4>
+              <v-text-field
+                ref="wechatnumber"
+                v-model="form.wechatnumber"
+                label="微信号"
+                maxlength="19"
+                :rules="[rules.wechatnumber]"
+                clearable
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs2>
+              <v-checkbox ref="iswechatpay" v-model="form.iswechatpay" label="微信收款"></v-checkbox>
             </v-flex>
             <v-flex xs6>
               <v-select
@@ -203,6 +213,10 @@ export default {
         banknumber: value => {
           const pattern = /^[0-9]{1,19}$/;
           return pattern.test(value) || "请输入正确银行卡号";
+        },
+        wechatnumber: value => {
+          const pattern = /^[-_a-zA-Z0-9]{5,19}$/;
+          return pattern.test(value) || "请输入正确微信号";
         }
       },
       snackMsg: {
@@ -217,6 +231,7 @@ export default {
         idnumber: "",
         mobile: "",
         wechatnumber: "",
+        iswechatpay: true,
         bankname: "",
         banknumber: "",
         password: "",
