@@ -134,16 +134,17 @@
                 :rules="[rules.required]"
               ></v-select>
             </v-flex>
-            <!-- <v-flex xs12>
+            <v-flex xs12>
               <v-text-field
                 ref="address"
                 v-model="form.address"
                 label="居住地"
                 required
+                maxlength="30"
                 :rules="[rules.required]"
                 clearable
               ></v-text-field>
-            </v-flex>-->
+            </v-flex>
             <v-flex xs12 v-show="allowChange">
               <v-text-field
                 ref="parentId"
@@ -238,7 +239,7 @@ export default {
         level: "普通会员",
         province: "",
         city: "",
-        // address: "",
+        address: "",
         parentId: localStorage.getItem("id"),
         recommendnumber: localStorage.getItem("id")
       },
@@ -308,7 +309,7 @@ export default {
         this.form.banknumber = res.res.banknumber;
         this.form.password = res.res.password;
         this.form.level = res.res.level;
-        // (this.form.address = res.res.address),
+        this.form.address = res.res.address;
         for (let province of pc) {
           if (province.name == res.res.province) {
             this.citys = [];

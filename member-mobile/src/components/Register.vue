@@ -123,16 +123,17 @@
                 :rules="[rules.required]"
               ></v-select>
             </v-flex>
-            <!-- <v-flex xs12>
+            <v-flex xs12>
               <v-text-field
                 ref="address"
                 v-model="form.address"
                 label="居住地"
                 required
+                maxlength="30"
                 :rules="[rules.required]"
                 clearable
               ></v-text-field>
-            </v-flex>-->
+            </v-flex>
             <v-flex xs12>
               <v-text-field
                 ref="parentId"
@@ -227,7 +228,7 @@ export default {
         level: "普通会员",
         province: "",
         city: "",
-        // address: "",
+        address: "",
         parentId: localStorage.getItem("id"),
         recommendnumber: localStorage.getItem("id")
       },
