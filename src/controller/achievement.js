@@ -72,7 +72,7 @@ router.post('/query', async (ctx, next) => {
         amount = upAmount1 + upAmount2
         achievements.push({ market: market1, accumulate: accumulate1, current: upCurrent1 })
         achievements.push({ market: market2, accumulate: accumulate2, current: upCurrent2 })
-    } else if (tiem[1] == '下)') {
+    } else if (time[1] == '下)') {
         amount = downAmount1 + downAmount2
         achievements.push({ market: market1, accumulate: accumulate1, current: downCurrent1 })
         achievements.push({ market: market2, accumulate: accumulate2, current: downCurrent2 })

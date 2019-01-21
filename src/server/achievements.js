@@ -7,11 +7,11 @@ const ObjectId = require('mongodb').ObjectID
 async function updateUser(inparam, date) {
     console.log(`开始激活当前用户【${inparam.people[0].id}】`)
     console.log(`当前用户【${inparam.people[0].id}】激活套餐价格为${inparam.price}`)
-    if (inparam.people[0].status != 'normal') {
-        await mongodb.update('user', { userId: inparam.people[0].id}, { $set: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } })
-    } else {
+ 
+        await mongodb.update('user', { id: inparam.people[0].id}, { $set: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } })
+  
         console.log(`当前用户【${inparam.people[0].id}】已激活`)
-    }
+ 
 }
 
 //推荐奖与回本奖
@@ -137,7 +137,7 @@ async function getMarketBonuses(inparam, date) {
         //处理奖励逻辑
         let leftPrice = 0; let rightPrice = 0;
         let bonuseUser = await mongodb.find('user', { id: bonuseUserIdGroup[index] })
-        console.log('开始计算当前可能获取奖励的用户【', bonuseUser[0].id, '】的左区金额')
+        console.log('开始为当前可能获取奖励的用户【', bonuseUser[0].id, '】寻找匹配分区')
         //计算左区金额
         // left.map((item) => {
         //     if (item.id != bonuseUser[0].referralBonuses.phase1.id && item.id != bonuseUser[0].referralBonuses.phase2.id) {
@@ -145,21 +145,39 @@ async function getMarketBonuses(inparam, date) {
         //         // console.log('leftPrice', leftPrice)
         //     }
         // })
-        //console.log(left);console.log(right)
-        left.map((item) => {
-            if (item.id == bonuseUser[0].referralBonuses.phase1.id) {
-                leftMarket = bonuseUser[0].referralBonuses.phase1.id
-                rightMarket = bonuseUser[0].referralBonuses.phase2.id
-                console.log(`市场${bonuseUser[0].referralBonuses.phase1.id}为左区`)
-                console.log(`市场${bonuseUser[0].referralBonuses.phase2.id}为右区`)
-            } else if (item.id == bonuseUser[0].referralBonuses.phase2.id) {
-                leftMarket = bonuseUser[0].referralBonuses.phase2.id
-                rightMarket = bonuseUser[0].referralBonuses.phase1.id
-                console.log(`市场${bonuseUser[0].referralBonuses.phase1.id}为右区`)
-                console.log(`市场${bonuseUser[0].referralBonuses.phase2.id}为左区`)
-            }
-        })
-
+        console.log('left',left);console.log('right',right);console.log('ref',bonuseUser[0].referralBonuses)
+        if (left.length > 0){
+            left.map((item) => {
+                if (item.id == bonuseUser[0].referralBonuses.phase1.id) {
+                    leftMarket = bonuseUser[0].referralBonuses.phase1.id
+                    rightMarket = bonuseUser[0].referralBonuses.phase2.id
+                    console.log(`市场${leftMarket}为左区`)
+                    console.log(`市场${rightMarket}为右区`)
+                } else if (item.id == bonuseUser[0].referralBonuses.phase2.id) {
+                    leftMarket = bonuseUser[0].referralBonuses.phase2.id
+                    rightMarket = bonuseUser[0].referralBonuses.phase1.id
+                    console.log(`市场${rightMarket}为右区`)
+                    console.log(`市场${leftMarket}为左区`)
+                }
+            })
+    
+          
+        }else if(left.length == 0){
+            right.map(item=>{
+                if (item.id == bonuseUser[0].referralBonuses.phase1.id) {
+                    rightMarket = bonuseUser[0].referralBonuses.phase1.id
+                     leftMarket  = bonuseUser[0].referralBonuses.phase2.id
+                    console.log(`市场${leftMarket}为左区`)
+                    console.log(`市场${rightMarket}为右区`)
+                } else if (item.id == bonuseUser[0].referralBonuses.phase2.id) {
+                    rightMarket  = bonuseUser[0].referralBonuses.phase2.id
+                    leftMarket = bonuseUser[0].referralBonuses.phase1.id
+                    console.log(`市场${rightMarket}为右区`)
+                    console.log(`市场${leftMarket}为左区`)
+                }
+            })
+        }
+    
         left.map((item) => {
             if (item.id != bonuseUser[0].referralBonuses.phase1.id && item.id != bonuseUser[0].referralBonuses.phase2.id) {
                 leftPrice = item.initPrice + leftPrice
@@ -211,7 +229,7 @@ async function getMarketBonuses(inparam, date) {
             if (moment(item.createdAt).isAfter(moment(date).startOf('day').valueOf())) {
                 if (item.market == leftMarket) {
                     isLeftToday = _.cloneDeep(item)  //左区市场
-                } else if (item.remark == rightMarket) {
+                } else if (item.market == rightMarket) {
                     isRightToday = _.cloneDeep(item)//右区市场
                 }
                 // isToday = item
@@ -219,7 +237,7 @@ async function getMarketBonuses(inparam, date) {
                 if (item.market == leftMarket) {
                     leftSubplus += item.surplus
                     subLeftAmount += item.amount
-                } else if (item.remark == rightMarket) {
+                } else if (item.market == rightMarket) {
                     rightSurplus += item.surplus
                     subRightAmount += item.amount
                 }
@@ -267,8 +285,9 @@ async function getMarketBonuses(inparam, date) {
             }
             isLeftToday.amount = achievementsBonuse.amount; isLeftToday.createdAt = moment(date).valueOf();isLeftToday.achievements = leftPrice
             let now_id = isLeftToday._id
+            console.log('no03',now_id)
             delete isLeftToday._id
-            console.log('no03',isLeftToday)
+           
             await mongodb.update('achievement', { _id: ObjectId(now_id) }, { $set: isLeftToday })
             await mongodb.update('achievement', { market: rightMarket}, { $set: {achievements :rightPrice} })
         } else if (isRightToday != null) {
@@ -312,24 +331,27 @@ async function getMarketBonuses(inparam, date) {
         let leaderLevel3Bonuse = achievementsBonuse.amount * 0.10
         let leader = bonuseUser[0].recommendIndex.reverse()
         let leaderBonuse = { userId: '', project: '领导奖', type: 'IN', amount: 0, createdAt: moment(date).valueOf(), remark: '领导奖' }
-        console.log('开始计算领导奖')
+        console.log('开始计算领导奖',leader)
+        if (leader[0]) {
+            console.log(`【${leader[0]}】获得领导奖【${leaderLevel1Bonuse}】`)
+            let le = _.cloneDeep(leaderBonuse)
+            le.userId = leader[0]
+            le.amount = leaderLevel1Bonuse
+            await mongodb.insert('achievement', le)
+        }
         if (leader[1]) {
-            console.log(`【${leader[1].id}】获得领导奖【${leaderLevel1Bonuse}】`)
-            leaderBonuse.userId = leader[1].userId
-            leaderBonuse.amount = leaderLevel1Bonuse
-            await mongodb.insert('achievement', leaderBonuse)
+            console.log(`【${leader[1]}】获得领导奖【${leaderLevel2Bonuse}】`)
+            let le = _.cloneDeep(leaderBonuse)
+            le.userId = leader[1]
+            le.amount = leaderLevel2Bonuse
+           await mongodb.insert('achievement', le)
         }
         if (leader[2]) {
-            console.log(`【${leader[2].id}】获得领导奖【${leaderLevel2Bonuse}】`)
-            leaderBonuse.userId = leader[2].userId
-            leaderBonuse.amount = leaderLevel2Bonuse
-            await mongodb.insert('achievement', leaderBonuse)
-        }
-        if (leader[3]) {
-            console.log(`【${leader[3].id}】获得领导奖【${leaderLevel3Bonuse}】`)
-            leaderBonuse.userId = leader[3].userId
-            leaderBonuse.amount = leaderLevel3Bonuse
-            await mongodb.insert('achievement', leaderBonuse)
+            console.log(`【${leader[2]}】获得领导奖【${leaderLevel3Bonuse}】`)
+            let le = _.cloneDeep(leaderBonuse)
+            le.userId = leader[2]
+            le.amount = leaderLevel3Bonuse
+            await mongodb.insert('achievement', le)
         }
 
     }

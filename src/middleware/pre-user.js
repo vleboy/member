@@ -7,7 +7,7 @@ const router = new Router()
 const _ = require('lodash')
 const log = require('tracer').colorConsole({ level: config.log.level })
 // 持久化相关
-// const ObjectId = require('mongodb').ObjectID
+ const ObjectId = require('mongodb').ObjectID
 const collection = 'user'
 // 处理函数逻辑
 const check = require('../util/check/user')
@@ -49,9 +49,9 @@ router.post('/user/insert', async (ctx, next) => {
     check(inparam)
 
     // 判断是否重复
-    let r = await mongodb.find(collection, { "$or": [{ username: inparam.username }, { mobile: inparam.mobile }] })
+    let r = await mongodb.find(collection, { mobile: inparam.mobile })
     if (r.length > 0) {
-        throw { err: true, res: '用户名或电话已存在' }
+        throw { err: true, res: '电话号码已存在' }
     }
     else {
         ctx.body = { err: false, res: inparam.id }  // 返回检查结果和生成的openid
@@ -168,10 +168,23 @@ router.post('/user/update', async (ctx, next) => {
 /**
  * 删除用户中间件
  */
-router.post('/user/delete', async (ctx, next) => {
+router.get('/user/delete/:_id', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
-    let inparam = ctx.request.body
+    let inparam = ctx.params
+    console.log(inparam)
+    let r = await mongodb.find('user',{_id:ObjectId(inparam._id)})
+    let f =await mongodb.find('user',{id:r[0].parentId})
+    let referral = _.cloneDeep(f[0].referralBonuses) 
+  
+    if (referral.phase1.id == r[0].id){
+        referral.phase1.id = null
+        
+    }else if(referral.phase2.id == r[0].id){
+        referral.phase2.id = null
+    }
+    console.log(referral)
+    await mongodb.update('user',{id:r[0].parentId},{'$set':{referralBonuses:referral}})
     if (token.role == 'admin') {
         return next()
     } else {
