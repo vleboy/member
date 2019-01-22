@@ -48,7 +48,7 @@
             <v-list-tile-content class="align-end"></v-list-tile-content>
           </v-list-tile>
           <v-list-tile>
-            <v-list-tile-content>级别：{{user.level}}</v-list-tile-content>
+            <v-list-tile-content>级别：{{user.initPrice == 0? '免费会员' : '普通会员' }}</v-list-tile-content>
             <v-list-tile-content class="align-end"></v-list-tile-content>
           </v-list-tile>
           <!-- <v-list-tile>
@@ -100,7 +100,8 @@ export default {
       banknumber: "",
       level: "",
       parentId: "",
-      recommendnumber: ""
+      recommendnumber: "",
+      initPrice: 0
     }
   }),
   props: ["openUserId"],

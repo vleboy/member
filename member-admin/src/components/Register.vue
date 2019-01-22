@@ -103,8 +103,7 @@
             <!-- <v-flex xs12>
               <v-text-field ref="password2" v-model="form.password2" label="再次确认" type="password" required></v-text-field>
             </v-flex>-->
-            <v-flex xs12>
-              <!-- <v-text-field ref="level" v-model="form.level" label="级别" readonly></v-text-field> -->
+            <!-- <v-flex xs12>
               <v-select
                 ref="level"
                 v-model="form.level"
@@ -114,7 +113,7 @@
                 :rules="[rules.required]"
                 clearable
               ></v-select>
-            </v-flex>
+            </v-flex> -->
             <v-flex xs6>
               <v-select
                 ref="province"
@@ -236,7 +235,7 @@ export default {
         bankname: "",
         banknumber: "",
         password: "",
-        level: "普通会员",
+        // level: "普通会员",
         province: "",
         city: "",
         address: "",
@@ -308,7 +307,7 @@ export default {
         this.form.bankname = res.res.bankname;
         this.form.banknumber = res.res.banknumber;
         this.form.password = res.res.password;
-        this.form.level = res.res.level;
+        // this.form.level = res.res.level;
         this.form.address = res.res.address;
         for (let province of pc) {
           if (province.name == res.res.province) {
