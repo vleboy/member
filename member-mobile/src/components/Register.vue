@@ -101,9 +101,9 @@
             <!-- <v-flex xs12>
               <v-text-field ref="password2" v-model="form.password2" label="再次确认" type="password" required></v-text-field>
             </v-flex>-->
-            <v-flex xs12>
+            <!-- <v-flex xs12>
               <v-text-field ref="level" v-model="form.level" label="级别" readonly></v-text-field>
-            </v-flex>
+            </v-flex> -->
             <v-flex xs6>
               <v-select
                 @change="changeProvince"
@@ -225,7 +225,7 @@ export default {
         bankname: "",
         banknumber: "",
         password: "",
-        level: "普通会员",
+        // level: "普通会员",
         province: "",
         city: "",
         address: "",

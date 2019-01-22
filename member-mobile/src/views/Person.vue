@@ -2,7 +2,7 @@
   <v-layout column>
     <v-list>
       <v-subheader>个人资料</v-subheader>
-      <v-list-tile>
+      <v-list-tile style="background:#EEEEEE">
         <v-list-tile-content>姓名：{{user.username}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
@@ -10,7 +10,7 @@
         <v-list-tile-content>编号：{{user.id}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile>
+      <v-list-tile style="background:#EEEEEE">
         <v-list-tile-content>证件号码：{{user.idnumber}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
@@ -18,7 +18,7 @@
         <v-list-tile-content>居住地：{{user.province}} {{user.city}} {{user.address}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile>
+      <v-list-tile style="background:#EEEEEE">
         <v-list-tile-content>手机号码：{{user.mobile}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
@@ -26,7 +26,7 @@
         <v-list-tile-content>微信号：{{user.wechatnumber}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile>
+      <v-list-tile style="background:#EEEEEE">
         <v-list-tile-content>微信收款：{{user.iswechatpay ? '是':'否'}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
@@ -34,19 +34,19 @@
         <v-list-tile-content>银行：{{user.bankname}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile>
+      <v-list-tile style="background:#EEEEEE">
         <v-list-tile-content>卡号：{{user.banknumber}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
       <v-list-tile>
-        <v-list-tile-content>级别：{{user.level}}</v-list-tile-content>
+        <v-list-tile-content>级别：{{user.initPrice == 0? '免费会员' : '普通会员' }}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
       <!-- <v-list-tile>
         <v-list-tile-content>代理区域：{{user.username}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>-->
-      <v-list-tile>
+      <v-list-tile style="background:#EEEEEE">
         <v-list-tile-content>安置编号：{{user.parentId}}</v-list-tile-content>
         <v-list-tile-content class="align-end"></v-list-tile-content>
       </v-list-tile>
@@ -76,7 +76,7 @@ export default {
       username: "",
       id: "",
       idnumber: "",
-      // address: "",
+      address: "",
       province: "",
       city: "",
       mobile: "",
@@ -84,9 +84,10 @@ export default {
       iswechatpay: "",
       bankname: "",
       banknumber: "",
-      level: "",
+      // level: "",
       parentId: "",
-      recommendnumber: ""
+      recommendnumber: "",
+      initPrice: 0
     }
   }),
   methods: {
