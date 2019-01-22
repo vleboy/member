@@ -24,7 +24,7 @@
             <v-list-tile-content class="align-end"></v-list-tile-content>
           </v-list-tile>
           <v-list-tile>
-            <v-list-tile-content>居住地：{{user.province}} {{user.city}}</v-list-tile-content>
+            <v-list-tile-content>居住地：{{user.province}} {{user.city}} {{user.address}}</v-list-tile-content>
             <v-list-tile-content class="align-end"></v-list-tile-content>
           </v-list-tile>
           <v-list-tile>
@@ -90,7 +90,7 @@ export default {
       username: "",
       id: "",
       idnumber: "",
-      // address: "",
+      address: "",
       province: "",
       city: "",
       mobile: "",
