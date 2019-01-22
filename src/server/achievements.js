@@ -9,7 +9,10 @@ async function updateUser(inparam, date) {
     console.log(`当前用户【${inparam.people[0].id}】激活套餐价格为${inparam.price}`)
  
         await mongodb.update('user', { id: inparam.people[0].id}, { $set: { status: 'normal', activateAt: moment(date).valueOf(), price: inparam.price } })
-  
+        if(inparam.price != 0 ){
+            await mongodb.insert('bill',{type:'IN',amount:inparam.price,userId:inparam.people[0].id,project:'套餐',remark:'激活默认金额',id:'D'+_.random(000000,999999),createdAt:Date.now(),balance:2980})
+            await mongodb.insert('bill',{type:'OUT',amount:inparam.price,userId:inparam.people[0].id,project:'套餐',remark:'购买套餐',id:'D'+_.random(000000,999999),createdAt:Date.now(),balance:0})
+        }
         console.log(`当前用户【${inparam.people[0].id}】已激活`)
  
 }

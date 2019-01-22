@@ -90,7 +90,7 @@ router.post('/query', async (ctx, next) => {
 })
 
 router.post('/stat', async (ctx, next) => {
-   let r = await mongodb.find('bill', { userId: 'root' })
+   let r = await mongodb.find('bill')
     let accumulateIn = 0
     let accumulateOut = 0
     let accumulateBalance = 0
@@ -103,7 +103,7 @@ router.post('/stat', async (ctx, next) => {
             accumulateOut = accumulateOut + Math.abs(item.amount)
         }
     })
-    r =await mongodb.find('user', { id: 'root' })
+    r =await mongodb.find('user')
     console.log(r)
     accumulateBalance = r[0].balance
     r =await mongodb.find('user',{id : { '$ne':'root'}})
