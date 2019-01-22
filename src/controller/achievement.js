@@ -69,11 +69,19 @@ router.post('/query', async (ctx, next) => {
         })
     }
     if (time[1] == '上)') {
-        amount = upAmount1 + upAmount2
+        if(upCurrent1 > upCurrent2){
+            amount = upAmount2
+        }else{
+            amount = upAmount1
+        }
         achievements.push({ market: market1, accumulate: accumulate1, current: upCurrent1 })
         achievements.push({ market: market2, accumulate: accumulate2, current: upCurrent2 })
     } else if (time[1] == '下)') {
-        amount = downAmount1 + downAmount2
+        if(downCurrent1 > downCurrent2){
+            amount = downAmount2
+        }else{
+            amount = downAmount1
+        }
         achievements.push({ market: market1, accumulate: accumulate1, current: downCurrent1 })
         achievements.push({ market: market2, accumulate: accumulate2, current: downCurrent2 })
     }
