@@ -11,7 +11,7 @@ function check(inparam) {
         activity,
     } = inparam
 
-    if (!name || name.length < 2 || name.length > 8) {
+    if (!name || name.length < 2 || name.length > 18) {
         error.res = '名字2-8个字'
     } else if (!desc || desc.length > 100) {
         error.res = '产品描述不能为空，或者超过100个字符'
