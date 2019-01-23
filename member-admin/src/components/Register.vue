@@ -159,7 +159,9 @@
                 ref="recommendnumber"
                 v-model="form.recommendnumber"
                 label="推荐编号"
-                readonly
+                required
+                :rules="[rules.required]"
+                clearable
               ></v-text-field>
             </v-flex>
           </v-layout>
