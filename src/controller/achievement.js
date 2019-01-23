@@ -113,8 +113,8 @@ router.post('/stat', async (ctx, next) => {
     })
     // r =await mongodb.find('user')
     accumulateBalance = accumulateIn - accumulateOut
-    r =await mongodb.find('user',{id : { '$ne':'root'}})
-    r.map(item=>{
+    r2 =await mongodb.find('user',{id : { '$ne':'root'}})
+    r2.map(item=>{
         accumulateMemberBalance = accumulateMemberBalance + item.balance
     })
     ctx.body = {
@@ -122,7 +122,7 @@ router.post('/stat', async (ctx, next) => {
             accumulateIn: accumulateIn,
             accumulateOut: accumulateOut,
             accumulateBalance: accumulateBalance,
-            accumulateMemberBalance: accumulateBalance
+            accumulateMemberBalance: accumulateMemberBalance
         }
     }
 })
