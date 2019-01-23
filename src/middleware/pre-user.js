@@ -158,7 +158,7 @@ router.post('/user/update', async (ctx, next) => {
     } else {
         ctx._id = inparam._id
     }
-    if (token.role == 'admin' || token.id == inparam.id) {
+    if (token._id == inparam._id) {
         return next()
     } else {
         throw { err: true, res: '该用户没有修改权限' }
