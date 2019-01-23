@@ -60,6 +60,7 @@ router.post('/order/insert', async (ctx, next) => {
     if (tokenRes[0].balance < priceRes) {
         throw { err: true, res: `下单失败，余额不足，当前余额为${tokenRes[0].balance},订单金额为${priceRes}` }
     }
+    console.log(tokenRes)
     inparam.deliveryAddress = tokenRes[0].deliveryAddress
     inparam.deliveryMobile = tokenRes[0].deliveryMobile
     inparam.deliveryName = tokenRes[0].deliveryName

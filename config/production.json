@@ -14,9 +14,7 @@
         "pass": ["/user/insert","/xserver/auth/login"],
         "role":{
             "admin":[".*"],
-            "financialAdmin":["/financial/*"],
-            "financialManager":["/financial/test1","/financial/test2"],
-            "financialStaff":["GET:/financial/test1","POST:/financial/test2"]
+            "user":[".*"]
         },
         "cors": true,
         "errMsg": "未认证",
