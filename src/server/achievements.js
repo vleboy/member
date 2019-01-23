@@ -335,24 +335,24 @@ async function getMarketBonuses(inparam, date) {
         let leader = bonuseUser[0].recommendIndex.reverse()
         let leaderBonuse = { userId: '', project: '领导奖', type: 'IN', amount: 0, createdAt: moment(date).valueOf(), remark: '领导奖' }
         console.log('开始计算领导奖',leader)
-        if (leader[0]) {
-            console.log(`【${leader[0]}】获得领导奖【${leaderLevel1Bonuse}】`)
+        if (leader[1]) {
+            console.log(`【${leader[1]}】获得领导奖【${leaderLevel1Bonuse}】`)
             let le = _.cloneDeep(leaderBonuse)
-            le.userId = leader[0]
+            le.userId = leader[1]
             le.amount = leaderLevel1Bonuse
             await mongodb.insert('achievement', le)
         }
-        if (leader[1]) {
-            console.log(`【${leader[1]}】获得领导奖【${leaderLevel2Bonuse}】`)
+        if (leader[2]) {
+            console.log(`【${leader[2]}】获得领导奖【${leaderLevel2Bonuse}】`)
             let le = _.cloneDeep(leaderBonuse)
-            le.userId = leader[1]
+            le.userId = leader[2]
             le.amount = leaderLevel2Bonuse
            await mongodb.insert('achievement', le)
         }
-        if (leader[2]) {
-            console.log(`【${leader[2]}】获得领导奖【${leaderLevel3Bonuse}】`)
+        if (leader[3]) {
+            console.log(`【${leader[3]}】获得领导奖【${leaderLevel3Bonuse}】`)
             let le = _.cloneDeep(leaderBonuse)
-            le.userId = leader[2]
+            le.userId = leader[3]
             le.amount = leaderLevel3Bonuse
             await mongodb.insert('achievement', le)
         }
