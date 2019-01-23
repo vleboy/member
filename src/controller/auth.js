@@ -18,21 +18,24 @@ const check = require('../util/check/login')
 router.use('/login', async (ctx, next) => {
     const inparam = ctx.request.body
     check(inparam)
-    const r = await mongodb.find(collection,{"$or":[ { id: inparam.id },{mobile:inparam.mobile}]})
-  
-   
+    const r = await mongodb.find(collection, { "$or": [{ id: inparam.id }, { mobile: inparam.mobile }] })
+
+
     if (r.length > 0) {
-        inparam._id = r[0]._id ; inparam.id = r[0].id
-        if (inparam.password && inparam.password == r[0].password && inparam.id == 'root'){
-            ctx.tokenSign = jwt.sign({ role:'admin',_id:r[0]._id,id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
-            return next()
-        }else if (inparam.password && inparam.password == r[0].password){
-            ctx.tokenSign = jwt.sign({ role:'user', _id:r[0]._id,id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
-            return next()
-        }else{
-            ctx.body = { err: true, res: '用户密码校验错误' }
+        inparam._id = r[0]._id; inparam.id = r[0].id
+        if (r[0].status != 'normal') {
+            ctx.body = { err: true, res: '用户已被锁定或未激活' }
+        } else {
+            if (inparam.password && inparam.password == r[0].password && inparam.id == 'root') {
+                ctx.tokenSign = jwt.sign({ role: 'admin', _id: r[0]._id, id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
+                return next()
+            } else if (inparam.password && inparam.password == r[0].password) {
+                ctx.tokenSign = jwt.sign({ role: 'user', _id: r[0]._id, id: r[0].id, username: r[0].username, exp: Math.floor(Date.now() / 1000) + 3600 * 24 }, config.auth.secret)    // 向后面的路由传递TOKEN加密令牌
+                return next()
+            } else {
+                ctx.body = { err: true, res: '用户密码校验错误' }
+            }
         }
-       
     } else {
         // ctx.status = 401
         ctx.body = { err: true, res: '用户不存在' }
@@ -42,9 +45,9 @@ router.use('/login', async (ctx, next) => {
 // 2、向前端传递TOKEN加密令牌
 router.post('/login', async (ctx, next) => {
     let res = {
-        token:ctx.tokenSign,
-        _id:ctx.request.body._id,
-        id:ctx.request.body.id
+        token: ctx.tokenSign,
+        _id: ctx.request.body._id,
+        id: ctx.request.body.id
     }
     ctx.body = { err: false, res: res }
 })
