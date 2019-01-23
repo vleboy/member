@@ -82,7 +82,11 @@ export default {
     // 登录
     async login() {
       if (this.username && this.password) {
-        let inparam = { id: this.username, password: this.password };
+        let inparam = {
+          id: this.username,
+          password: this.password,
+          from: "admin"
+        };
         if (parseInt(this.username)) {
           inparam.mobile = this.username;
           delete inparam.id;

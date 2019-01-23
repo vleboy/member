@@ -26,9 +26,9 @@
               <v-flex xs4>
                 <img :src="item.img" height="100">
               </v-flex>
-              <v-flex xs4 align-self-center>
+              <v-flex xs6 align-self-center>
                 <div>{{ item.name }}</div>
-                <div class="font-weight-light">{{ item.desc }}</div>
+                <!-- <div class="font-weight-light">{{ item.desc }}</div> -->
                 <div>￥{{ item.price }}</div>
               </v-flex>
               <v-flex xs5 align-self-center>
