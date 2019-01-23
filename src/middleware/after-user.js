@@ -47,14 +47,17 @@ router.post('/user/update', async (ctx, next) => {
     if (people.length == 0) {
         throw { err: true, res: `找不到当前_id:${inparam}对应的用户，请查证` }
     }
+    
     const father = await mongodb.find('user', { id: people[0].parentId })//查出当前状态变更的用户的上级
     inparam.people = people; inparam.father = father;
     inparam.price = inparam.initPrice
     //记录需要返奖业绩，但不更新余额（余额需要在结算期更新，这里只更新业绩信息）
- 
-    await achievements.updateUser(inparam, myDate)
-    await achievements.getReferralBonuses(inparam, myDate)
-    await achievements.getMarketBonuses(inparam, myDate)
+    if(ctx.freeze == false){
+        await achievements.updateUser(inparam, myDate)
+        await achievements.getReferralBonuses(inparam, myDate)
+        await achievements.getMarketBonuses(inparam, myDate)
+    }
+    
     ctx.body = { err: false, res: 'sucess' }
 })
 

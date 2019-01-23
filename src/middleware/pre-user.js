@@ -153,6 +153,11 @@ router.post('/user/update', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
+    if(inparam.status == 'freeze'){
+        ctx.freeze = true
+    }else{
+        ctx.freeze = false
+    }
     if (!inparam.status) {
         checkUpdate(inparam)
     } else {
