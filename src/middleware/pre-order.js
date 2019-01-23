@@ -48,7 +48,7 @@ router.post('/order/insert', async (ctx, next) => {
         inparam.products.map((i) => {
             if (i.id == item.id) {
                 if (i.price == item.price) {
-                    i.name = r.name
+                    i.name = item.name
                     priceRes += (item.price * i.num)
                 } else {
                     throw { err: true, res: `订单价格信息不正确` }
