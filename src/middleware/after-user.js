@@ -33,7 +33,6 @@ router.post('/user/update', async (ctx, next) => {
         return next()
     }
 
-
     myDate = new Date()
     if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
         throw { err: true, res: '当前为系统结算时间，请稍等再试' }
