@@ -165,6 +165,11 @@ router.post('/user/update', async (ctx, next) => {
     } else {
         ctx._id = inparam._id
     }
+    if (inparam.oldPassword != null){
+        if(inparam.oldPassword != people[0].password){
+            throw {err:true,res:'原密码错误，修改失败'}
+        }
+    }
     if (token.role == 'admin' || token._id == inparam._id) {
         return next()
     } else {
