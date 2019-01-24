@@ -57,19 +57,25 @@
     </v-list>
     <v-footer height="auto" color="lighten-1">
       <v-layout column justify-center>
+        <v-btn color="primary" @click="openMyPassword">修改密码</v-btn>
         <v-btn color="error" @click="logout">登出</v-btn>
         <v-flex xs12 align-self-center>
           <div>如需修改资料，请联系当地市场工作人员</div>
         </v-flex>
       </v-layout>
     </v-footer>
+    <MyPassword/>
   </v-layout>
 </template>
 
 <script>
+import MyPassword from "../components/MyPassword.vue";
 export default {
   created: function() {
     this.userGet();
+  },
+  components: {
+    MyPassword
   },
   data: () => ({
     user: {
@@ -99,6 +105,9 @@ export default {
         this.user = res.res;
       }
       this.$store.commit("openLoading", false);
+    },
+    openMyPassword() {
+      this.$store.commit("openMyPassword", !this.$store.state.openMyPassword);
     },
     logout() {
       localStorage.clear();

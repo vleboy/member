@@ -18,8 +18,9 @@ const vuex = new Vuex.Store({
     openMyPay: false,
     openMyPayOK: false,
     openMyQR: false,
+    openMyPassword: false,
     openQRScan: false,
-    openLoading: false
+    openLoading: false,
   },
   mutations: {
     openRegister(state, params) {
@@ -45,6 +46,9 @@ const vuex = new Vuex.Store({
     },
     openMyQR(state, params) {
       state.openMyQR = params
+    },
+    openMyPassword(state, params) {
+      state.openMyPassword = params
     },
     openQRScan(state, params) {
       state.openQRScan = params
