@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/admin/precache-manifest.758f69848ac45d1fccd9184182b843c6.js"
+  "/admin/precache-manifest.719d0dd963e85db4c3a4db2c45fde127.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "member-admin"});

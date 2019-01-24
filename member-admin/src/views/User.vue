@@ -57,10 +57,14 @@
               </span>
               <a @click="openRegister(props.item._id)">改</a> |
               <span v-if="props.item.status == 'normal'">
-                <a @click="changeStatus(props.item._id,props.item.username,'freeze','冻结')">冻</a> |
+                <a
+                  @click="changeStatus(props.item._id,props.item.username,'freeze','冻结',props.item.id)"
+                >冻</a> |
               </span>
               <span v-if="props.item.status == 'freeze'">
-                <a @click="changeStatus(props.item._id,props.item.username,'normal','解冻')">解冻</a> |
+                <a
+                  @click="changeStatus(props.item._id,props.item.username,'normal','解冻',props.item.id)"
+                >解冻</a> |
               </span>
               <span v-if="props.item.status == 'init'">
                 <a @click="del(props.item._id,props.item.username)">删</a>
@@ -187,7 +191,7 @@ export default {
       }
       this.$store.commit("openLoading", false);
     },
-    async changeStatus(_id, username, status, operation) {
+    async changeStatus(_id, username, status, operation, ext) {
       if (operation == "审核" && status == "init") {
         this.initPrice = 2980;
         this.openAudit = true;
@@ -203,7 +207,7 @@ export default {
           data._id = _id;
         } else {
           data._id = this._idTemp;
-          data.id = this.idTemp;
+          data.id = this.idTemp || ext;
           data.initPrice = this.initPrice;
         }
         let res = await this.$store.dispatch("userUpdate", data);
