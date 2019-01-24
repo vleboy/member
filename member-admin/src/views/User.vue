@@ -38,7 +38,7 @@
             <td>{{ props.item.iswechatpay }}</td>
             <td>{{ props.item.bank }}</td>
             <td>{{ props.item.banknumber }}</td>-->
-            <td>{{ props.item.level }}</td>
+            <td>{{props.item.initPrice == 0? '免费会员' : '普通会员' }}</td>
             <td>
               <a @click="jumpQuery(props.item.parentId)">{{ props.item.parentId }}</a>
             </td>

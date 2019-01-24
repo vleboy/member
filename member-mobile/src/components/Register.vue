@@ -68,7 +68,7 @@
               <v-select
                 ref="bankname"
                 v-model="form.bankname"
-                :items="['工商银行', '农业银行', '建设银行', '中国银行']"
+                :items="['工商银行', '农业银行', '建设银行', '招商银行']"
                 label="银行账户"
                 required
                 :rules="[rules.required]"
