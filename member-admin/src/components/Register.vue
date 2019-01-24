@@ -113,7 +113,7 @@
                 :rules="[rules.required]"
                 clearable
               ></v-select>
-            </v-flex>-->
+            </v-flex> -->
             <v-flex xs6>
               <v-select
                 ref="province"
@@ -229,7 +229,6 @@ export default {
       provinces: [],
       citys: [],
       form: {
-        id: "",
         username: "",
         idnumber: "",
         mobile: "",
@@ -303,7 +302,6 @@ export default {
         _id: this.openUserChangeId
       });
       if (!res.err) {
-        this.form.id = res.res.id;
         this.form.username = res.res.username;
         this.form.idnumber = res.res.idnumber;
         this.form.mobile = res.res.mobile;
