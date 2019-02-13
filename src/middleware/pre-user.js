@@ -154,7 +154,7 @@ router.post('/user/update', async (ctx, next) => {
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
     const people = await mongodb.find('user', { _id: ObjectId(inparam._id) })//查出当前状态变更的用户
-   console.log(people)
+  // console.log(people)
     if(people[0].status == 'freeze'){
         ctx.freeze = true
     }else{

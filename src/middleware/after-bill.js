@@ -26,13 +26,13 @@ router.post('/bill/insert', async (ctx, next) => {
 router.post('/bill/page', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let body = ctx.body
-    console.log('body',body)
+  //  console.log('body',body)
    
     if (body.res.length > 0) {
         body.res[body.res.length - 1].balance = 0
         for (let index = 0; index < body.res.length; index++) {
             body.res[body.res.length - 1 - index].balance = 0
-            console.log(index)
+      //      console.log(index)
             if (body.res[body.res.length - 1 - index].type == 'IN') {
                 if (index == 0) {
                     body.res[body.res.length - 1 - index].balance = body.res[body.res.length - 1 - index].balance +  Math.abs(body.res[body.res.length - 1 - index].amount)

@@ -11,6 +11,7 @@ const ObjectId = require('mongodb').ObjectID
 const collection = 'user'
 //加入业绩处理相关
 const achievements = require('../server/achievements')
+const moment = require('dayjs');
 /**
  * 注册中间件
  */
@@ -52,6 +53,7 @@ router.post('/user/update', async (ctx, next) => {
     inparam.price = inparam.initPrice
     //记录需要返奖业绩，但不更新余额（余额需要在结算期更新，这里只更新业绩信息）
     if(ctx.freeze == false){
+       // myDate = moment(new Date(2019,2,2)).valueOf()
         await achievements.updateUser(inparam, myDate)
         await achievements.getReferralBonuses(inparam, myDate)
         await achievements.getMarketBonuses(inparam, myDate)
