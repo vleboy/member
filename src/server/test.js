@@ -12,4 +12,4 @@ console.log(timeGo1,timeEnd1,'/n/n/n',timeGo2,timeEnd2)
 //     createdAt:1547518962553
 // }
 // console.log(isRightToday)
-//await mongodb.update('achievement', { _id: ObjectId(isRightToday.id)}, { $set: ooo })
+//await mongodb.update('achievement', { _id: ObjectId(isRightToday.id)}, { $set: ooo })1
