@@ -44,21 +44,9 @@ async function settlement() {
                 //achievements = await mongodb.find('achievement') 
                 period = 2
             }
-            // console.log(achievements)
-            //将结果保存在achievements数组中
-            //通过achievements数组，找出相应的User并处理其金额
-            //debug
-            // achievements = [{
-            //     _id: '5c38538d0327214c839a9ced', userId: "root", type: "IN", amount: 1001, createdAt: 1547195277650, remark: "D961449", project: "推荐奖"
-            // }, {
-            //     _id: '5c38538d0327214c839a9ce2', userId: "root", type: "IN", amount: 2000, createdAt: 1547195277650, remark: "D961449", project: "推荐奖"
-            // },{
-            //     _id: '5c38538d0327214c839a5ce2', userId: "root1", type: "IN", amount: 3002, createdAt: 1547195277650, remark: "D961449", project: "推荐奖"
-            // },{
-            //     _id: '5c38538d0327214c839a9ce2', userId: "root2", type: "IN", amount: 4003, createdAt: 1547195277650, remark: "D961449", project: "推荐奖"
-            // }]
-
-            // let pushBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month()+1}月,第${period}期奖励`, project: '当期结算' }
+            //推荐奖结算    
+            let recommendedBillTem1 = {userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `推荐奖`, project: '推荐奖'}
+            let recommendedBillTem2 = {userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `回本奖`, project: '回本奖'}
             //市场奖结算
             let marketBillTem = {}
             let leaderBillTem = {}
@@ -76,11 +64,55 @@ async function settlement() {
 
                 }
             }
-
-            let achieveUser = []//获得市场奖的用户
+            let recommendUser1 = [] //获得推荐奖用户
+            let recommendUser2 = [] //获得回本奖用户
+            let achieveUser = []//获得市场奖的用户 
             let pushMarketBillTems = []//市场奖写入模板集合
             let pushLeaderBillTems = []//领导奖写入模板集合
             let PushleaderBonuseTems = []//领导奖写入业绩
+            //将获得推荐奖的用户筛选出来
+            achievements.map(item => {
+                if (recommendUser1.indexOf(item.userId) == -1 && item.project == '推荐奖' && item.remark == '第一阶段') {
+                    recommendUser1.push(item.userId)
+                }
+            })
+
+            recommendUser1.map(async item =>{
+                let recommendBillTemp = _.cloneDeep(recommendedBillTem1)
+                let r = _.filter(achievements, _.iteratee({ 'userId': item, 'project': '推荐奖' ,'remark':'第一阶段'}));
+                let userBill = 0;
+                r.map((i) => {
+                    userBill = Math.abs(i.amount) + userBill
+                })
+                recommendBillTemp.amount = userBill
+                recommendBillTemp.userId = item
+                console.log('推荐奖', recommendBillTemp)
+               await mongodb.insert('bill', recommendBillTemp)//插入账单
+               recommendBillTemp.type = "OUT"
+                await mongodb.insert('serverBill', recommendBillTemp)//插入账单
+                await mongodb.update('user', { id: recommendBillTemp.userId }, { $inc: { balance: recommendBillTemp.amount } })
+            })
+            achievements.map(item => {
+                if (recommendUser2.indexOf(item.userId) == -1 && item.project == '推荐奖' && item.remark == '第二阶段') {
+                    recommendUser2.push(item.userId)
+                }
+            })
+            recommendUser2.map(async item =>{
+                let recommendBillTemp = _.cloneDeep(recommendedBillTem2)
+                let r = _.filter(achievements, _.iteratee({ 'userId': item, 'project': '推荐奖' ,'remark':'第二阶段'}));
+                let userBill = 0;
+                r.map((i) => {
+                    userBill = Math.abs(i.amount) + userBill
+                })
+                recommendBillTemp.amount = userBill
+                recommendBillTemp.userId = item
+                console.log('推荐奖', recommendBillTemp)
+               await mongodb.insert('bill', recommendBillTemp)//插入账单
+               recommendBillTemp.type = "OUT"
+                await mongodb.insert('serverBill', recommendBillTemp)//插入账单
+                await mongodb.update('user', { id: recommendBillTemp.userId }, { $inc: { balance: recommendBillTemp.amount } })
+            })
+           
             //奖获得市场奖的用户筛选出来
             achievements.map(item => {
                 if (achieveUser.indexOf(item.userId) == -1 && item.project == '市场奖') {
@@ -101,9 +133,10 @@ async function settlement() {
                 if (userBillTemp.amount != 0) {
                    // pushMarketBillTems.push(userBillTemp)
                    console.log('市场奖', userBillTemp)
-                    mongodb.insert('bill', userBillTemp)//插入账单
-                    mongodb.insert('serverBill', userBillTemp)//插入账单
-                    mongodb.update('user', { id: userBillTemp.userId }, { $inc: { balance: userBillTemp.amount } })
+                   await  mongodb.insert('bill', userBillTemp)//插入账单
+                    userBillTemp.type = "OUT"
+                    await  mongodb.insert('serverBill', userBillTemp)//插入账单
+                    await mongodb.update('user', { id: userBillTemp.userId }, { $inc: { balance: userBillTemp.amount } })
 
                 //结算领导奖
 
@@ -118,9 +151,10 @@ async function settlement() {
                     le.userId = leader[1]
                     le.amount = leaderLevel1Bonuse
                     //pushLeaderBillTems.push(le)
-                     mongodb.insert('bill', le)//插入账单
-                     mongodb.insert('serverBill', le)//插入账单
-                     mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
+                    await   mongodb.insert('bill', le)//插入账单
+                     le.type = "OUT"
+                     await  mongodb.insert('serverBill', le)//插入账单
+                     await  mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
                 if (leader[2]) {
                     console.log(`【${leader[2]}】获得领导奖【${leaderLevel2Bonuse}】`)
@@ -128,9 +162,10 @@ async function settlement() {
                     le.userId = leader[2]
                     le.amount = leaderLevel2Bonuse
                    // pushLeaderBillTems.push(le)
-                    mongodb.insert('bill', le)//插入账单
-                    mongodb.insert('serverBill', le)//插入账单
-                    mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
+                   await mongodb.insert('bill', le)//插入账单
+                    le.type = "OUT"
+                    await mongodb.insert('serverBill', le)//插入账单
+                    await mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
                 if (leader[3]) {
                     console.log(`【${leader[3]}】获得领导奖【${leaderLevel3Bonuse}】`)
@@ -138,9 +173,10 @@ async function settlement() {
                     le.userId = leader[3]
                     le.amount = leaderLevel3Bonuse
                   //  pushLeaderBillTems.push(le)
-                   mongodb.insert('bill', le)//插入账单
-                   mongodb.insert('serverBill', le)//插入账单
-                   mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
+                  await mongodb.insert('bill', le)//插入账单
+                   le.type = "OUT"
+                   await mongodb.insert('serverBill', le)//插入账单
+                   await mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
             }
             })
