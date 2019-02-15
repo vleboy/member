@@ -44,6 +44,8 @@ async function settlement() {
                 //achievements = await mongodb.find('achievement') 
                 period = 2
             }
+            //零售奖结算
+            let retailBillTem = {userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `零售奖`, project: '零售奖'}
             //推荐奖结算    
             let recommendedBillTem1 = {userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `推荐奖`, project: '推荐奖'}
             let recommendedBillTem2 = {userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `回本奖`, project: '回本奖'}
@@ -67,9 +69,31 @@ async function settlement() {
             let recommendUser1 = [] //获得推荐奖用户
             let recommendUser2 = [] //获得回本奖用户
             let achieveUser = []//获得市场奖的用户 
+            let retailUser = [] //获得零售奖的用户
             let pushMarketBillTems = []//市场奖写入模板集合
             let pushLeaderBillTems = []//领导奖写入模板集合
             let PushleaderBonuseTems = []//领导奖写入业绩
+            //将获得零售奖的用户筛选出来
+            achievements.map(item => {
+                if (retailUser.indexOf(item.userId) == -1 && item.project == '零售奖' ) {
+                    retailUser.push(item.userId)
+                }
+            })
+            retailUser.map(async item =>{
+                let userRetailBillTem = _.cloneDeep(retailBillTem)
+                let r = _.filter(achievements, _.iteratee({ 'userId': item, 'project': '零售奖'}));
+                let userBill = 0;
+                r.map((i) => {
+                    userBill = Math.abs(i.amount) + userBill
+                })
+                userRetailBillTem.amount = userBill
+                userRetailBillTem.userId = item
+                console.log('零售奖', userRetailBillTem)
+               await mongodb.insert('bill', userRetailBillTem)//插入账单
+               userRetailBillTem.type = "OUT"
+                await mongodb.insert('serverBill', userRetailBillTem)//插入账单
+                await mongodb.update('user', { id: userRetailBillTem.userId }, { $inc: { balance: userRetailBillTem.amount } })
+            })
             //将获得推荐奖的用户筛选出来
             achievements.map(item => {
                 if (recommendUser1.indexOf(item.userId) == -1 && item.project == '推荐奖' && item.remark == '第一阶段') {
