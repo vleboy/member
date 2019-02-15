@@ -16,7 +16,7 @@ const xauth = require('koa-xauth')                                          // k
 const xlog = require('koa-xlog')                                            // koa-xlog，自动日志中间件
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })     // 日志服务
-
+const cron = require('node-cron')
 const settlement = require('./src/server/settlement')
 
 // 初始化应用服务
@@ -40,7 +40,21 @@ xnosql.init(app, config.server)                 // 初始化mongodb连接
 // 启动应用服务
 app.listen(port)
 
-//setInterval(settlement,1500)
+cron.schedule('0 0 1 * *', () => {
+    console.log('开始执行定时程序，当前执行时间',new Date())
+    settlement()
+}, {
+        scheduled: true,
+        timezone: "Asia/Chongqing"
+    });
+
+cron.schedule('0 0 16 * *', () => {
+    console.log('开始执行定时程序，当前执行时间',new Date())
+    settlement()
+}, {
+        scheduled: true,
+        timezone: "Asia/Chongqing"
+    });
 log.info(`XServer应用启动【执行环境:${process.env.NODE_ENV},端口:${port}】`)
 log.warn(`模拟用户登录路径【localhost:${port}${config.server.controllerRoot}/auth/login】`)
 log.warn(`静态资源访问路径【localhost:${port}${staticRoot}*】`)
