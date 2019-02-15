@@ -42,9 +42,10 @@ router.post('/query', async (ctx, next) => {
     if (time[1] == '上)') {
         let timeGo = moment(time[0]).startOf('month').valueOf()
         let timeEnd = moment(time[0]).startOf('month').add(15, 'day').valueOf()
+        console.log('上',moment(time[0]).startOf('month').format(),moment(time[0]).startOf('month').add(15, 'day').format())
         if (market1 != null) {
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': timeEnd } })//查询累计市场
-            r.map(item=>{
+            let r1 = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': timeEnd } })//查询累计市场
+            r1.map(item=>{
                 upAmount1  = item.achievements + upAmount1
                 if(item.createdAt >= timeGo){
                     upCurrent1 = item.achievements + upCurrent1
@@ -54,8 +55,8 @@ router.post('/query', async (ctx, next) => {
             
         }
         if (market2 != null){
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': timeEnd } })//查询累计市场
-            r.map(item=>{
+            let r2 = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': timeEnd } })//查询累计市场
+            r2.map(item=>{
                 upAmount2  = item.achievements + upAmount2
                 if(item.createdAt >= timeGo){
                     upCurrent2 = item.achievements + upCurrent2
@@ -64,13 +65,14 @@ router.post('/query', async (ctx, next) => {
            // achievements.push({ market: market2, accumulate: upAmount2, current: upCurrent2 })
         }
         //查询上一期
-         let lastTimeGo = moment(time[0]).subtract(1, 'months').startOf('month').add(15, 'day').valueOf()
-         let lastTimeEnd = moment(time[0]).subtract(1, 'months').endOf('month').valueOf()
+         let lastTimeGo = moment(time[0]).subtract(15, 'day').startOf('month').add(15, 'day').valueOf()
+         let lastTimeEnd = moment(time[0]).subtract(15, 'day').endOf('month').valueOf()
+         console.log('上一期',moment(time[0]).subtract(15, 'day').startOf('month').add(15, 'day').format(),moment(time[0]).subtract(15, 'day').endOf('month').format())
          let lastdownachievements1 = 0
          let lastdownachievements2 = 0
          if (market1 != null) {
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
-            r.map(item=>{
+            let r3 = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
+            r3.map(item=>{
                 
                 
                 lastdownachievements1 = item.achievements + lastdownachievements1
@@ -79,8 +81,8 @@ router.post('/query', async (ctx, next) => {
             
         }
         if (market2 != null){
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
-            r.map(item=>{
+            let r4 = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
+            r4.map(item=>{
                
                
                 lastdownachievements2 = item.achievements + lastdownachievements2
@@ -98,11 +100,10 @@ router.post('/query', async (ctx, next) => {
     } else if (time[1] == '下)') {
         let timeGo = moment(time[0]).startOf('month').add(15, 'day').valueOf()
         let timeEnd = moment(time[0]).endOf('month').valueOf()
-        console.log(moment(time[0]).startOf('month').add(15, 'day').format())
-        console.log(moment(time[0]).endOf('month').format())
+        console.log('下',moment(time[0]).startOf('month').add(15, 'day').format(),moment(time[0]).endOf('month').format())
         if (market1 != null) {
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': timeEnd } })//查询累计市场
-            r.map(item=>{
+            let r5 = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': timeEnd } })//查询累计市场
+            r5.map(item=>{
                 downAmount1  = item.achievements + downAmount1
                 if(item.createdAt >= timeGo){
                     downCurrent1 = item.achievements + downCurrent1
@@ -111,8 +112,8 @@ router.post('/query', async (ctx, next) => {
             
         }
         if (market2 != null){
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': timeEnd } })//查询累计市场
-            r.map(item=>{
+            let r6 = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': timeEnd } })//查询累计市场
+            r6.map(item=>{
                 downAmount2 =  item.achievements + downAmount2
                 if(item.createdAt >= timeGo){
                     downCurrent2 = item.achievements + downCurrent2
@@ -121,13 +122,14 @@ router.post('/query', async (ctx, next) => {
             
         }
        
-         let lastTimeGo = moment(time[0]).subtract(1, 'months').startOf('month').valueOf()
-         let lastTimeEnd = moment(time[0]).subtract(1, 'months').startOf('month').add(15, 'day').valueOf()
+         let lastTimeGo = moment(time[0]).startOf('month').valueOf()
+         let lastTimeEnd = moment(time[0]).startOf('month').add(15, 'day').valueOf()
+         console.log('上一期',moment(time[0]).startOf('month').format(),moment(time[0]).startOf('month').add(15, 'day').format())
          let lastdownachievements1 = 0
          let lastdownachievements2 = 0
          if (market1 != null) {
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
-            r.map(item=>{
+            let r7 = await mongodb.find('achievement', { userId: inparam.userId, market: market1, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
+            r7.map(item=>{
                 
                 
                 lastdownachievements1 = item.achievements + lastdownachievements1
@@ -136,8 +138,8 @@ router.post('/query', async (ctx, next) => {
             
         }
         if (market2 != null){
-            let r = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
-            r.map(item=>{
+            let r8 = await mongodb.find('achievement', { userId: inparam.userId, market: market2, createdAt: {  '$lte': lastTimeEnd } })//查询累计市场
+            r8.map(item=>{
                
                
                 lastdownachievements2 = item.achievements + lastdownachievements2
@@ -147,9 +149,9 @@ router.post('/query', async (ctx, next) => {
         }
 
         if (lastdownachievements1>lastdownachievements2){
-            upCurrent1 = upCurrent1 + lastdownachievements1 - lastdownachievements2
+            downCurrent1 = downCurrent1 + lastdownachievements1 - lastdownachievements2
         }else{
-            upCurrent2 = upCurrent2 + lastdownachievements2 - lastdownachievements1
+            downCurrent2 = downCurrent2 + lastdownachievements2 - lastdownachievements1
         }
         achievements.push({ market: market1, accumulate: downAmount1, current: downCurrent1 })
         achievements.push({ market: market2, accumulate: downAmount2, current: downCurrent2 })
