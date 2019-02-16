@@ -135,7 +135,7 @@ export default {
   methods: {
     async billQuery() {
       this.$store.commit("openLoading", true);
-      let res = await this.$store.dispatch("billQuery", this.query);
+      let res = await this.$store.dispatch("serverBillQuery", this.query);
       if (!res.err) {
         this.bills = res.res;
       }

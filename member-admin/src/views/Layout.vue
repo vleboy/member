@@ -4,7 +4,7 @@
       <v-list dense>
         <v-list-tile to="/user">
           <v-list-tile-action>
-            <v-icon>dashboard</v-icon>
+            <v-icon>people</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>用户管理</v-list-tile-title>
@@ -12,7 +12,7 @@
         </v-list-tile>
         <v-list-tile to="/order">
           <v-list-tile-action>
-            <v-icon>device_hub</v-icon>
+            <v-icon>shopping_cart</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>交易管理</v-list-tile-title>
@@ -20,7 +20,7 @@
         </v-list-tile>
         <v-list-tile to="/bill">
           <v-list-tile-action>
-            <v-icon>scatter_plot</v-icon>
+            <v-icon>view_list</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>平台账单</v-list-tile-title>
