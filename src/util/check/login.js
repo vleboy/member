@@ -9,7 +9,9 @@ function check(inparam) {
         password,
         from
     } = inparam
-
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        error.res = '当前为系统结算时间，请稍等再试' }
     if(from == 'admin'){
         if(id != 'root'){
             error.res = '不允许非管理员登录'

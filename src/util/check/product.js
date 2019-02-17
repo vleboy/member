@@ -10,7 +10,10 @@ function check(inparam) {
         price,
         activity,
     } = inparam
-
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        error.res = '当前为系统结算时间，请稍等再试' }
+    
     if (!name || name.length < 2 || name.length > 18) {
         error.res = '名字2-8个字'
     } else if (!img) {

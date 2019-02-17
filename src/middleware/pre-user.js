@@ -153,8 +153,14 @@ router.post('/user/update', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
+
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        throw { err: true, res: '当前为系统结算时间，请稍等再试' }
+    }
     const people = await mongodb.find('user', { _id: ObjectId(inparam._id) })//查出当前状态变更的用户
   // console.log(people)
+
     if(people[0].status == 'freeze'){
         ctx.freeze = true
     }else{
@@ -165,6 +171,7 @@ router.post('/user/update', async (ctx, next) => {
     } else {
         ctx._id = inparam._id
     }
+    
     if (inparam.oldPassword != null){
         if(inparam.oldPassword != people[0].password){
             throw {err:true,res:'原密码错误，修改失败'}
@@ -188,7 +195,10 @@ router.get('/user/delete/:_id', async (ctx, next) => {
     let r = await mongodb.find('user',{_id:ObjectId(inparam._id)})
     let f =await mongodb.find('user',{id:r[0].parentId})
     let referral = _.cloneDeep(f[0].referralBonuses) 
-  
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        throw { err: true, res: '当前为系统结算时间，请稍等再试' }
+    }
     if (referral.phase1.id == r[0].id){
         referral.phase1.id = null
         

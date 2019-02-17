@@ -8,7 +8,10 @@ const ObjectId = require('mongodb').ObjectID
 router.post('/query', async (ctx, next) => {
     let inparam = ctx.request.body
     let time = inparam.time.split("(")
-
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        throw { err: true, res: '当前为系统结算时间，请稍等再试' }
+    }
     // let res ={achievements:['market',accumulate:0,current],amount}
     // 判断用户输入是否正确
     r = await mongodb.find('user', { id: inparam.userId })
@@ -166,6 +169,7 @@ router.post('/query', async (ctx, next) => {
 })
 
 router.post('/stat', async (ctx, next) => {
+
     let r = await mongodb.find('bill')
     let accumulateIn = 0
     let accumulateOut = 0

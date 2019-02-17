@@ -26,7 +26,7 @@ router.post('/bill/insert', async (ctx, next) => {
 router.post('/bill/page', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
     let body = ctx.body
-  //  console.log('body',body)
+   console.log('body',body)
    
     if (body.res.length > 0) {
         body.res[body.res.length - 1].balance = 0

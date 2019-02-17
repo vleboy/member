@@ -19,7 +19,10 @@ function check(inparam) {
         deliveryMobile,
         deliveryAddress,
     } = inparam
-
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        error.res = '当前为系统结算时间，请稍等再试' }
+    
     if (!username || username.length < 2 || username.length > 8) {
         error.res = '名字2-8个字'
     } else if (!idnumber || (idnumber.length != '513101198703180011'.length)) {

@@ -10,6 +10,10 @@ function check(inparam) {
         deliveryMobile,
         deliveryAddress
     } = inparam
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        error.res = '当前为系统结算时间，请稍等再试' }
+    
     if(!_id){
         error.res = '没有找到_id'
     }

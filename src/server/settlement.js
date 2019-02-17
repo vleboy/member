@@ -102,6 +102,7 @@ async function settlement() {
                    // pushMarketBillTems.push(userBillTemp)
                    console.log('市场奖', userBillTemp)
                     mongodb.insert('bill', userBillTemp)//插入账单
+                    mongodb.insert('serverBill', userBillTemp)//插入账单
                     mongodb.update('user', { id: userBillTemp.userId }, { $inc: { balance: userBillTemp.amount } })
 
                 //结算领导奖
@@ -118,6 +119,7 @@ async function settlement() {
                     le.amount = leaderLevel1Bonuse
                     //pushLeaderBillTems.push(le)
                      mongodb.insert('bill', le)//插入账单
+                     mongodb.insert('serverBill', le)//插入账单
                      mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
                 if (leader[2]) {
@@ -127,6 +129,7 @@ async function settlement() {
                     le.amount = leaderLevel2Bonuse
                    // pushLeaderBillTems.push(le)
                     mongodb.insert('bill', le)//插入账单
+                    mongodb.insert('serverBill', le)//插入账单
                     mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
                 if (leader[3]) {
@@ -136,6 +139,7 @@ async function settlement() {
                     le.amount = leaderLevel3Bonuse
                   //  pushLeaderBillTems.push(le)
                    mongodb.insert('bill', le)//插入账单
+                   mongodb.insert('serverBill', le)//插入账单
                    mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
             }

@@ -43,6 +43,10 @@ router.post('/bill/insert', async (ctx, next) => {
 
 router.post('/bill/page', async (ctx, next) => {
     //当前登录用户是否具备修改目标用户权限
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        throw { err: true, res: '当前为系统结算时间，请稍等再试' }
+    }
     let token = ctx.tokenVerify
     if (token.role == 'admin' || token.id == toUser.userId) {
         ctx.request.body.sort = { createdAt: -1 }

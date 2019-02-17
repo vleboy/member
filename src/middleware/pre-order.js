@@ -76,6 +76,10 @@ router.post('/order/insert', async (ctx, next) => {
  * 查询订单中间件
  */
 router.post('/order/page', async (ctx, next) => {
+    let myDate = new Date()
+    if ((myDate.getHours() == 0 && myDate.getMinutes() < 5) || (myDate.getHours() == 23 && myDate.getMinutes() > 57)) {
+        throw { err: true, res: '当前为系统结算时间，请稍等再试' }
+    }
     let token = ctx.tokenVerify
     let inparam = ctx.request.body
     inparam.sort = { createdAt: -1 }
