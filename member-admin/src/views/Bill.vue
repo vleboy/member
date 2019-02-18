@@ -18,7 +18,7 @@
             <td>{{ props.item.userId }}</td>
             <td>{{ props.item.remark }}</td>
             <td>{{ props.item.type =='IN' ? '入' : '支' }}</td>
-            <td>{{ props.item.amount }}</td>
+            <td>{{ props.item.amount | toFixed}}</td>
             <td>{{ props.item.balance }}</td>
           </template>
         </v-data-table>
@@ -189,6 +189,9 @@ export default {
   filters: {
     formatDate(timestamp) {
       return dayjs(timestamp).format("YY/MM/DD HH:mm:ss");
+    },
+    toFixed(amount) {
+      return amount.toFixed(2);
     }
   }
 };
