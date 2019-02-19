@@ -19,7 +19,7 @@
             <td>{{ props.item.remark }}</td>
             <td>{{ props.item.type =='IN' ? '入' : '支' }}</td>
             <td>{{ props.item.amount | toFixed}}</td>
-            <td>{{ props.item.balance }}</td>
+            <td>{{ props.item.balance | toFixed}}</td>
           </template>
         </v-data-table>
       </v-flex>
