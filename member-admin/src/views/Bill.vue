@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex
         xs10
-      >当前入账：{{accumulate.accumulateIn}}元 当前支账：{{accumulate.accumulateOut}}元 当前余额：{{accumulate.accumulateBalance}}元 会员账户总额：{{accumulate.accumulateMemberBalance}}元</v-flex>
+      >当前入账：{{accumulate.accumulateIn | toFixed}}元 当前支账：{{accumulate.accumulateOut | toFixed}}元 当前余额：{{accumulate.accumulateBalance | toFixed}}元 会员账户总额：{{accumulate.accumulateMemberBalance | toFixed}}元</v-flex>
       <v-flex xs1>
         <v-btn @click="openBillInOutDialog('入')" color="primary">入</v-btn>
       </v-flex>
