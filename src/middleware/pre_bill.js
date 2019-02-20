@@ -48,7 +48,7 @@ router.post('/bill/page', async (ctx, next) => {
         throw { err: true, res: '当前为系统结算时间，请稍等再试' }
     }
     let token = ctx.tokenVerify
-    if (token.role == 'admin' || token.id == toUser.userId) {
+    if (token.role == 'admin' || token.id == inparam.userId) {
         ctx.request.body.sort = { createdAt: -1 }
         return next()
     } else {
