@@ -45,7 +45,7 @@
             <td>
               <a @click="jumpQuery(props.item.recommendnumber)">{{ props.item.recommendnumber }}</a>
             </td>
-            <td>{{ props.item.balance }}</td>
+            <td>{{ props.item.balance | toFixed}}</td>
             <td>
               <a @click="openUserAchievement(props.item.id)">业绩</a> |
               <a @click="openUserBill(props.item.id)">账单</a>
@@ -264,6 +264,9 @@ export default {
         default:
           break;
       }
+    },
+    toFixed(amount) {
+      return amount.toFixed(2);
     }
   }
 };
