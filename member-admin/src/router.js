@@ -4,6 +4,7 @@ import Login from './views/Login.vue'
 import User from './views/User.vue'
 import Order from './views/Order.vue'
 import Bill from './views/Bill.vue'
+import BillOut from './views/BillOut.vue'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/bill',
       name: 'bill',
       component: Bill
+    },
+    {
+      path: '/billout',
+      name: 'billout',
+      component: BillOut
     }
   ]
 })

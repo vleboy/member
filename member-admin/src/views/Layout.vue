@@ -26,6 +26,14 @@
             <v-list-tile-title>平台账单</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+        <v-list-tile to="/billout">
+          <v-list-tile-action>
+            <v-icon>local_atm</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>提现管理</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
         <!-- <v-list-tile to="/operation">
           <v-list-tile-action>
             <v-icon>view_list</v-icon>
