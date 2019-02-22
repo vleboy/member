@@ -16,8 +16,8 @@
             <td>{{ props.item.project }}</td>
             <td>{{ props.item.type == 'OUT' ? '支出' : '收入' }}</td>
             <td>{{ props.item.amount }}</td>
-            <td>{{ props.item.balance }}</td>
-            <td>{{ props.item.remark }}</td>
+            <!-- <td>{{ props.item.balance }}</td> -->
+            <!-- <td>{{ props.item.remark }}</td> -->
             <!-- <td>
               <span v-if="props.item.status == 'init'">
                 <a @click="changeStatus(props.item._id,props.item.id,'delivery','发货')">发货</a> |
@@ -53,13 +53,13 @@ export default {
       //   { text: "已取消", value: "cancel" }
       // ],
       headers: [
-        { text: "时间", value: "id", sortable: false },
+        { text: "时间", value: "createdAt", sortable: false },
         { text: "会员编号", value: "userId", sortable: false },
-        { text: "项目", value: "createdAt", sortable: false },
-        { text: "类型", value: "userId", sortable: false },
-        { text: "金额", value: "price", sortable: false },
-        { text: "余额", value: "product", sortable: false },
-        { text: "备注", value: "deliveryAddress", sortable: false }
+        { text: "项目", value: "project", sortable: false },
+        { text: "类型", value: "type", sortable: false },
+        { text: "金额", value: "amount", sortable: false }
+        // { text: "余额", value: "balance", sortable: false },
+        // { text: "备注", value: "remark", sortable: false }
         // { text: "操作", value: "action", sortable: false }
       ],
       bills: [],

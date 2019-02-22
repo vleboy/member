@@ -34,6 +34,16 @@
             <v-layout wrap>
               <v-flex xs12>
                 <v-text-field
+                  ref="userId"
+                  v-model="form.userId"
+                  label="会员编号"
+                  :rules="[rules.required]"
+                  maxlength="20"
+                  clearable
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field
                   ref="project"
                   v-model="form.project"
                   label="明细"
@@ -159,7 +169,7 @@ export default {
         if (!this.$refs[f].validate(true)) this.formHasErrors = true;
       });
       if (!this.formHasErrors) {
-        let data = { ...this.form, userId: localStorage.getItem("id") };
+        let data = { ...this.form };
         if (operation == "入") {
           data.type = "IN";
         } else if (operation == "支") {
