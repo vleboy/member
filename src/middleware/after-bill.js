@@ -16,10 +16,17 @@ const collection = 'bill'
 router.post('/bill/insert', async (ctx, next) => {
     let inparam = ctx.request.body
     let amount = Math.abs(inparam.amount)
+    console.log(inparam)
     if (inparam.type == 'OUT') {
         amount *= -1
     }
     await mongodb.update('user', { _id: ObjectId(ctx._id) }, { $inc: { balance: amount } })
+
+    if (inparam.type == 'IN') {
+        inparam.amount = +inparam.amount
+        inparam.project = '用户充值'
+        await mongodb.insert('serverBill', inparam)
+    }
     return next()
 })
 
