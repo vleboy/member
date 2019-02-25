@@ -4,8 +4,8 @@ import axios from 'axios'
 
 // const domain = 'http://localhost:3636'
 // const domain = 'http://192.168.3.148:3636'
-// const domain = 'http://home.vleboy.com:3636'
-const domain = `http://${window.location.hostname}:3636`
+const domain = 'http://home.vleboy.com:3636'
+// const domain = `http://${window.location.hostname}:3636`
 
 Vue.use(Vuex)
 
@@ -65,6 +65,10 @@ const vuex = new Vuex.Store({
     },
     async billQuery(state, data) {
       const res = await axios.post(`${domain}/xnosql/bill/page`, data)
+      return res.data
+    },
+    async billUpdate(state, data) {
+      const res = await axios.post(`${domain}/xnosql/bill/update`, data)
       return res.data
     },
     async serverBillQuery(state, data) {
