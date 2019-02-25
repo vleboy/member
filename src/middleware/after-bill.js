@@ -22,11 +22,11 @@ router.post('/bill/insert', async (ctx, next) => {
     }
     await mongodb.update('user', { _id: ObjectId(ctx._id) }, { $inc: { balance: amount } })
 
-    if (inparam.type == 'IN') {
-        inparam.amount = +inparam.amount
-        inparam.project = '用户充值'
-        await mongodb.insert('serverBill', inparam)
-    }
+    // if (inparam.type == 'IN') {
+    //     inparam.amount = +inparam.amount
+    //     inparam.project = '用户充值'
+    //     await mongodb.insert('serverBill', inparam)
+    // }
     return next()
 })
 
