@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 
 // const domain = 'http://localhost:3636'
-// const domain = 'http://192.168.3.148:3636'
+// const domain = 'http://192.168.3.157:3636'
 const domain = 'http://home.vleboy.com:3636'
 // const domain = `http://${window.location.hostname}:3636`
 

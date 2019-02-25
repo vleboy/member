@@ -1,17 +1,17 @@
 <template>
   <v-container fluid fill-height justify-center>
     <v-layout row wrap>
-      <!-- <v-flex xs2>
+      <v-flex xs2>
         <v-select
           v-model="query.status"
-          @change="orderQuery"
+          @change="billQuery"
           solo
           :items="items"
           label="提现状态"
           clearable
         ></v-select>
-      </v-flex> -->
-      <v-flex xs9/>
+      </v-flex>
+      <v-flex xs7/>
       <v-flex xs2>
         <v-text-field v-model="query.userId" solo label="会员编号" clearable></v-text-field>
       </v-flex>
@@ -56,10 +56,10 @@ export default {
   },
   data() {
     return {
-      // items: [
-      //   { text: "未确认", value: "init" },
-      //   { text: "已确认", value: "delivery" }
-      // ],
+      items: [
+        { text: "未确认", value: "init" },
+        { text: "已确认", value: "confirm" }
+      ],
       headers: [
         { text: "时间", value: "createdAt", sortable: false },
         { text: "会员编号", value: "userId", sortable: false },
