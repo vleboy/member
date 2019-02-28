@@ -3,21 +3,21 @@ const _ = require('lodash')
 
 // console.log(moment().startOf('month').valueOf())
 // console.log(moment(moment().date('15')).startOf('day').format())
-let isSettlemented = false
+
 async function settlement() {
     //console.log('系统结算检查')
     //第一期结算
     //获取当前时间
     let nowTime = moment()
-    // let nowDate = nowTime.date()
-    // let nowHour = nowTime.hour()
-    // let nowMinute = nowTime.minute()
+    let nowDate = nowTime.date()
+    let nowHour = nowTime.hour()
+    let nowMinute = nowTime.minute()
 
-    nowDate = 15; nowHour = 23; nowMinute = 58;
-    nowTime = nowTime.date(nowDate)
-    nowTime.hour = nowHour
-    nowTime.minute = nowMinute
-    nowTime = moment('2019-02-15 23:58:58')
+    // nowDate = 15; nowHour = 23; nowMinute = 58;
+    // nowTime = nowTime.date(nowDate)
+    // nowTime.hour = nowHour
+    // nowTime.minute = nowMinute
+    // nowTime = moment('2019-02-15 23:58:58')
     let isSettlemented = false
     console.log(nowTime.format())
     //判断当前时间是否在结算期内
@@ -27,10 +27,10 @@ async function settlement() {
         )
     ) {
         //判断当期结算标记是否为已结算
-
+        console.log('系统结算时间正常，开始结算')
         if (isSettlemented == false) {
             //结算标记为未结算，执行结算逻辑
-            isSettlemented = true
+            // isSettlemented = true
             let achievements = null
             let period = 0;
             //将当期结算抽取出来
@@ -39,7 +39,8 @@ async function settlement() {
                 achievements = await mongodb.find('achievement', { createdAt: { '$lte': nowTime.valueOf(), '$gt': moment().startOf('month').valueOf() } })
                 period = 1
             } else { //当月第二期
-                achievements = await mongodb.find('achievements', { createdAt: { '$gt': moment().subtract(1, 'day').startOf('month').add(15, 'day').valueOf(), '$lte': nowTime.valueOf() } })
+              
+                achievements = await mongodb.find('achievement', { createdAt: { '$gt': moment().subtract(1, 'day').startOf('month').add(15, 'day').valueOf(), '$lte': nowTime.valueOf() } })
                 //achievements = await mongodb.find('achievement') 
                 period = 2
             }
@@ -87,7 +88,7 @@ async function settlement() {
                 }
             })
 
-            achieveUser.map(async item => {
+                achieveUser.map(async item => {
                 let userBillTemp = _.cloneDeep(marketBillTem)
                 let r = _.filter(achievements, _.iteratee({ 'userId': item, 'project': '市场奖' }));
                 let userBill = 0;
@@ -98,9 +99,10 @@ async function settlement() {
                 userBillTemp.amount = userBill
                 userBillTemp.userId = item
                 if (userBillTemp.amount != 0) {
-                    pushMarketBillTems.push(userBillTemp)
-                }
-
+                   // pushMarketBillTems.push(userBillTemp)
+                   console.log('市场奖', userBillTemp)
+                    mongodb.insert('bill', userBillTemp)//插入账单
+                    mongodb.update('user', { id: userBillTemp.userId }, { $inc: { balance: userBillTemp.amount } })
 
                 //结算领导奖
 
@@ -114,65 +116,71 @@ async function settlement() {
                     let le = _.cloneDeep(leaderBillTem)
                     le.userId = leader[1]
                     le.amount = leaderLevel1Bonuse
-                    pushLeaderBillTems.push(le)
+                    //pushLeaderBillTems.push(le)
+                     mongodb.insert('bill', le)//插入账单
+                     mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
                 if (leader[2]) {
                     console.log(`【${leader[2]}】获得领导奖【${leaderLevel2Bonuse}】`)
                     let le = _.cloneDeep(leaderBillTem)
                     le.userId = leader[2]
-                    le.amount = leaderLevel1Bonuse
-                    pushLeaderBillTems.push(le)
+                    le.amount = leaderLevel2Bonuse
+                   // pushLeaderBillTems.push(le)
+                    mongodb.insert('bill', le)//插入账单
+                    mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
                 if (leader[3]) {
                     console.log(`【${leader[3]}】获得领导奖【${leaderLevel3Bonuse}】`)
                     let le = _.cloneDeep(leaderBillTem)
                     le.userId = leader[3]
                     le.amount = leaderLevel3Bonuse
-                    pushLeaderBillTems.push(le)
+                  //  pushLeaderBillTems.push(le)
+                   mongodb.insert('bill', le)//插入账单
+                   mongodb.update('user', { id: le.userId }, { $inc: { balance: le.amount } })//更新余额
                 }
-
+            }
             })
-            //写入市场奖数据库
-            pushMarketBillTems.map(async (item) => {
-                console.log('item', item)
-                await mongodb.insert('bill', item)//插入账单
-                await mongodb.update('user', { id: item.userId }, { $inc: { balance: item.amount } })//更新余额
+            // //写入市场奖数据库
+            // pushMarketBillTems.map(async (item) => {
+            //     console.log('item', item)
+            //     await mongodb.insert('bill', item)//插入账单
+            //     await mongodb.update('user', { id: item.userId }, { $inc: { balance: item.amount } })//更新余额
 
-            })
+            // })
 
-            pushLeaderBillTems.map(async (item) => {
-                console.log('item', item)
-                await mongodb.insert('bill', item)//插入账单
-                await mongodb.update('user', { id: item.userId }, { $inc: { balance: item.amount } })//更新余额
+            // pushLeaderBillTems.map(async (item) => {
+            //     console.log('item', item)
+            //     await mongodb.insert('bill', item)//插入账单
+            //     await mongodb.update('user', { id: item.userId }, { $inc: { balance: item.amount } })//更新余额
 
 
-            })
+            // })
             //结算领导奖
-            let leaderBonuse = { userId: '', project: '领导奖', type: 'IN', amount: 0, createdAt: moment(nowTime).valueOf(), remark: '领导奖' }
-            let LeaderAchievement = []
+            // let leaderBonuse = { userId: '', project: '领导奖', type: 'IN', amount: 0, createdAt: moment(nowTime).valueOf(), remark: '领导奖' }
+            // let LeaderAchievement = []
 
-            pushLeaderBillTems.map((item) => {
-                let leaderBonuseTem = _.cloneDeep(leaderBonuse)
-                let i = 0
-                LeaderAchievement.forEach(element => {
-                    if (item.userId == element.userId) {
-                        i = 1
-                        element.amount = item.amount + element.amount
-                    }
-                });
-                if (i == 0) {
-                    leaderBonuseTem.amount = item.amount
-                    leaderBonuseTem.userId = item.userId
-                    LeaderAchievement.push(leaderBonuseTem)
-                }
-            })
+            // pushLeaderBillTems.map((item) => {
+            //     let leaderBonuseTem = _.cloneDeep(leaderBonuse)
+            //     let i = 0
+            //     LeaderAchievement.forEach(element => {
+            //         if (item.userId == element.userId) {
+            //             i = 1
+            //             element.amount = item.amount + element.amount
+            //         }
+            //     });
+            //     if (i == 0) {
+            //         leaderBonuseTem.amount = item.amount
+            //         leaderBonuseTem.userId = item.userId
+            //         LeaderAchievement.push(leaderBonuseTem)
+            //     }
+            // })
 
 
-            LeaderAchievement.map(async item => {
-                console.log('item', item)
-                await mongodb.insert('achievement', item)//插入业绩表
-            })
-
+            // LeaderAchievement.map(async item => {
+            //     console.log('item', item)
+            //     await mongodb.insert('achievement', item)//插入业绩表
+            // })
+            console.log('系统正在结算完成')
         } else {
             console.log('系统正在结算中')
         }
