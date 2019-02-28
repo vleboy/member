@@ -110,6 +110,17 @@ async function getMarketBonuses(inparam, date) {
     let root = await mongodb.find('user', { levelIndex: 'root' })
     //判断可能需要返奖的用户哪些需要返奖
     for (let index = 0; index < bonuseUserIdGroup.length; index++) {
+            await task$(index,root,bonuseUserIdGroup,nowPeopleLevelIndex,achievementsBonuse,date)
+
+    }
+
+
+
+}
+
+
+const task$ = async (index,root,bonuseUserIdGroup,nowPeopleLevelIndex,achievementsBonuse,date)=>{
+          
         //从可能需要返奖的组里抽出一个人
 
         let activeBonuses = []
@@ -143,13 +154,7 @@ async function getMarketBonuses(inparam, date) {
         let bonuseUser = await mongodb.find('user', { id: bonuseUserIdGroup[index] })
         console.log('开始为当前可能获取奖励的用户【', bonuseUser[0].id, '】寻找匹配分区')
         //计算左区金额
-        // left.map((item) => {
-        //     if (item.id != bonuseUser[0].referralBonuses.phase1.id && item.id != bonuseUser[0].referralBonuses.phase2.id) {
-        //         leftPrice = item.initPrice + leftPrice
-        //         // console.log('leftPrice', leftPrice)
-        //     }
-        // })
-       // console.log('left',left);console.log('right',right);console.log('ref',bonuseUser[0].referralBonuses)
+        
         if (left.length > 0){
             left.map((item) => {
                 if (item.id == bonuseUser[0].referralBonuses.phase1.id) {
@@ -198,6 +203,7 @@ async function getMarketBonuses(inparam, date) {
                 console.log('rightPrice', rightPrice)
             }
         })
+
         console.log('开始计算当前可能获取奖励的用户【', bonuseUser[0].id, '】的右区金额')
         console.log('右区【', rightMarket, '】市场的金额统计完毕，为【', rightPrice, '】')
         console.log('开始对比左区与右区的金额大小，并计算出总奖励金额')
@@ -212,7 +218,8 @@ async function getMarketBonuses(inparam, date) {
         }
         console.log('当前可能获取奖励的用户【', bonuseUser[0].id, '】总获得的奖励金额为【', achievementsBonuse.amount, '】')
         achievementsBonuse.userId = bonuseUserIdGroup[index]
-        console.log('查询当前可能获得奖励的用户【', bonuseUser[0].id, '】,今日已经获取的市场奖励金额')
+        // console.log('查询当前可能获得奖励的用户【', bonuseUser[0].id, '】,今日已经获取的市场奖励金额')
+        console.log('当前时间',moment(date).startOf('day').format())
         let r = await mongodb.find('achievement', { userId: bonuseUserIdGroup[index], project: '市场奖' })
         console.log('查询当前可能获得奖励的用户是否今日是否获得过市场奖励')
         let isLeftToday = null
@@ -224,14 +231,6 @@ async function getMarketBonuses(inparam, date) {
         let subRightAmount = 0
         let subSurplus = 0
         let subAmount = 0
-        // r.map((item) => {
-        //     if (moment(item.createdAt).isAfter(moment(date).startOf('day'))) {
-        //         isToday = item
-        //     } else {
-        //         subAmount += item.amount
-        //         subSurplus += item.surplus
-        //     }
-        // })
         r.map((item) => {
             if (moment(item.createdAt).isAfter(moment(date).startOf('day').valueOf())) {
                 if (item.market == leftMarket) {
@@ -251,8 +250,13 @@ async function getMarketBonuses(inparam, date) {
         })
         subAmount = subLeftAmount
         subSurplus = leftSubplus
+        if (bonuseUser[0].id == "MY43606510")
+        {
+            console.log('断点')
+        }
         //当前用户当天获得的奖励是=计算总金额-今日之前总金额-今日之前总surplus
         let todayBonuses = achievementsBonuse.amount - subAmount - subSurplus
+        console.log('当前可能获得奖励用户的金额为',todayBonuses,'今日之前总金额',subAmount,'总差额',subSurplus)
         if (isLeftToday != null && priceTap == 'left') {
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日【', leftMarket, '】市场已经获得过市场奖励,已获得的奖励是【', isLeftToday.amount, '】')
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日【', leftMarket, '】市场应该获得的奖励为【', todayBonuses, '】')
@@ -265,10 +269,22 @@ async function getMarketBonuses(inparam, date) {
                 console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日获得的奖励为【', todayBonuses, '】小于或者等于5000，根据规则，其今日可获得奖励为【', todayBonuses, '】')
             }
             isLeftToday.amount = achievementsBonuse.amount; isLeftToday.createdAt = moment(date).valueOf();isLeftToday.achievements = leftPrice;isLeftToday.surplus = achievementsBonuse.surplus
-            let now_id = isLeftToday._id
+            console.log('no03',isLeftToday)
+            let nowLeft_id = isLeftToday._id
             delete isLeftToday._id
-            await mongodb.update('achievement', { _id: ObjectId(now_id) }, { $set: isLeftToday })
-            await mongodb.update('achievement', { market: rightMarket}, { $set: {achievements :rightPrice,amount:isLeftToday.amount,surplus:achievementsBonuse.surplus} })
+            await mongodb.update('achievement', { _id: ObjectId(nowLeft_id) }, { $set: isLeftToday })
+            if(isRightToday._id){
+                let nowRight_id = isRightToday._id
+                await mongodb.update('achievement', {_id: ObjectId(nowRight_id)}, { $set: {achievements :rightPrice,amount:isLeftToday.amount,surplus:achievementsBonuse.surplus} })
+            }else{
+                delete achievementsBonuse._id
+                achievementsBonuse.amount = isLeftToday.amount
+                achievementsBonuse.market = rightMarket
+                achievementsBonuse.achievements = rightPrice
+                await mongodb.insert('achievement', achievementsBonuse)
+            }
+           
+            
         } else if (isRightToday != null && priceTap == 'right') {
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日【', rightMarket, '】市场已经获得过市场奖励,已获得的奖励是【', isRightToday.amount, '】')
             console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日【', rightMarket, '】市场应该获得的奖励为【', todayBonuses, '】')
@@ -281,17 +297,28 @@ async function getMarketBonuses(inparam, date) {
                 console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日获得的奖励为【', todayBonuses, '】小于或者等于5000，根据规则，其今日可获得奖励为【', todayBonuses, '】')
             }
             isRightToday.amount = achievementsBonuse.amount; isRightToday.createdAt = moment(date).valueOf();isRightToday.achievements = rightPrice;isRightToday.surplus = achievementsBonuse.surplus
-            let now_id = isRightToday._id
-            delete isRightToday._id
             console.log('no04',isRightToday)
-            await mongodb.update('achievement', { _id: ObjectId(now_id)}, { $set: isRightToday })
-            await mongodb.update('achievement', { market: leftMarket}, { $set: {achievements :leftPrice,amount:isRightToday.amount,surplus:achievementsBonuse.surplus} })
+            let nowRight_id = isRightToday._id
+            delete isRightToday._id
+            await mongodb.update('achievement', { _id: ObjectId(nowRight_id)}, { $set: isRightToday })
+            if(isLeftToday._id){
+                let nowLeft_id = isLeftToday._id
+                await mongodb.update('achievement', { _id: ObjectId(nowLeft_id)}, { $set: {achievements :leftPrice,amount:isRightToday.amount,surplus:achievementsBonuse.surplus} })
+            }else{
+                delete achievementsBonuse._id
+                achievementsBonuse.amount = isRightToday.amount
+                achievementsBonuse.market = leftMarket
+                achievementsBonuse.achievements = leftPrice
+                await mongodb.insert('achievement', achievementsBonuse)
+            }
+           
         } else {
 
-            console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日第一次获得市场奖，奖金为【', achievementsBonuse.amount, '】') //左区
+            console.log('当前可能获得奖励的用户【', bonuseUser[0].id, '】今日第一次获得市场奖，奖金为【',todayBonuses, '】') //左区
             delete achievementsBonuse._id
             //leftMarket 业绩
             //achievementsBonuse.amount = 0
+            achievementsBonuse.amount = todayBonuses
             achievementsBonuse.market = leftMarket
             achievementsBonuse.achievements = leftPrice
             //console.log('leftMarket01',achievementsBonuse)
@@ -299,49 +326,13 @@ async function getMarketBonuses(inparam, date) {
             await mongodb.insert('achievement', achievementsBonuse)
             delete achievementsBonuse._id
             //achievementsBonuse.amount = 0
+            achievementsBonuse.amount = todayBonuses
             achievementsBonuse.market = rightMarket
             achievementsBonuse.achievements = rightPrice
            // console.log('rightMarket02',achievementsBonuse)
             await mongodb.insert('achievement', achievementsBonuse)
         }
-        //计算领导奖励
-        // let leaderLevel1Bonuse = achievementsBonuse.amount * 0.50
-        // let leaderLevel2Bonuse = achievementsBonuse.amount * 0.20
-        // let leaderLevel3Bonuse = achievementsBonuse.amount * 0.10
-        // let leader = bonuseUser[0].recommendIndex.reverse()
-        // let leaderBonuse = { userId: '', project: '领导奖', type: 'IN', amount: 0, createdAt: moment(date).valueOf(), remark: '领导奖' }
-        // console.log('开始计算领导奖',leader)
-        // if (leader[1]) {
-
-        //     console.log(`【${leader[1]}】获得领导奖【${leaderLevel1Bonuse}】`)
-        //     let le = _.cloneDeep(leaderBonuse)
-        //     le.userId = leader[1]
-        //     le.amount = leaderLevel1Bonuse
-        //     let ll = await mongodb.find('achievement',{project:'领导奖',userId:leader[1]})
-        //     if(ll.length > 0){
-        //         await mongodb.update('achievement', {amount})
-        //     }else{
-        //         await mongodb.insert('achievement', le)
-        //     }
-            
-            
-        // }
-        // if (leader[2]) {
-        //     console.log(`【${leader[2]}】获得领导奖【${leaderLevel2Bonuse}】`)
-        //     let le = _.cloneDeep(leaderBonuse)
-        //     le.userId = leader[2]
-        //     le.amount = leaderLevel2Bonuse
-        //    await mongodb.insert('achievement', le)
-        // }
-        // if (leader[3]) {
-        //     console.log(`【${leader[3]}】获得领导奖【${leaderLevel3Bonuse}】`)
-        //     let le = _.cloneDeep(leaderBonuse)
-        //     le.userId = leader[3]
-        //     le.amount = leaderLevel3Bonuse
-        //     await mongodb.insert('achievement', le)
-        // }
-
-    }
+        
 
 }
 

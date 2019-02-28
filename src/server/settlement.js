@@ -36,14 +36,16 @@ async function settlement() {
             //将当期结算抽取出来
 
             if (nowDate == 16) { //当月第一期
+                console.log('开始查找当月第一期：',nowTime.format(),moment().startOf('month').format())
                 achievements = await mongodb.find('achievement', { createdAt: { '$lte': nowTime.valueOf(), '$gt': moment().startOf('month').valueOf() } })
                 period = 1
             } else { //当月第二期
-              
+                console.log('开始查找当月第二期：',moment().subtract(1, 'day').startOf('month').add(15, 'day').format(),nowTime.format())
                 achievements = await mongodb.find('achievement', { createdAt: { '$gt': moment().subtract(1, 'day').startOf('month').add(15, 'day').valueOf(), '$lte': nowTime.valueOf() } })
                 //achievements = await mongodb.find('achievement') 
                 period = 2
             }
+            console.log(nowTime.format())
             //零售奖结算
             let retailBillTem = {userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `零售奖`, project: '零售奖'}
             //推荐奖结算    
@@ -52,20 +54,22 @@ async function settlement() {
             //市场奖结算
             let marketBillTem = {}
             let leaderBillTem = {}
-            if (period = 1) {
+            if (period == 1) {
                 marketBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month() + 1}月,第${period}期市场奖奖励`, project: '市场奖' }
                 leaderBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month() + 1}月,第${period}期领导奖奖励`, project: '领导奖' }
-            } else if (period = 2) {
+            } else if (period == 2) {
                 if (nowTime.month() == 1) {
-                    marketBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.subtract(1,'month').month()}月,第${period}期市场奖奖励`, project: '市场奖' }
-                    leaderBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.subtract(1,'month').month()}月,第${period}期领导奖奖励`, project: '领导奖' }
+                    marketBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month()}月,第${period}期市场奖奖励`, project: '市场奖' }
+                    leaderBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month()}月,第${period}期领导奖奖励`, project: '领导奖' }
 
                 } else {
-                    marketBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.subtract(1,'year').year()}年${nowTime.subtract(1,'month').month()}月,第${period}期市场奖奖励`, project: '市场奖' }
-                    leaderBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.subtract(1,'year').year()}年${nowTime.subtract(1,'month').month()}月,第${period}期市场奖奖励`, project: '领导奖' }
+                   
+                    marketBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month()}月,第${period}期市场奖奖励`, project: '市场奖' }
+                    leaderBillTem = { userId: null, type: 'IN', amount: 0, createdAt: nowTime.valueOf(), remark: `${nowTime.year()}年${nowTime.month()}月,第${period}期领导奖奖励`, project: '领导奖' }
 
                 }
             }
+            console.log(marketBillTem,leaderBillTem)
             let recommendUser1 = [] //获得推荐奖用户
             let recommendUser2 = [] //获得回本奖用户
             let achieveUser = []//获得市场奖的用户 
