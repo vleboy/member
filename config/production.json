@@ -21,7 +21,7 @@
         "errStatus": 401
     },
     "server": {
-        "port": 3636,
+        "port": 80,
         "controllerRoot": "/xserver",
         "controllerDir": "/src/controller/",
         "middlewareDir": "/src/middleware/",
