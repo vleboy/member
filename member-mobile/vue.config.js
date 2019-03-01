@@ -15,7 +15,7 @@ module.exports = {
     }
   },
 
-  publicPath: '/mobile/',
+  publicPath: '/my/',
   outputDir: undefined,
   assetsDir: undefined,
   runtimeCompiler: undefined,

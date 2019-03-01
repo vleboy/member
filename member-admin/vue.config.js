@@ -15,7 +15,7 @@ module.exports = {
     }
   },
 
-  publicPath: '/admin/',
+  publicPath: '/guanli/',
   outputDir: undefined,
   assetsDir: undefined,
   runtimeCompiler: undefined,
